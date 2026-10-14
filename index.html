@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MVP SMP | Minecraft Server</title>
+<meta name="description" content="MVP SMP: build, explore and survive together.">
+<meta name="theme-color" content="#07050f">
+<meta property="og:title" content="MVP SMP | Minecraft Server">
+<meta property="og:description" content="Build, explore and survive together.">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Pixelify+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- Shared icons -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="logo-m" viewBox="38 37 363 199">
+    <polygon fill="#c9c6d6" points="41,40 153,160 153,227 41,180"/>
+    <polygon fill="#c9c6d6" points="398,40 287,160 287,227 398,180"/>
+    <polygon fill="#ffffff" points="41,40 153,40 220,137 287,40 398,40 287,160 220,233 153,160"/>
+  </symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path fill="currentColor" d="M4 3h16a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2h-6l-5 4v-4H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm4 6a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm8 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M8 8h11v13H8zM5 16H4V3h11v2"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" d="M7 4l13 8-13 8z"/></symbol>
+  <symbol id="i-cart" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M2 3h3l3 12h11l2-8H6"/><circle cx="9" cy="20" r="1.6" fill="currentColor"/><circle cx="18" cy="20" r="1.6" fill="currentColor"/></symbol>
+  <symbol id="i-users" viewBox="0 0 28 28"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="10" cy="9" r="4"/><path d="M3 24c0-5 3-8 7-8s7 3 7 8"/><circle cx="20" cy="10" r="3"/><path d="M19 17c4 0 6 3 6 7"/></g></symbol>
+  <symbol id="i-trophy" viewBox="0 0 28 28"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path d="M8 4h12v8a6 6 0 0 1-12 0z"/><path d="M8 6H3v3a4 4 0 0 0 5 4M20 6h5v3a4 4 0 0 1-5 4M14 18v5M9 26h10"/></g></symbol>
+  <symbol id="i-bolt" viewBox="0 0 28 28"><path fill="currentColor" d="M16 2L5 16h8l-2 10 12-15h-8z"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 28 28"><g fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="14" cy="14" r="11"/><ellipse cx="14" cy="14" rx="5" ry="11"/><path d="M3 14h22"/></g></symbol>
+  <symbol id="i-grass" viewBox="0 0 32 32">
+    <polygon points="16,3 29,10 16,17 3,10" fill="#62b83e"/>
+    <polygon points="3,10 16,17 16,30 3,23" fill="#8b5a34"/>
+    <polygon points="29,10 16,17 16,30 29,23" fill="#6a4228"/>
+    <polygon points="3,10 16,17 16,21 3,14" fill="#4c9a2e"/>
+    <polygon points="29,10 16,17 16,21 29,14" fill="#3f8426"/>
+  </symbol>
+</svg>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <div class="container nav-inner">
+    <a href="#home" class="brand" aria-label="MVP SMP home">
+      <svg class="logo-m" aria-hidden="true"><use href="#logo-m"/></svg>
+      <span class="brand-text">MVP SMP</span>
+    </a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="nav-menu"><span></span><span></span><span></span></button>
+    <nav aria-label="Main navigation">
+      <ul class="nav-menu" id="nav-menu">
+        <li><a href="#home" class="nav-link">Home</a></li>
+        <li><a href="#about" class="nav-link">About</a></li>
+        <li><a href="#features" class="nav-link">Features</a></li>
+        <li><a href="#join" class="nav-link">How to Join</a></li>
+        <li><a href="#store" class="nav-link">Store</a></li>
+        <li><a href="#rules" class="nav-link">Rules</a></li>
+        <li><a href="#leaderboard" class="nav-link">Leaderboard</a></li>
+        <li><a href="https://discord.gg/YOUR_INVITE" class="btn btn-small btn-purple" data-link="discordUrl" target="_blank" rel="noopener noreferrer"><svg class="ico"><use href="#i-chat"/></svg>Join Discord</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="home">
+  <!-- Looping trailer. Change videoId in js/script.js. Optional own image: see --hero-image in css/style.css -->
+  <div class="hero-photo" aria-hidden="true"></div>
+  <div class="video-bg" id="video-bg" aria-hidden="true">
+    <iframe id="bg-video" title="MVP SMP trailer (background)" allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin" tabindex="-1"></iframe>
+  </div>
+  <div class="hero-overlay" aria-hidden="true"></div>
+  <div class="particles" id="particles" aria-hidden="true"></div>
+
+  <div class="container hero-content">
+    <div class="logo-wrap reveal">
+      <span class="ring" aria-hidden="true"></span>
+      <svg class="hero-logo" viewBox="38 37 363 199" role="img" aria-label="MVP logo"><use href="#logo-m"/></svg>
+    </div>
+
+    <h1 class="hero-title reveal"><span class="t-mvp">MVP</span> <span class="t-smp">SMP</span></h1>
+    <h2 class="hero-headline reveal">Your Next Minecraft Adventure Starts Here</h2>
+    <p class="hero-desc reveal">Explore, build, survive and play with friends. Grab the address, join the adventure, and make your mark on the world.</p>
+
+    <div class="ip-box reveal">
+      <svg class="ip-ico" aria-hidden="true"><use href="#i-grass"/></svg>
+      <!-- PLACEHOLDER: server IP is set in js/script.js (CONFIG.serverIP) -->
+      <code class="ip-value ph" data-ip>play.your-server-ip.example</code>
+      <button class="btn btn-purple btn-copy" id="copy-ip" type="button"><svg class="ico"><use href="#i-copy"/></svg><span>Copy IP</span></button>
+    </div>
+    <p class="ph-note reveal">Placeholder IP: replace it in <code>js/script.js</code>.</p>
+
+    <div class="hero-buttons reveal">
+      <a href="#join" class="btn btn-purple btn-lg"><svg class="ico"><use href="#i-play"/></svg>Join Server</a>
+      <a href="#store" class="btn btn-outline btn-lg"><svg class="ico"><use href="#i-cart"/></svg>Visit Store</a>
+    </div>
+
+    <!-- PLACEHOLDER stats: put only real numbers here, or delete this whole block -->
+    <ul class="stats reveal" aria-label="Server stats (placeholders)">
+      <li><svg class="stat-ico"><use href="#i-users"/></svg><div><strong class="ph">[value]</strong><span>[PLACEHOLDER label]</span></div></li>
+      <li><svg class="stat-ico"><use href="#i-trophy"/></svg><div><strong class="ph">[value]</strong><span>[PLACEHOLDER label]</span></div></li>
+      <li><svg class="stat-ico"><use href="#i-bolt"/></svg><div><strong class="ph">[value]</strong><span>[PLACEHOLDER label]</span></div></li>
+      <li><svg class="stat-ico"><use href="#i-globe"/></svg><div><strong class="ph">[value]</strong><span>[PLACEHOLDER label]</span></div></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section class="section" id="about">
+  <div class="container">
+    <header class="section-head reveal">
+      <p class="eyebrow">About</p>
+      <h2 class="section-title">The Server &amp; The Community</h2>
+    </header>
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <p class="ph">[PLACEHOLDER] MVP SMP is a Minecraft server built around its players. Describe what makes your server different: why you started it, what kind of players you want, and the atmosphere you're going for.</p>
+        <p class="ph">[PLACEHOLDER] Tell visitors what a typical day looks like: who they'll meet, what people build, and how the community plays together.</p>
+        <p class="ph">[PLACEHOLDER] Add a short line about who can join and how you keep the server friendly.</p>
+      </div>
+      <aside class="panel about-panel reveal" aria-label="Server at a glance">
+        <h3>At a Glance</h3>
+        <ul>
+          <li><span>Server</span><strong>MVP SMP</strong></li>
+          <li><span>Type</span><strong class="ph">[PLACEHOLDER: e.g. Survival SMP]</strong></li>
+          <li><span>Edition</span><strong class="ph">[PLACEHOLDER: Java / Bedrock]</strong></li>
+          <li><span>Version</span><strong class="ph" data-version>[PLACEHOLDER: version]</strong></li>
+          <li><span>Founded</span><strong class="ph">[PLACEHOLDER: year]</strong></li>
+        </ul>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURES ============ -->
+<section class="section section-alt" id="features">
+  <div class="container">
+    <header class="section-head reveal">
+      <p class="eyebrow">Features</p>
+      <h2 class="section-title">What MVP SMP Offers</h2>
+      <p class="section-sub ph">[PLACEHOLDER] Only list features your server really has. Every card is an editable placeholder: replace the text or delete the card.</p>
+    </header>
+    <div class="cards">
+      <article class="card reveal"><div class="card-icon" aria-hidden="true"><svg viewBox="38 37 363 199"><use href="#logo-m"/></svg></div><span class="card-tag">Placeholder</span><h3>Feature One</h3><p>Describe your first real server feature here, for example the gameplay style or world setup you've confirmed.</p></article>
+      <article class="card reveal"><div class="card-icon" aria-hidden="true"><svg viewBox="38 37 363 199"><use href="#logo-m"/></svg></div><span class="card-tag">Placeholder</span><h3>Feature Two</h3><p>Describe a second feature. Keep it short and specific so players know what to expect.</p></article>
+      <article class="card reveal"><div class="card-icon" aria-hidden="true"><svg viewBox="38 37 363 199"><use href="#logo-m"/></svg></div><span class="card-tag">Placeholder</span><h3>Feature Three</h3><p>Describe a third feature, such as how the community, events or progression work.</p></article>
+      <article class="card reveal"><div class="card-icon" aria-hidden="true"><svg viewBox="38 37 363 199"><use href="#logo-m"/></svg></div><span class="card-tag">Placeholder</span><h3>Feature Four</h3><p>Add another confirmed feature, or remove this card.</p></article>
+      <article class="card reveal"><div class="card-icon" aria-hidden="true"><svg viewBox="38 37 363 199"><use href="#logo-m"/></svg></div><span class="card-tag">Placeholder</span><h3>Feature Five</h3><p>Add another confirmed feature, or remove this card.</p></article>
+      <article class="card reveal"><div class="card-icon" aria-hidden="true"><svg viewBox="38 37 363 199"><use href="#logo-m"/></svg></div><span class="card-tag">Placeholder</span><h3>Feature Six</h3><p>Add another confirmed feature, or remove this card.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW TO JOIN ============ -->
+<section class="section" id="join">
+  <div class="container">
+    <header class="section-head reveal">
+      <p class="eyebrow">How to Join</p>
+      <h2 class="section-title">Get Into the Server in a Minute</h2>
+    </header>
+    <div class="join-grid">
+      <ol class="steps">
+        <li class="step reveal"><span class="step-num">1</span><div><h3>Launch Minecraft</h3><p>Open the game using the correct version: <strong class="ph" data-version>[PLACEHOLDER: version]</strong>.</p></div></li>
+        <li class="step reveal"><span class="step-num">2</span><div><h3>Open Multiplayer</h3><p>From the main menu, click <strong>Multiplayer</strong>, then <strong>Add Server</strong>.</p></div></li>
+        <li class="step reveal"><span class="step-num">3</span><div><h3>Enter the Server Details</h3><p>Name it <strong>MVP SMP</strong> and paste the server address shown on this page.</p></div></li>
+        <li class="step reveal"><span class="step-num">4</span><div><h3>Join and Play</h3><p>Click <strong>Done</strong>, select the server, and press <strong>Join Server</strong>.</p></div></li>
+      </ol>
+      <aside class="panel join-card reveal">
+        <h3>Connection Details</h3>
+        <dl>
+          <dt>Minecraft Version</dt>
+          <dd class="ph" data-version>[PLACEHOLDER: version]</dd>
+          <dt>Server Address</dt>
+          <dd><code class="ph" data-ip>play.your-server-ip.example</code></dd>
+        </dl>
+        <button class="btn btn-purple btn-block" id="copy-ip-2" type="button"><svg class="ico"><use href="#i-copy"/></svg><span>Copy Server Address</span></button>
+        <p class="ph-note">Placeholders: set the address and version in <code>js/script.js</code>. Add Bedrock or whitelist instructions here if they apply.</p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STORE ============ -->
+<section class="section section-alt" id="store">
+  <div class="container">
+    <header class="section-head reveal">
+      <p class="eyebrow">Store</p>
+      <h2 class="section-title">Support the Server</h2>
+    </header>
+    <div class="panel wide-panel reveal">
+      <p class="ph">[PLACEHOLDER] Only keep this section if you actually have a store. Describe what it offers, or delete the section and the "Store" links.</p>
+      <a href="https://your-store.example" class="btn btn-purple" data-link="storeUrl" target="_blank" rel="noopener noreferrer"><svg class="ico"><use href="#i-cart"/></svg>Visit Store</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RULES ============ -->
+<section class="section" id="rules">
+  <div class="container">
+    <header class="section-head reveal">
+      <p class="eyebrow">Rules</p>
+      <h2 class="section-title">Keep It Fun for Everyone</h2>
+      <p class="section-sub ph">[PLACEHOLDER] These are example rules. Edit, add or remove them to match your server.</p>
+    </header>
+    <ol class="rules">
+      <li class="rule reveal"><span class="rule-num">01</span><div><h3>Respect Everyone</h3><p>Treat players and staff with respect. No harassment, hate speech or toxic behavior.</p></div></li>
+      <li class="rule reveal"><span class="rule-num">02</span><div><h3>No Griefing or Stealing</h3><p>Don't destroy or take other players' builds and belongings without permission.</p></div></li>
+      <li class="rule reveal"><span class="rule-num">03</span><div><h3>No Cheating</h3><p>Hacked clients and unfair exploits are not allowed. Report bugs instead of abusing them.</p></div></li>
+      <li class="rule reveal"><span class="rule-num">04</span><div><h3>Keep Chat Clean</h3><p>No spam, advertising or inappropriate content in chat or on builds.</p></div></li>
+      <li class="rule reveal"><span class="rule-num">05</span><div><h3>Build Responsibly</h3><p>Avoid creating excessive lag and keep a fair distance from other players' bases.</p></div></li>
+      <li class="rule reveal"><span class="rule-num">06</span><div><h3>Listen to Staff</h3><p>Follow staff instructions. If you disagree with a decision, raise it politely.</p></div></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ LEADERBOARD ============ -->
+<section class="section section-alt" id="leaderboard">
+  <div class="container">
+    <header class="section-head reveal">
+      <p class="eyebrow">Leaderboard</p>
+      <h2 class="section-title">Top Players</h2>
+    </header>
+    <div class="panel wide-panel reveal">
+      <p class="ph">[PLACEHOLDER] GitHub Pages has no backend, so a live leaderboard needs an external page or API. Link to it here, or delete this section and the "Leaderboard" links.</p>
+      <a href="https://your-leaderboard.example" class="btn btn-purple" data-link="leaderboardUrl" target="_blank" rel="noopener noreferrer"><svg class="ico"><use href="#i-trophy"/></svg>View Leaderboard</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ COMMUNITY ============ -->
+<section class="section" id="community">
+  <div class="container">
+    <header class="section-head reveal">
+      <p class="eyebrow">Community</p>
+      <h2 class="section-title">Join the Conversation</h2>
+    </header>
+    <div class="community-card reveal">
+      <div>
+        <h3>Hop Into Our Discord</h3>
+        <p class="ph">[PLACEHOLDER] Tell players what they'll find on your Discord: announcements, support, events, finding friends to play with.</p>
+      </div>
+      <a href="https://discord.gg/YOUR_INVITE" class="btn btn-white" data-link="discordUrl" target="_blank" rel="noopener noreferrer"><svg class="ico"><use href="#i-chat"/></svg>Join Discord</a>
+    </div>
+    <ul class="links">
+      <li class="reveal"><a href="#placeholder" data-ph-link target="_blank" rel="noopener noreferrer"><strong>YouTube</strong><span>[PLACEHOLDER URL]</span></a></li>
+      <li class="reveal"><a href="#placeholder" data-ph-link target="_blank" rel="noopener noreferrer"><strong>TikTok</strong><span>[PLACEHOLDER URL]</span></a></li>
+      <li class="reveal"><a href="#placeholder" data-ph-link target="_blank" rel="noopener noreferrer"><strong>X / Twitter</strong><span>[PLACEHOLDER URL]</span></a></li>
+      <li class="reveal"><a href="#placeholder" data-ph-link target="_blank" rel="noopener noreferrer"><strong>Server List</strong><span>[PLACEHOLDER URL]</span></a></li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <a href="#home" class="brand"><svg class="logo-m" aria-hidden="true"><use href="#logo-m"/></svg><span class="brand-text">MVP SMP</span></a>
+      <p>Build, explore and survive together.</p>
+    </div>
+    <nav class="footer-links" aria-label="Footer navigation">
+      <a href="#about">About</a><a href="#features">Features</a><a href="#join">How to Join</a><a href="#store">Store</a><a href="#rules">Rules</a><a href="#leaderboard">Leaderboard</a><a href="#community">Community</a>
+    </nav>
+  </div>
+  <div class="container footer-bottom">
+    <p>&copy; <span id="year">2026</span> MVP SMP. All rights reserved.</p>
+    <p class="disclaimer">MVP SMP is not an official Minecraft product and is not approved by or associated with Mojang or Microsoft.</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="js/script.js"></script>
+</body>
+</html>
