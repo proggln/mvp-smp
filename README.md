@@ -1,20 +1,18 @@
 # MVP SMP website
 
-One self-contained file: `index.html` (HTML + CSS + JS inside). No build step, no backend.
+One self-contained file: `index.html` (HTML + CSS + JS + logo inside). No build step, no backend.
 
-## Fill in your details
+## Edit
 
 Open `index.html`, scroll to the bottom and edit the `CONFIG` block:
-`serverIP`, `discordUrl`, `storeUrl`, `leaderboardUrl`, `minecraftVersion`, `videoId`.
 
-Everything marked `[PLACEHOLDER]` (dashed outline) still needs your own text.
-The stats row under the buttons has no numbers on purpose: add real ones or delete the `<ul class="stats">` block.
+- `serverIP`: the server address shown in the middle (currently an example)
+- `discordUrl`: your Discord invite (the Discord button shows a notice until you set it)
+- `videoId`: YouTube trailer looped in the background
+
+The two achievements (60 players, 3 years) are in the `<ul class="stats">` block.
 
 ## Publish (GitHub Pages)
 
 Settings, then Pages, then "Deploy from a branch", branch `main`, folder `/ (root)`.
 Site: `https://<username>.github.io/<repo>/`
-
-## Optional own hero image
-
-Add `assets/hero.jpg` (about 1920x1080, under 300 KB) and set `--hero-image: url("assets/hero.jpg");` at the top of the `<style>` block.
