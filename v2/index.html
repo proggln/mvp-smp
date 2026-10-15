@@ -199,14 +199,17 @@ const CONFIG = {
   $$("[data-ip]").forEach((e) => (e.textContent = CONFIG.serverIP));
   $$("[data-discord]").forEach((a) => a.setAttribute("href", CONFIG.discordUrl));
 
-  /* ---------- Background trailer: YouTube IFrame API, muted, looped by hand.
-     No "playlist" parameter (it adds prev/next arrows) and the video is shown only while it is
-     really playing, so the YouTube player UI (pause button, arrows, errors) is never visible. ---------- */
+  /* Background trailer (the main feature): YouTube IFrame API, muted, looped by hand.
+     No "playlist" parameter on the player (it adds prev/next arrows); the video is shown only while it is really playing,
+     so the YouTube player UI never appears. If the API cannot load, a plain embed is used instead. */
   const vbg = $("#video-bg");
   const saveData = navigator.connection && navigator.connection.saveData;
   if (!reduceMotion && !saveData && CONFIG.videoId) {
-    let player, timer;
+    let player, timer, started = false, fellBack = false, kicks = 0;
     const show = (on) => vbg.classList.toggle("ready", on);
+    const nudge = () => {
+      try { if (player && player.getPlayerState && player.getPlayerState() !== 1) player.playVideo(); } catch (e) {}
+    };
     const watchLoop = () => {
       clearInterval(timer);
       timer = setInterval(() => {
@@ -215,6 +218,22 @@ const CONFIG = {
           if (d > 1 && d - t < 0.7) player.seekTo(0, true); // restart just before the end screen
         } catch (e) {}
       }, 250);
+    };
+    // Last resort when the YouTube API cannot load (ad blocker etc.): plain muted embed
+    const fallback = () => {
+      if (started || fellBack) return;
+      fellBack = true;
+      const f = document.createElement("iframe");
+      f.title = "MVP SMP trailer (background)";
+      f.setAttribute("allow", "autoplay; encrypted-media");
+      f.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
+      f.tabIndex = -1;
+      f.addEventListener("load", () => setTimeout(() => show(true), 1500));
+      f.src = "https://www.youtube-nocookie.com/embed/" + CONFIG.videoId + "?" + new URLSearchParams({
+        autoplay: 1, mute: 1, loop: 1, playlist: CONFIG.videoId, controls: 0, modestbranding: 1,
+        playsinline: 1, rel: 0, iv_load_policy: 3, disablekb: 1, fs: 0
+      }).toString();
+      vbg.appendChild(f);
     };
     window.onYouTubeIframeAPIReady = () => {
       const vars = {
@@ -230,7 +249,7 @@ const CONFIG = {
           onReady: (e) => { e.target.mute(); e.target.playVideo(); },
           onStateChange: (e) => {
             const S = YT.PlayerState;
-            if (e.data === S.PLAYING) { show(true); watchLoop(); }
+            if (e.data === S.PLAYING) { started = true; show(true); watchLoop(); }
             else if (e.data !== S.BUFFERING) {
               show(false); clearInterval(timer);
               if (e.data === S.ENDED) e.target.seekTo(0, true);
@@ -244,7 +263,13 @@ const CONFIG = {
     const api = document.createElement("script");
     api.src = "https://www.youtube.com/iframe_api";
     api.async = true;
+    api.onerror = fallback;
     document.head.appendChild(api);
+    setTimeout(() => { if (!(window.YT && window.YT.Player)) fallback(); }, 6000);
+    // Autoplay can be held back (strict browser settings, battery saver): retry, and again on the first touch, click or key
+    const kick = setInterval(() => { if (started || ++kicks > 6) clearInterval(kick); else nudge(); }, 2000);
+    ["pointerdown", "touchstart", "keydown", "wheel"].forEach((ev) => window.addEventListener(ev, nudge, { passive: true }));
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) nudge(); });
   }
 
   /* ---------- Copy IP (button or click on the IP) with a pixel burst ---------- */
