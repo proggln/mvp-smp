@@ -117,6 +117,9 @@ button{font:inherit}
 .card:hover{transform:translateY(-6px);border-color:color-mix(in srgb,var(--tc,#2ea2ea) 70%,#fff 10%);box-shadow:0 24px 60px color-mix(in srgb,var(--tc,#2ea2ea) 35%,transparent)}
 .card:hover::before{opacity:.5}
 .tile{position:relative;width:84px;height:84px;display:grid;place-items:center;border-radius:24px;color:#fff;background:linear-gradient(160deg,color-mix(in srgb,var(--tc,#2ea2ea) 80%,#fff 8%),color-mix(in srgb,var(--tc,#2ea2ea) 45%,#03080f));box-shadow:0 10px 28px color-mix(in srgb,var(--tc,#2ea2ea) 45%,transparent),inset 0 1px 0 rgba(255,255,255,.45)}
+.emo{font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;font-style:normal;line-height:1}
+.tile .emo{font-size:42px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.35))}
+.tab .emo{font-size:16px}
 .tile svg{width:44px;height:44px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.35))}
 .art{display:block;position:relative}
 .art.banner{width:calc(100% + 64px);margin:-34px -32px 0;border-radius:28px 28px 0 0;height:130px;object-fit:contain;background:#0081cc}
@@ -319,7 +322,12 @@ const CONFIG = {
     else { p.setAttribute("fill", "none"); p.setAttribute("stroke", "currentColor"); p.setAttribute("stroke-width", "2.2"); p.setAttribute("stroke-linecap", "round"); p.setAttribute("stroke-linejoin", "round"); }
     s.appendChild(p); return s;
   };
-  const icon = (name) => svg(ICONS[name] || ICONS.star, !!SOLID[name]);
+  // these icons are emoji instead of drawn shapes
+  const EMOJI = { key: "🔑", chest: "📦", coin: "🪙", paw: "🐾", wand: "🎨" };
+  const icon = (name) => {
+    if (EMOJI[name]) { const s = document.createElement("span"); s.className = "emo"; s.textContent = EMOJI[name]; s.setAttribute("aria-hidden", "true"); return s; }
+    return svg(ICONS[name] || ICONS.star, !!SOLID[name]);
+  };
   const CHECK = "M5 12.5l4.5 4.5L19 7.5", CART = "M3 4h2l2.4 11h10.4l2-8H6.2M9 20h.01M17 20h.01";
   const hero = $("#hero"), grid = $("#grid"), tabsEl = $("#tabs");
   let anyOff = false;
