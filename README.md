@@ -23,3 +23,9 @@ Site: `https://<username>.github.io/<repo>/`
 - `v2/index.html`: experimental cooler version. Preview: `https://<username>.github.io/<repo>/v2/`.
   It has the same content and the same `CONFIG` block at the bottom. To make it the live site, copy its contents into the root `index.html`.
 - Branch `v1-minimal`: saved copy of version 1, so it can always be restored.
+
+## Store (v2/store/)
+
+`v2/store/index.html` is a store page. Edit `CONFIG.products` at the bottom of that file:
+name, price, perks and a `checkout` link per item (Tebex, Stripe Payment Link, PayPal...).
+Items without a checkout link show "Coming soon". The site is static, so payments always go through the external checkout.
