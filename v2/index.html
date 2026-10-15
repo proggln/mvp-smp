@@ -10,6 +10,9 @@
 <meta property="og:description" content="Build, explore and survive together.">
 <meta property="og:type" content="website">
 <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAFYElEQVR42u2ZTWhUVxTH/+fc995MPhpCTJTY2Bg1VEQEW2vBQqAuJBWD2EJLwUVBaV256NKVXXThshRKLViMim2lhUKhaLsRoUKoRSottTFJTX3RyYeTIeN85L177+nimTjJJCGTj7bCu7zFW9w59/+755x7zn1D+OAGnubBeMpHDBADxAAxQAwQA8QAMUAMEAPEADFADPBfDacCVgKBFpggECv/np2KAWwosAYLrE0gj2XBtYlgAwtZUD8zHFoxAAIEYMinB5pbG+uMtUyzrRsRRXTh1sMLP4+qasfMs4GKyeT14ZeaDu9YE/1k9h6JKObBsYljlx9YULT0SnhAoBS9UJt/cVMT4M03q6O1tsfP3RkpsKdsmSOYyEya9ubqz7paq5z5c0+CX4p5xbSws5eQxJQp6IG+wUf5ohVoK6b0EQmMVDl89lAbE7EIlbmRRZjo7KG2KocDI0ZmWNBWrOBRvjjQPzhe0IvSXiGAOIpJ7IP7vg4Dh0mVPkSeIm1lT0vNib3rdV4rplnBo/P6xN71e1pqtBVPkaIZFhwmHQYP7vsk1lW8iNip/BgVCDNrrX3f11rPHeJWTnY079pSp4tPGBSTLupdW+pOdjQbK7PYojFtlplFZLXqgIgwcxAEvu9ba8vTnYgUU/fBtqSnYISiUDCS9FT3wTbFRETl8q21vu8HQfBYPWG1AKYSWhWLRd/3ZY5MhbayrSl5qnODKeooPExRn+rcsK0pqa2U776I+L5fLBaVUpCK5SylEouIUiqXyw0NDZUzOEzayvHda/dtb9CTRk+afdsbju9eq604ZfJFZGhoKJfLKaUqipzlthIi4jhONptNpVJz1VoSwZmujdVJVZ1UZ7o2ioDniB2kUqlsNus4ztLUV1aJ52TIZDLMvG7dOhGZDm8mGCstde5H+58D0FLnzsrdaPLw8HAmk1mO+mUBTDOk02mlVGNjoxWZ3mbFJIKjOxsBiKBUfTRtbGwsnU4vU/0KdKNRPoyOjo6n00xUWoCJYAVWUBo7kfp0Oj06OrrkuF8igBHMt5zrKD81fLU/zUSljRATuEz9LX98ZGREKTXPjsDI6gDUe+QpGEF5q2YFtZ5697u7n/+aVkzhXM1caIWJTt9Mv3/5bn1SzWnECBIK9R6tJIAARDAG3beDoZw0JKnGJTtznwRgQtKhI5f6r/RPuEx6pkBtxWX6YWDi2KV+T3Fpmyl4vCk1LjUk6V5Ozt4OjAHRoqrCopJYACF8fHOy+8/wQKvzVru3s1E5hGwoWqDosesdJhC98cWdK+9sfaWlZvrgj15+8nOvX+wDwVUUhaIIDOAy6jwKLW6M6K/6wu//1tm8hUcrfwqpBE2EcvGP4GJf2NGs3m73Xn3WWZOgnJaimcpXh3Jaus73Xj2ydcfaqigfHKZbI4Wu8715beGwsRI5sMpBlUsPC/L1YPhlX3A9ZaAFLqkEmdW4kRkBEThBRnDtnr52T7evUW9udrs2uq3PcORvseImeLyg95/rvXZ066b6BICBzORr53rHC9pLqKBgAdS6ZIG/svbbgeCbgXAwYwBE0m2FSVxZHYjiFQB7BODOuP2wp/jJb8GBVvfw827kdWNFeWooE3R29/a8tw1AZ3fv/Uygkmr6gLo+rE//Hvzoh7mCQFFkrVLpUx3kMv7oZgIBxgKBcJJcxuTUVSS6Pb68uQ5AT//Ek3umoMqlQigIBS4phgWWUwyWVYkjSUTgJBl5oj7yA1c7PYNZAFx6SyYUQgFhCdGy8gClcUXArHuktcIuRy+z7w1YAekrBjCNMZ+L4i9zMUAMEAPEADFADBADxAAxQAwQA8QAMcD/cfwDZCQBw3PimKAAAAAASUVORK5CYII=">
+<link rel="preconnect" href="https://www.youtube.com">
+<link rel="preconnect" href="https://www.youtube-nocookie.com">
+<link rel="preconnect" href="https://i.ytimg.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
@@ -201,7 +204,7 @@ const CONFIG = {
   const vbg = $("#video-bg");
   const saveData = navigator.connection && navigator.connection.saveData;
   if (!reduceMotion && !saveData && CONFIG.videoId) {
-    let player, timer, showT, shown = false, jumped = false, started = false, fellBack = false, kicks = 0;
+    let player, timer, started = false, fellBack = false, kicks = 0;
     const show = (on) => vbg.classList.toggle("ready", on);
     const nudge = () => {
       try { if (player && player.getPlayerState && player.getPlayerState() !== 1) player.playVideo(); } catch (e) {}
@@ -224,7 +227,7 @@ const CONFIG = {
       f.setAttribute("allow", "autoplay; encrypted-media");
       f.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
       f.tabIndex = -1;
-      f.addEventListener("load", () => setTimeout(() => show(true), 4500));
+      f.addEventListener("load", () => setTimeout(() => show(true), 1500));
       f.src = "https://www.youtube-nocookie.com/embed/" + CONFIG.videoId + "?" + new URLSearchParams({
         autoplay: 1, mute: 1, loop: 1, playlist: CONFIG.videoId, controls: 0, modestbranding: 1,
         playsinline: 1, rel: 0, iv_load_policy: 3, disablekb: 1, fs: 0
@@ -245,20 +248,8 @@ const CONFIG = {
           onReady: (e) => { e.target.mute(); e.target.playVideo(); },
           onStateChange: (e) => {
             const S = YT.PlayerState;
-            if (e.data === S.PLAYING) {
-              // start from a random point of the trailer (once per visit)
-              if (!jumped) {
-                jumped = true;
-                const d = e.target.getDuration();
-                if (d > 30) e.target.seekTo(Math.random() * (d - 20), true);
-              }
-              started = true; watchLoop();
-              // YouTube flashes its own pause button for the first seconds: reveal the video only after it is gone
-              if (shown) show(true);
-              else { clearTimeout(showT); showT = setTimeout(() => { shown = true; show(true); }, 3600); }
-            }
+            if (e.data === S.PLAYING) { started = true; show(true); watchLoop(); }
             else if (e.data !== S.BUFFERING) {
-              shown = false; clearTimeout(showT);
               show(false); clearInterval(timer);
               if (e.data === S.ENDED) e.target.seekTo(0, true);
               e.target.playVideo();
