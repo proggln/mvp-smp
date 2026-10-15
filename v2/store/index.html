@@ -132,6 +132,30 @@ button{font:inherit}
 .buy svg{width:18px;height:18px}
 .buy:hover{transform:translateY(-1px);background:linear-gradient(180deg,#45b6f7,#0a8ee0);box-shadow:0 10px 28px rgba(0,129,204,.6)}
 .buy[disabled]{cursor:not-allowed;color:#b9cbd9;background:rgba(255,255,255,.08);box-shadow:none;transform:none}
+
+.tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:26px;animation:rise .9s cubic-bezier(.2,.8,.2,1) .18s both}
+.tab{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(6,16,28,.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#cfe3f1;font-family:inherit;font-size:.92rem;font-weight:600;cursor:pointer;transition:background .2s,border-color .2s,color .2s,transform .15s}
+.tab svg{width:17px;height:17px}
+.tab:hover{transform:translateY(-1px);border-color:rgba(111,208,255,.55);color:#fff}
+.tab[aria-selected="true"]{color:#fff;border-color:transparent;background:linear-gradient(180deg,#22a6f2,#0081cc);box-shadow:0 6px 22px rgba(0,129,204,.45),inset 0 1px 0 rgba(255,255,255,.3)}
+.hero-wrap{width:100%}
+.hero-card{position:relative;display:grid;grid-template-columns:1.05fr 1fr;gap:0;margin-bottom:20px;border-radius:26px;background:linear-gradient(180deg,rgba(14,34,56,.82),rgba(5,14,26,.86));backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 24px 70px rgba(0,129,204,.28);animation:rise .9s cubic-bezier(.2,.8,.2,1) .25s both}
+.hero-card>.ring{z-index:2}
+.hero-art{display:grid;place-items:center;border-radius:26px 0 0 26px;background:#0081cc;min-height:220px;overflow:hidden}
+.hero-art img{display:block;width:100%;height:100%;object-fit:contain}
+.hero-body{display:flex;flex-direction:column;gap:14px;padding:26px 28px}
+.hero-body h2{font:800 1.7rem/1.1 var(--font-head)}
+.flag{display:inline-block;align-self:flex-start;padding:5px 10px;border-radius:999px;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:rgba(0,129,204,.35);border:1px solid rgba(111,208,255,.5)}
+.grid{width:100%;display:grid;grid-template-columns:repeat(auto-fill,minmax(236px,1fr));gap:16px;animation:rise .9s cubic-bezier(.2,.8,.2,1) .3s both}
+.card{animation:pop .4s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0) * 40ms)}
+@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+.chip{position:absolute;right:16px;top:16px;padding:5px 10px;border-radius:999px;font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#031018;background:linear-gradient(180deg,#9be0ff,#4cc3ff);box-shadow:0 4px 14px rgba(76,195,255,.4)}
+.amount{position:relative;font:800 1.55rem/1.1 var(--font-head)}
+.amount small{display:block;margin-top:3px;font-size:.78rem;font-weight:600;color:var(--muted)}
+.steps{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:34px}
+.steps li{display:flex;align-items:center;gap:10px;padding:10px 16px 10px 10px;border-radius:999px;background:rgba(6,16,28,.55);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#d7e6f2;font-size:.9rem}
+.steps b{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:linear-gradient(180deg,#22a6f2,#0081cc);color:#fff;font-size:.82rem}
+@media (max-width:760px){.hero-card{grid-template-columns:1fr}.hero-art{border-radius:26px 26px 0 0;min-height:0;aspect-ratio:960/250}}
 .note{margin-top:20px;font-size:.85rem;color:#cfe3f1;text-shadow:0 1px 8px rgba(0,0,0,.85);text-align:center}
 .store .legal{margin-top:auto;padding-top:34px}
 
@@ -186,10 +210,17 @@ button{font:inherit}
 <main class="store" id="store">
   <header class="store-head">
     <h1>Store</h1>
-    <p>Support the server and unlock in-game extras.</p>
+    <p>Support MVP SMP and unlock ranks, keys, coins and cosmetics.</p>
   </header>
+  <div class="tabs" id="tabs" role="tablist" aria-label="Store categories"></div>
+  <section class="hero-wrap" id="hero"></section>
   <div class="grid" id="grid" aria-live="polite"></div>
-  <p class="note" id="note" hidden>Checkout isn't connected yet: these items can't be bought right now.</p>
+  <ol class="steps" aria-label="How it works">
+    <li><b>1</b><span>Pick an item</span></li>
+    <li><b>2</b><span>Pay at checkout</span></li>
+    <li><b>3</b><span>Join and enjoy</span></li>
+  </ol>
+  <p class="note" id="note" hidden>Checkout isn't connected yet: items can't be bought right now.</p>
   <p class="legal">MVP SMP is not an official Minecraft product and is not approved by or associated with Mojang or Microsoft. Purchases are for the server only.</p>
 </main>
 
@@ -205,15 +236,45 @@ const IMAGES = {
 const CONFIG = {
   serverIP: "play.mvpsmp.net",                    // example IP: replace with the real server address
   discordUrl: "https://discord.gg/CWTBxgBdr",     // Discord invite
-  // STORE ITEMS: example names. Replace name / price / perks and paste a checkout link for each item.
-  // checkout = link to your payment page (Tebex, Stripe Payment Link, PayPal...). Empty = shows "Coming soon".
-  // icon: crown | star | gem | bolt | shield | heart     color: any CSS color for the card accent
-  // image (optional): "banner" or "stamp" replaces the icon tile with your brand artwork
+  currency: "€",
+  // STORE ITEMS: ready-made EXAMPLES for a Minecraft SMP. Edit names, prices and perks to match your server,
+  // and paste a checkout link per item (Tebex, Stripe Payment Link, PayPal...). Empty checkout = "Coming soon".
+  // cat: ranks | keys | coins | cosmetics | extras   icon: see ICONS in the script   color: card accent
+  // image: "banner" or "stamp" (your brand artwork)   featured: true = big card on top   chip: small badge text
   products: [
-    { name: "VIP",  icon: "star",  color: "#4cc3ff", price: "", perks: [], checkout: "" },
-    { name: "MVP",  icon: "crown", color: "#2ea2ea", price: "", perks: [], checkout: "" },
-    { name: "MVP+", image: "banner", color: "#0081cc", price: "", perks: [], checkout: "" },
-    { name: "OG",   image: "stamp",  color: "#7c8cff", price: "", perks: [], checkout: "" }
+    // Ranks
+    { cat: "ranks", name: "VIP",  icon: "star",  color: "#4cc3ff", price: 4.99,  perks: ["[VIP] chat prefix", "2 extra homes", "Daily VIP kit", "Priority join queue"], checkout: "" },
+    { cat: "ranks", name: "MVP",  icon: "crown", color: "#2ea2ea", price: 9.99,  perks: ["Everything in VIP", "[MVP] prefix + name color", "5 extra homes", "Daily MVP kit"], checkout: "" },
+    { cat: "ranks", name: "MVP+", image: "banner", color: "#0081cc", price: 19.99, featured: true, chip: "Top rank",
+      perks: ["Everything in MVP", "Animated [MVP+] prefix", "10 extra homes", "Exclusive particle trail", "Private vault"], checkout: "" },
+    { cat: "ranks", name: "OG",   image: "stamp",  color: "#7c8cff", price: 29.99, perks: ["Everything in MVP+", "OG tag in chat", "OG role on Discord"], checkout: "" },
+    // Crate keys
+    { cat: "keys", name: "Common Keys ×5",    icon: "key",  color: "#9fb4c4", price: 2.99, perks: ["5 Common Crate keys"], checkout: "" },
+    { cat: "keys", name: "Rare Keys ×5",      icon: "key",  color: "#4cc3ff", price: 5.99, perks: ["5 Rare Crate keys"], checkout: "" },
+    { cat: "keys", name: "Epic Keys ×3",      icon: "chest", color: "#a06bff", price: 7.99, perks: ["3 Epic Crate keys"], checkout: "" },
+    { cat: "keys", name: "Legendary Key",     icon: "chest", color: "#ffb347", price: 4.99, perks: ["1 Legendary Crate key"], checkout: "" },
+    // MVP Coins
+    { cat: "coins", name: "1,000 Coins",  icon: "coin", color: "#ffc94d", price: 1.99,  amount: "1,000",  perks: ["Starter pack"], checkout: "" },
+    { cat: "coins", name: "5,000 Coins",  icon: "coin", color: "#ffc94d", price: 8.99,  amount: "5,000",  chip: "+10% bonus",  perks: ["500 bonus coins"], checkout: "" },
+    { cat: "coins", name: "10,000 Coins", icon: "coin", color: "#ffc94d", price: 15.99, amount: "10,000", chip: "+20% bonus",  perks: ["2,000 bonus coins"], checkout: "" },
+    { cat: "coins", name: "25,000 Coins", icon: "coin", color: "#ffc94d", price: 34.99, amount: "25,000", chip: "Best value", perks: ["7,500 bonus coins"], checkout: "" },
+    // Cosmetics
+    { cat: "cosmetics", name: "Particle Trail", icon: "sparkle", color: "#7c8cff", price: 3.99, perks: ["Particles follow you around", "Choose from several styles"], checkout: "" },
+    { cat: "cosmetics", name: "Custom Chat Tag", icon: "tag",    color: "#4cc3ff", price: 2.99, perks: ["Your own tag next to your name"], checkout: "" },
+    { cat: "cosmetics", name: "Name Color",      icon: "wand",   color: "#ff7ab8", price: 1.99, perks: ["Colored name in chat and tab"], checkout: "" },
+    { cat: "cosmetics", name: "Pet Pack",        icon: "paw",    color: "#6fe3a6", price: 4.99, perks: ["Cosmetic pets that follow you"], checkout: "" },
+    // Extras
+    { cat: "extras", name: "Extra Claim Blocks", icon: "flag",   color: "#2ea2ea", price: 2.49, perks: ["+500 claim blocks"], checkout: "" },
+    { cat: "extras", name: "Extra Homes",        icon: "home",   color: "#4cc3ff", price: 1.99, perks: ["+3 homes"], checkout: "" },
+    { cat: "extras", name: "Unban",              icon: "shield", color: "#6fe3a6", price: 14.99, perks: ["Request to lift a ban", "Rule-breaking bans reviewed by staff"], checkout: "" }
+  ],
+  categories: [
+    { id: "all", label: "All", icon: "grid" },
+    { id: "ranks", label: "Ranks", icon: "crown" },
+    { id: "keys", label: "Crate Keys", icon: "key" },
+    { id: "coins", label: "Coins", icon: "coin" },
+    { id: "cosmetics", label: "Cosmetics", icon: "sparkle" },
+    { id: "extras", label: "Extras", icon: "flag" }
   ]
 };
 
@@ -227,15 +288,27 @@ const CONFIG = {
   /* ---------- Apply config ---------- */
   $$("[data-discord]").forEach((a) => a.setAttribute("href", CONFIG.discordUrl));
 
-  /* ---------- Store items ---------- */
+  /* ---------- Store ---------- */
   const NS = "http://www.w3.org/2000/svg";
+  // solid icons are filled, the rest are outlines
+  const SOLID = { crown: 1, star: 1, bolt: 1, coin: 0 };
   const ICONS = {
     crown: "M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5L3 8z",
     star: "M12 2.8l2.7 5.8 6.3.8-4.6 4.4 1.2 6.3L12 17l-5.6 3.1 1.2-6.3L3 9.4l6.3-.8L12 2.8z",
     gem: "M7 3h10l4 5-9 13L3 8l4-5zm0 0l5 5 5-5M3 8h18",
     bolt: "M13 2L4 14h6l-1 8 9-12h-6l1-8z",
     shield: "M12 2.5l8 3v6c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10v-6l8-3z",
-    heart: "M12 21s-8-5.2-8-11a4.6 4.6 0 0 1 8-3 4.6 4.6 0 0 1 8 3c0 5.8-8 11-8 11z"
+    heart: "M12 21s-8-5.2-8-11a4.6 4.6 0 0 1 8-3 4.6 4.6 0 0 1 8 3c0 5.8-8 11-8 11z",
+    key: "M14.5 9.5a4.5 4.5 0 1 1-1.3-3.2L21 14v3h-3v-2h-2v-2h-2l-2.2-2.2M7.5 9.5h.01",
+    chest: "M3 10h18v10H3zM3 10a9 6 0 0 1 18 0M12 13v3M3 14h18",
+    coin: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 7v10M9.5 9.5c0-1 1-1.5 2.5-1.5s2.5.6 2.5 1.7c0 2.3-5 1.2-5 3.6 0 1.1 1 1.7 2.5 1.7s2.5-.6 2.5-1.5",
+    sparkle: "M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3zM19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15z",
+    tag: "M3 12V4h8l10 10-8 8L3 12zM7.5 8.5h.01",
+    wand: "M4 20L15 9M14 4l1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2zM19 11l.7 1.3 1.3.7-1.3.7-.7 1.3-.7-1.3L17 13l1.3-.7.7-1.3z",
+    paw: "M12 13c-2.5 0-5 2-5 4.2 0 1.4 1.2 2.3 2.7 2.3 1 0 1.6-.4 2.3-.4s1.3.4 2.3.4c1.5 0 2.7-.9 2.7-2.3C17 15 14.5 13 12 13zM6.5 11a1.6 2 0 1 0 0-.01zM10 7.5a1.6 2 0 1 0 0-.01zM14 7.5a1.6 2 0 1 0 0-.01zM17.5 11a1.6 2 0 1 0 0-.01z",
+    flag: "M5 21V4M5 4h11l-2 4 2 4H5",
+    home: "M3 11l9-8 9 8M5 10v10h14V10M10 20v-6h4v6",
+    grid: "M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"
   };
   const svg = (d, fill) => {
     const s = document.createElementNS(NS, "svg");
@@ -243,46 +316,89 @@ const CONFIG = {
     const p = document.createElementNS(NS, "path");
     p.setAttribute("d", d);
     if (fill) p.setAttribute("fill", "currentColor");
-    else { p.setAttribute("fill", "none"); p.setAttribute("stroke", "currentColor"); p.setAttribute("stroke-width", "2.4"); p.setAttribute("stroke-linecap", "round"); p.setAttribute("stroke-linejoin", "round"); }
+    else { p.setAttribute("fill", "none"); p.setAttribute("stroke", "currentColor"); p.setAttribute("stroke-width", "2.2"); p.setAttribute("stroke-linecap", "round"); p.setAttribute("stroke-linejoin", "round"); }
     s.appendChild(p); return s;
   };
+  const icon = (name) => svg(ICONS[name] || ICONS.star, !!SOLID[name]);
   const CHECK = "M5 12.5l4.5 4.5L19 7.5", CART = "M3 4h2l2.4 11h10.4l2-8H6.2M9 20h.01M17 20h.01";
-  const grid = $("#grid");
+  const hero = $("#hero"), grid = $("#grid"), tabsEl = $("#tabs");
   let anyOff = false;
-  CONFIG.products.forEach((p) => {
-    const card = document.createElement("article");
-    card.className = "card";
-    if (p.color) card.style.setProperty("--tc", p.color);
-    let tile;
-    if (p.image && IMAGES[p.image]) {
-      tile = document.createElement("img"); tile.src = IMAGES[p.image]; tile.alt = p.name + " artwork";
-      tile.className = p.image === "banner" ? "art banner" : "art stamp";
-      tile.decoding = "async";
-    } else {
-      tile = document.createElement("div"); tile.className = "tile";
-      tile.appendChild(svg(ICONS[p.icon] || ICONS.star, p.icon !== "gem" && p.icon !== "heart" ? true : false));
-    }
-    const h = document.createElement("h2"); h.textContent = p.name;
-    const price = document.createElement("div"); price.className = "price";
-    if (p.price) price.textContent = p.price; else { const sm = document.createElement("small"); sm.textContent = "Price coming soon"; price.appendChild(sm); }
-    const ul = document.createElement("ul"); ul.className = "perks";
-    const has = p.perks && p.perks.length;
+  const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+  const priceText = (p) => (p.price != null && p.price !== "" ? (typeof p.price === "number" ? CONFIG.currency + p.price.toFixed(2) : String(p.price)) : "");
+
+  function perksList(p) {
+    const ul = el("ul", "perks"), has = p.perks && p.perks.length;
     (has ? p.perks : ["Details coming soon"]).forEach((x) => {
-      const li = document.createElement("li");
-      li.appendChild(svg(CHECK, false));
-      li.appendChild(document.createTextNode(x));
+      const li = el("li"); li.appendChild(svg(CHECK, false)); li.appendChild(document.createTextNode(x));
       if (!has) li.className = "soon";
       ul.appendChild(li);
     });
-    const buy = document.createElement("button"); buy.type = "button"; buy.className = "buy";
+    return ul;
+  }
+  function buyButton(p) {
+    const buy = el("button", "buy"); buy.type = "button";
     if (p.checkout) {
       buy.appendChild(svg(CART, false)); buy.appendChild(document.createTextNode("Buy"));
       buy.addEventListener("click", () => window.open(p.checkout, "_blank", "noopener"));
     } else { buy.textContent = "Coming soon"; buy.disabled = true; anyOff = true; }
-    card.append(tile, h, price, ul, buy);
-    grid.appendChild(card);
+    return buy;
+  }
+  function priceEl(p) {
+    const price = el("div", "price"), txt = priceText(p);
+    if (txt) price.textContent = txt; else price.appendChild(el("small", "", "Price coming soon"));
+    return price;
+  }
+  function artFor(p) {
+    if (p.image && IMAGES[p.image]) {
+      const img = el("img", "art " + (p.image === "banner" ? "banner" : "stamp"));
+      img.src = IMAGES[p.image]; img.alt = p.name + " artwork"; img.decoding = "async";
+      return img;
+    }
+    const tile = el("div", "tile"); tile.appendChild(icon(p.icon)); return tile;
+  }
+  function card(p, i) {
+    const c = el("article", "card");
+    c.style.setProperty("--i", i);
+    if (p.color) c.style.setProperty("--tc", p.color);
+    if (p.chip) c.appendChild(el("span", "chip", p.chip));
+    c.appendChild(artFor(p));
+    if (p.amount) { const a = el("div", "amount", p.amount); a.appendChild(el("small", "", "MVP Coins")); c.appendChild(a); }
+    else c.appendChild(el("h2", "", p.name));
+    c.append(priceEl(p), perksList(p), buyButton(p));
+    return c;
+  }
+  function heroCard(p) {
+    const c = el("article", "hero-card");
+    if (p.color) c.style.setProperty("--tc", p.color);
+    c.appendChild(el("span", "ring")).setAttribute("aria-hidden", "true");
+    const art = el("div", "hero-art");
+    const img = el("img"); img.src = IMAGES[p.image || "banner"]; img.alt = p.name + " rank"; art.appendChild(img);
+    const body = el("div", "hero-body");
+    if (p.chip) body.appendChild(el("span", "flag", p.chip));
+    body.append(el("h2", "", p.name), priceEl(p), perksList(p), buyButton(p));
+    c.append(art, body);
+    return c;
+  }
+  function render(cat) {
+    anyOff = false;
+    hero.textContent = ""; grid.textContent = "";
+    const items = CONFIG.products.filter((p) => cat === "all" || p.cat === cat);
+    const feat = items.find((p) => p.featured && (cat === "all" || cat === "ranks"));
+    if (feat) hero.appendChild(heroCard(feat));
+    items.filter((p) => p !== feat).forEach((p, i) => grid.appendChild(card(p, i)));
+    $("#note").hidden = !anyOff;
+  }
+  CONFIG.categories.forEach((c, i) => {
+    const b = el("button", "tab"); b.type = "button"; b.setAttribute("role", "tab");
+    b.setAttribute("aria-selected", i === 0 ? "true" : "false"); b.dataset.cat = c.id;
+    b.appendChild(icon(c.icon)); b.appendChild(document.createTextNode(c.label));
+    b.addEventListener("click", () => {
+      $$(".tab", tabsEl).forEach((x) => x.setAttribute("aria-selected", String(x === b)));
+      render(c.id);
+    });
+    tabsEl.appendChild(b);
   });
-  if (anyOff) $("#note").hidden = false;
+  render("all");
 
   /* ---------- Extras: time-of-day tint, pixel cursor trail, logo easter egg ---------- */
   (function () {
