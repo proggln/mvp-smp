@@ -190,7 +190,7 @@ const CONFIG = {
   const vbg = $("#video-bg");
   const saveData = navigator.connection && navigator.connection.saveData;
   if (!reduceMotion && !saveData && CONFIG.videoId) {
-    let player, timer, started = false, fellBack = false, kicks = 0;
+    let player, timer, showT, shown = false, started = false, fellBack = false, kicks = 0;
     const show = (on) => vbg.classList.toggle("ready", on);
     const nudge = () => {
       try { if (player && player.getPlayerState && player.getPlayerState() !== 1) player.playVideo(); } catch (e) {}
@@ -213,7 +213,7 @@ const CONFIG = {
       f.setAttribute("allow", "autoplay; encrypted-media");
       f.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
       f.tabIndex = -1;
-      f.addEventListener("load", () => setTimeout(() => show(true), 1500));
+      f.addEventListener("load", () => setTimeout(() => show(true), 4500));
       f.src = "https://www.youtube-nocookie.com/embed/" + CONFIG.videoId + "?" + new URLSearchParams({
         autoplay: 1, mute: 1, loop: 1, playlist: CONFIG.videoId, controls: 0, modestbranding: 1,
         playsinline: 1, rel: 0, iv_load_policy: 3, disablekb: 1, fs: 0
@@ -234,8 +234,14 @@ const CONFIG = {
           onReady: (e) => { e.target.mute(); e.target.playVideo(); },
           onStateChange: (e) => {
             const S = YT.PlayerState;
-            if (e.data === S.PLAYING) { started = true; show(true); watchLoop(); }
+            if (e.data === S.PLAYING) {
+              started = true; watchLoop();
+              // YouTube flashes its own pause button for the first seconds: reveal the video only after it is gone
+              if (shown) show(true);
+              else { clearTimeout(showT); showT = setTimeout(() => { shown = true; show(true); }, 3600); }
+            }
             else if (e.data !== S.BUFFERING) {
+              shown = false; clearTimeout(showT);
               show(false); clearInterval(timer);
               if (e.data === S.ENDED) e.target.seekTo(0, true);
               e.target.playVideo();
