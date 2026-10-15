@@ -192,7 +192,7 @@ const CONFIG = {
   const vbg = $("#video-bg");
   const saveData = navigator.connection && navigator.connection.saveData;
   if (!reduceMotion && !saveData && CONFIG.videoId) {
-    let player, timer, showT, shown = false, started = false, fellBack = false, kicks = 0;
+    let player, timer, showT, shown = false, jumped = false, started = false, fellBack = false, kicks = 0;
     const show = (on) => vbg.classList.toggle("ready", on);
     const nudge = () => {
       try { if (player && player.getPlayerState && player.getPlayerState() !== 1) player.playVideo(); } catch (e) {}
@@ -237,6 +237,12 @@ const CONFIG = {
           onStateChange: (e) => {
             const S = YT.PlayerState;
             if (e.data === S.PLAYING) {
+              // start from a random point of the trailer (once per visit)
+              if (!jumped) {
+                jumped = true;
+                const d = e.target.getDuration();
+                if (d > 30) e.target.seekTo(Math.random() * (d - 20), true);
+              }
               started = true; watchLoop();
               // YouTube flashes its own pause button for the first seconds: reveal the video only after it is gone
               if (shown) show(true);
