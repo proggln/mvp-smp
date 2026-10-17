@@ -151,6 +151,24 @@ button{font:inherit}
 .buy{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:18px 22px;border:0;border-radius:16px;font-family:inherit;font-weight:700;font-size:1.08rem;line-height:1;color:#fff;cursor:pointer;background:linear-gradient(180deg,#22a6f2,#0081cc);box-shadow:0 6px 22px rgba(0,129,204,.4),inset 0 1px 0 rgba(255,255,255,.3);transition:transform .15s,box-shadow .2s,background .15s}
 .buy svg{width:18px;height:18px}
 .buy:hover{transform:translateY(-1px);background:linear-gradient(180deg,#45b6f7,#0a8ee0);box-shadow:0 10px 28px rgba(0,129,204,.6)}
+
+/* ---- purchase window ---- */
+.bm{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(2,8,16,.72);backdrop-filter:blur(6px)}
+.bm.open{display:flex}
+.bm-box{position:relative;width:min(460px,100%);max-height:92vh;overflow:auto;padding:26px;border-radius:24px;background:linear-gradient(180deg,#0e2238,#06101c);border:1px solid rgba(255,255,255,.12);box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.bm-x{position:absolute;right:14px;top:12px;border:0;background:none;color:#9fb4c4;font-size:1.6rem;cursor:pointer}
+.bm h3{font:800 1.3rem/1.2 var(--font-head,inherit);margin-bottom:4px}
+.bm .bm-sub{color:#9fb4c4;margin-bottom:18px;font-size:.95rem}
+.bm label{display:block;font-size:.85rem;color:#9fb4c4;margin-bottom:6px}
+.bm input{width:100%;padding:14px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:rgba(3,10,20,.7);color:#fff;font:600 1.05rem inherit;outline:none}
+.bm input:focus{border-color:#4cc3ff}
+.bm .bm-btn{width:100%;margin-top:14px}
+.bm .bm-code{margin:14px 0;padding:16px;border-radius:16px;text-align:center;background:rgba(76,195,255,.1);border:1px dashed rgba(76,195,255,.5);font:800 2rem/1 monospace;letter-spacing:.2em;color:#9be0ff;user-select:all}
+.bm .bm-cmd{padding:12px 14px;border-radius:12px;background:rgba(3,10,20,.7);font-family:monospace;color:#ffd66b;word-break:break-all}
+.bm .bm-msg{margin-top:12px;font-size:.92rem;color:#ffb3b3;min-height:1.2em}
+.bm .bm-ok{color:#8ff0a4}
+.bm .bm-sum{display:flex;justify-content:space-between;gap:10px;padding:14px 16px;margin-bottom:14px;border-radius:14px;background:rgba(255,255,255,.05)}
+.bm ol{padding-left:20px;color:#cfe3f1;line-height:1.7;font-size:.95rem}
 .buy[disabled]{cursor:not-allowed;color:#b9cbd9;background:rgba(255,255,255,.08);box-shadow:none;transform:none}
 
 .tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:26px;animation:rise .9s cubic-bezier(.2,.8,.2,1) .18s both}
@@ -260,28 +278,30 @@ const CONFIG = {
   serverIP: "play.mvpsmp.net",                    // example IP: replace with the real server address
   discordUrl: "https://discord.gg/CWTBxgBdr",     // Discord invite
   currency: "€",
+  // Store backend (Cloudflare Worker). Empty = the Buy buttons stay "Coming soon".
+  api: "",
   // STORE ITEMS: ready-made EXAMPLES for a Minecraft SMP. Edit names, prices and perks to match your server,
   // and paste a checkout link per item (Tebex, Stripe Payment Link, PayPal...). Empty checkout = "Coming soon".
   // cat: ranks | keys | coins | cosmetics | extras   icon: see ICONS in the script   color: card accent
   // image: "banner" or "stamp" (your brand artwork)   featured: true = big card on top   chip: small badge text
   products: [
     // Ranks
-    { cat: "ranks", name: "VIP",  image: "vip", color: "#f2c94c", price: 1.99, period: "/ month", chip: "Starter",
+    { cat: "ranks", id: "vip", name: "VIP",  image: "vip", color: "#f2c94c", price: 1.99, period: "/ month", chip: "Starter",
       perks: ["[VIP] gold prefix in chat & tab", "5 homes", "+10% income from /jobs", "+10% daily reward", "Gift: 3x Small Protection Blocks (3 days of upkeep included)"], checkout: "" },
-    { cat: "ranks", name: "MVP",  image: "mvp", color: "#2ea2ea", price: 4.99, was: 7.99, period: "/ month",
+    { cat: "ranks", id: "mvp", name: "MVP",  image: "mvp", color: "#2ea2ea", price: 4.99, was: 7.99, period: "/ month",
       perks: ["[MVP] blue prefix in chat & tab", "12 homes", "+25% income from /jobs", "+25% daily reward", "Gift: 3x Large Protection Blocks (3 days of upkeep included)"], checkout: "" },
-    { cat: "ranks", name: "MVP+", image: "mvpplus", color: "#8a5cff", price: 6.99, was: 10.99, period: "/ month", best: true, chip: "★ Best Value",
+    { cat: "ranks", id: "mvp-plus", name: "MVP+", image: "mvpplus", color: "#8a5cff", price: 6.99, was: 10.99, period: "/ month", best: true, chip: "★ Best Value",
       perks: ["[MVP+] pink prefix, the brightest in chat & tab", "20 homes", "+40% income from /jobs", "+40% daily reward", "Gift: 5x Large Protection Blocks (3 days of upkeep included)", "Special join message"], checkout: "" },
     // Crate keys (bundles: the more you take, the cheaper a key; prices follow the in-game coin value of each key)
-    { cat: "keys", name: "Common Keys ×25",    icon: "key_common",  color: "#9fb4c4", price: 0.99, perks: ["25 Common Crate keys", "Just 4 cents per key"], checkout: "" },
-    { cat: "keys", name: "Rare Keys ×10",      icon: "key_rare",  color: "#4cc3ff", price: 1.49, perks: ["10 Rare Crate keys", "Just 15 cents per key"], checkout: "" },
-    { cat: "keys", name: "Epic Keys ×5",       icon: "key_epic", color: "#a06bff", price: 2.49, chip: "Popular", perks: ["5 Epic Crate keys", "Just 50 cents per key"], checkout: "" },
-    { cat: "keys", name: "Legendary Keys ×3",  icon: "key_legendary", color: "#ffb347", price: 4.99, was: 5.97, chip: "Best Value", perks: ["3 Legendary Crate keys", "Save 16% (a single key is €1.99)"], checkout: "" },
+    { cat: "keys", id: "keys-common-25", name: "Common Keys ×25",    icon: "key_common",  color: "#9fb4c4", price: 0.99, perks: ["25 Common Crate keys", "Just 4 cents per key"], checkout: "" },
+    { cat: "keys", id: "keys-rare-10", name: "Rare Keys ×10",      icon: "key_rare",  color: "#4cc3ff", price: 1.49, perks: ["10 Rare Crate keys", "Just 15 cents per key"], checkout: "" },
+    { cat: "keys", id: "keys-epic-5", name: "Epic Keys ×5",       icon: "key_epic", color: "#a06bff", price: 2.49, chip: "Popular", perks: ["5 Epic Crate keys", "Just 50 cents per key"], checkout: "" },
+    { cat: "keys", id: "keys-legendary-3", name: "Legendary Keys ×3",  icon: "key_legendary", color: "#ffb347", price: 4.99, was: 5.97, chip: "Best Value", perks: ["3 Legendary Crate keys", "Save 16% (a single key is €1.99)"], checkout: "" },
     // MVP Coins (the bigger the pack, the more bonus coins)
-    { cat: "coins", name: "1,000 Coins",  icon: "coin", color: "#ffc94d", price: 0.99,  amount: "1,000",  chip: "Starter", perks: ["1,000 coins, no bonus"], checkout: "" },
-    { cat: "coins", name: "3,300 Coins",  icon: "coin", color: "#ffc94d", price: 2.49,  amount: "3,300",  chip: "+10% bonus", perks: ["3,300 coins in total", "3,000 + 300 free bonus (+10%)"], checkout: "" },
-    { cat: "coins", name: "8,400 Coins",  icon: "coin", color: "#ffc94d", price: 4.99,  amount: "8,400",  chip: "Popular", perks: ["8,400 coins in total", "7,000 + 1,400 free bonus (+20%)"], checkout: "" },
-    { cat: "coins", name: "19,500 Coins", icon: "coin", color: "#ffc94d", price: 9.99,  amount: "19,500", chip: "Best Value", perks: ["19,500 coins in total", "15,000 + 4,500 free bonus (+30%)"], checkout: "" }
+    { cat: "coins", id: "coins-1000", name: "1,000 Coins",  icon: "coin", color: "#ffc94d", price: 0.99,  amount: "1,000",  chip: "Starter", perks: ["1,000 coins, no bonus"], checkout: "" },
+    { cat: "coins", id: "coins-3300", name: "3,300 Coins",  icon: "coin", color: "#ffc94d", price: 2.49,  amount: "3,300",  chip: "+10% bonus", perks: ["3,300 coins in total", "3,000 + 300 free bonus (+10%)"], checkout: "" },
+    { cat: "coins", id: "coins-8400", name: "8,400 Coins",  icon: "coin", color: "#ffc94d", price: 4.99,  amount: "8,400",  chip: "Popular", perks: ["8,400 coins in total", "7,000 + 1,400 free bonus (+20%)"], checkout: "" },
+    { cat: "coins", id: "coins-19500", name: "19,500 Coins", icon: "coin", color: "#ffc94d", price: 9.99,  amount: "19,500", chip: "Best Value", perks: ["19,500 coins in total", "15,000 + 4,500 free bonus (+30%)"], checkout: "" }
   ],
   categories: [
     { id: "all", label: "All", icon: "grid" },
@@ -356,9 +376,95 @@ const CONFIG = {
     });
     return ul;
   }
+
+  // ------------- purchase flow: nick -> /verify in game -> order (no payment yet) -------------
+  const SKEY = "mvpsmp.nick";
+  let bm = null;
+  function api(path, opt) {
+    return fetch(CONFIG.api.replace(/\/+$/, "") + path, opt).then((r) => r.json().then((j) => ({ ok: r.ok, status: r.status, j })));
+  }
+  function openBuy(p) {
+    if (!bm) {
+      bm = el("div", "bm");
+      bm.addEventListener("click", (e) => { if (e.target === bm) closeBuy(); });
+      document.body.appendChild(bm);
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeBuy(); });
+    }
+    bm.classList.add("open");
+    stepNick(p);
+  }
+  let poll = null;
+  function closeBuy() { if (poll) clearInterval(poll); poll = null; if (bm) bm.classList.remove("open"); }
+  function shell(html) {
+    bm.innerHTML = '<div class="bm-box"><button class="bm-x" type="button" aria-label="Close">×</button>' + html + "</div>";
+    bm.querySelector(".bm-x").addEventListener("click", closeBuy);
+    return bm.querySelector(".bm-box");
+  }
+  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  function summary(p) { return '<div class="bm-sum"><b>' + esc(p.name) + '</b><span>' + esc(priceText(p)) + '</span></div>'; }
+  function stepNick(p) {
+    if (poll) clearInterval(poll); poll = null;
+    let saved = ""; try { saved = localStorage.getItem(SKEY) || ""; } catch (e) {}
+    const box = shell('<h3>Your Minecraft nickname</h3><div class="bm-sub">The purchase goes to this player.</div>' + summary(p) +
+      '<label for="bmn">Nickname</label><input id="bmn" maxlength="16" autocomplete="off" spellcheck="false" value="' + esc(saved) + '" placeholder="Steve">' +
+      '<button class="buy bm-btn" type="button">Continue</button><div class="bm-msg"></div>');
+    const inp = box.querySelector("input"), msg = box.querySelector(".bm-msg"), btn = box.querySelector(".bm-btn");
+    const go = () => {
+      const nick = inp.value.trim();
+      if (!/^[A-Za-z0-9_]{3,16}$/.test(nick)) { msg.textContent = "Enter a valid Minecraft nickname (3-16 letters, digits or _)."; return; }
+      btn.disabled = true; msg.textContent = "";
+      api("/api/verify/start", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ nick }) })
+        .then((r) => {
+          if (!r.ok) { msg.textContent = r.j.error === "too_many" ? "Too many attempts. Wait a few minutes." : "Something went wrong. Try again."; btn.disabled = false; return; }
+          try { localStorage.setItem(SKEY, nick); } catch (e) {}
+          stepVerify(p, nick, r.j.code);
+        }).catch(() => { msg.textContent = "Cannot reach the store. Try again later."; btn.disabled = false; });
+    };
+    btn.addEventListener("click", go);
+    inp.addEventListener("keydown", (e) => { if (e.key === "Enter") go(); });
+    inp.focus();
+  }
+  function stepVerify(p, nick, code) {
+    const box = shell('<h3>Confirm it is you</h3><div class="bm-sub">Join the server as <b>' + esc(nick) + '</b> and type this command in the game chat:</div>' +
+      '<div class="bm-code">' + esc(code) + '</div><div class="bm-cmd">/verify ' + esc(code) + '</div>' +
+      '<ol><li>Join <b>' + esc(CONFIG.serverIP) + '</b></li><li>Type the command above</li><li>This window continues by itself</li></ol>' +
+      '<div class="bm-msg">Waiting for confirmation...</div><button class="buy bm-btn" type="button" style="background:rgba(255,255,255,.08);box-shadow:none">Back</button>');
+    box.querySelector(".bm-btn").addEventListener("click", () => stepNick(p));
+    const msg = box.querySelector(".bm-msg");
+    if (poll) clearInterval(poll);
+    poll = setInterval(() => {
+      api("/api/verify/status?code=" + encodeURIComponent(code)).then((r) => {
+        if (r.status === 410 || r.status === 404) { clearInterval(poll); poll = null; msg.textContent = "The code expired. Go back and request a new one."; return; }
+        if (r.j.verified && r.j.token) { clearInterval(poll); poll = null; stepOrder(p, nick, r.j.token); }
+      }).catch(() => {});
+    }, 2500);
+  }
+  function stepOrder(p, nick, token) {
+    const box = shell('<h3>Nickname confirmed</h3><div class="bm-sub bm-ok">Verified: <b>' + esc(nick) + '</b></div>' + summary(p) +
+      '<button class="buy bm-btn" type="button">Place order</button><div class="bm-msg"></div>');
+    const btn = box.querySelector(".bm-btn"), msg = box.querySelector(".bm-msg");
+    btn.addEventListener("click", () => {
+      btn.disabled = true; msg.textContent = "";
+      api("/api/order", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token, product: p.id }) })
+        .then((r) => {
+          if (r.ok) { stepDone(p, nick, r.j); return; }
+          msg.textContent = r.j.error === "payments_disabled" ? "Payments are not open yet. Please come back soon!" :
+            r.j.error === "not_verified" ? "The confirmation expired. Start again." : "Something went wrong. Try again.";
+          btn.disabled = false;
+        }).catch(() => { msg.textContent = "Cannot reach the store. Try again later."; btn.disabled = false; });
+    });
+  }
+  function stepDone(p, nick, j) {
+    shell('<h3>Order #' + esc(j.id) + ' placed</h3><div class="bm-sub bm-ok">' + (j.test ? "Test mode: no payment was taken." : "Thank you!") + '</div>' + summary(p) +
+      '<div class="bm-sub">Stay online as <b>' + esc(nick) + '</b>: your items are delivered in the game within seconds. If you are offline, you get them when you join.</div>' +
+      '<button class="buy bm-btn" type="button">Done</button>').querySelector(".bm-btn").addEventListener("click", closeBuy);
+  }
   function buyButton(p) {
     const buy = el("button", "buy"); buy.type = "button";
-    if (p.checkout) {
+    if (CONFIG.api && p.id) {
+      buy.appendChild(svg(CART, false)); buy.appendChild(document.createTextNode("Buy"));
+      buy.addEventListener("click", () => openBuy(p));
+    } else if (p.checkout) {
       buy.appendChild(svg(CART, false)); buy.appendChild(document.createTextNode("Buy"));
       buy.addEventListener("click", () => window.open(p.checkout, "_blank", "noopener"));
     } else { buy.textContent = "Coming soon"; buy.disabled = true; anyOff = true; }
