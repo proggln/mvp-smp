@@ -36,3 +36,8 @@ Items without a checkout link show "Coming soon". The site is static, so payment
 It is **hidden for now**: no page links to it and it has `noindex, nofollow`, so search engines skip it.
 Open it directly: `https://<username>.github.io/<repo>/v2/wiki/`.
 To make it public later: add a `Wiki` link to the nav of `v2/index.html` and `v2/store/index.html`, and remove the `robots` meta tag.
+
+## Test page (test/)
+
+`test/index.html` is a copy of the main page where the Discord button does nothing (`discordUrl: ""` in its CONFIG).
+Not linked anywhere and marked `noindex`. Open it directly: `https://<username>.github.io/<repo>/test/`.
