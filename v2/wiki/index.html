@@ -55,7 +55,7 @@ p,h1,h2,h3{margin:0}
 
 /* ---------- Pixel icons ---------- */
 .px{display:inline-block;width:48px;height:48px;flex:none;image-rendering:pixelated}
-.px svg{display:block;width:100%;height:100%;filter:drop-shadow(0 3px 0 rgba(0,0,0,.35))}
+.px svg,.px img{display:block;width:100%;height:100%;image-rendering:pixelated;filter:drop-shadow(0 3px 0 rgba(0,0,0,.35))}
 
 /* ---------- Page ---------- */
 .wiki{position:relative;z-index:10;max-width:1040px;margin:0 auto;padding:112px 18px 40px}
@@ -180,7 +180,7 @@ details[open] summary::after{content:"−"}
   <nav class="pick" aria-label="Topics">
     <a href="#start"><i class="px" data-px="portal"></i>Start</a>
     <a href="#coins"><i class="px" data-px="coin"></i>Coins</a>
-    <a href="#claims"><i class="px" data-px="shield"></i>Claims</a>
+    <a href="#claims"><i class="px" data-px="lock"></i>Claims</a>
     <a href="#crates"><i class="px" data-px="chest"></i>Crates</a>
     <a href="#combat"><i class="px" data-px="sword"></i>Combat</a>
     <a href="#bounty"><i class="px" data-px="target"></i>Bounty</a>
@@ -216,7 +216,7 @@ details[open] summary::after{content:"−"}
     <div class="tiles c6">
       <div class="tile"><i class="px" data-px="bag"></i><b>Market</b><code>/shop</code></div>
       <div class="tile"><i class="px" data-px="swap"></i><b>Trade</b><code>/trade</code></div>
-      <div class="tile"><i class="px" data-px="coin"></i><b>Send</b><code>/pay</code></div>
+      <div class="tile"><i class="px" data-px="mail"></i><b>Send</b><code>/pay</code></div>
       <div class="tile"><i class="px" data-px="gem"></i><b>Sell diamonds</b><code>/exchange</code></div>
       <div class="tile"><i class="px" data-px="board"></i><b>Buy orders</b><code>/orders</code></div>
       <div class="tile"><i class="px" data-px="note"></i><b>Banknote</b><code>/withdraw</code></div>
@@ -227,13 +227,13 @@ details[open] summary::after{content:"−"}
 
   <!-- ============ CLAIMS ============ -->
   <section class="sec" id="claims" style="--tc:#0081cc">
-    <div class="sec-head"><i class="px" data-px="shield"></i><div><h2>Claims</h2><p>Protect your base.</p></div></div>
+    <div class="sec-head"><i class="px" data-px="lock"></i><div><h2>Claims</h2><p>Protect your base.</p></div></div>
     <div class="flow">
       <div class="step"><span class="num">1</span><i class="px" data-px="bag"></i><div><b>Buy a block</b><small><code>/protect</code></small></div></div>
       <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       <div class="step"><span class="num">2</span><i class="px" data-px="eye"></i><div><b>Hold it</b><small>Blue = OK, red = no</small></div></div>
       <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      <div class="step"><span class="num">3</span><i class="px" data-px="shield"></i><div><b>Place it</b><small>Land is yours</small></div></div>
+      <div class="step"><span class="num">3</span><i class="px" data-px="lock"></i><div><b>Place it</b><small>Land is yours</small></div></div>
     </div>
 
     <h3 class="label">Sizes</h3>
@@ -244,8 +244,9 @@ details[open] summary::after{content:"−"}
       <div class="size"><div class="area" style="width:96px;height:96px"><i class="px" data-px="house"></i></div><b>Huge</b><small>129×129 · 15,000</small></div>
     </div>
 
-    <div class="note"><i class="px" data-px="clock"></i><span>Pay daily upkeep with <code>/protect deposit</code>. Empty = not protected!</span></div>
-    <div class="cmds"><code>/protect menu</code><code>/protect trust &lt;player&gt;</code><code>/protect claims</code></div>
+    <div class="warn"><i class="px" data-px="warning"></i><span>Pay daily upkeep with <code>/protect deposit</code>. Empty = not protected!</span></div>
+    <div class="note"><i class="px" data-px="people"></i><span>Add friends: <code>/protect trust &lt;player&gt;</code></span></div>
+    <div class="cmds"><code>/protect menu</code><code>/protect claims</code></div>
   </section>
 
   <!-- ============ CRATES ============ -->
@@ -260,10 +261,10 @@ details[open] summary::after{content:"−"}
     </div>
     <h3 class="label">Key price</h3>
     <div class="tiles c4">
-      <div class="tile"><i class="px" data-px="chest" data-skin="common"></i><b>Common</b><span class="big">40</span></div>
-      <div class="tile"><i class="px" data-px="chest" data-skin="rare"></i><b>Rare</b><span class="big blue">150</span></div>
-      <div class="tile"><i class="px" data-px="chest" data-skin="epic"></i><b>Epic</b><span class="big" style="color:#d2b8ff">550</span></div>
-      <div class="tile"><i class="px" data-px="chest" data-skin="legendary"></i><b>Legendary</b><span class="big">2,000</span></div>
+      <div class="tile"><i class="px" data-px="chest"></i><b>Common</b><span class="big">40</span></div>
+      <div class="tile"><i class="px" data-px="chest_rare"></i><b>Rare</b><span class="big blue">150</span></div>
+      <div class="tile"><i class="px" data-px="chest_epic"></i><b>Epic</b><span class="big" style="color:#d2b8ff">550</span></div>
+      <div class="tile"><i class="px" data-px="chest_legendary"></i><b>Legendary</b><span class="big">2,000</span></div>
     </div>
   </section>
 
@@ -275,9 +276,9 @@ details[open] summary::after{content:"−"}
       <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       <div class="step"><i class="px" data-px="nope"></i><div><b>No teleports</b><small><code>/home</code> <code>/tp</code> <code>/lobby</code></small></div></div>
       <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      <div class="step"><i class="px" data-px="clock"></i><div><b>Wait it out</b><small>Then you're free</small></div></div>
+      <div class="step"><i class="px" data-px="ok"></i><div><b>Wait it out</b><small>Then you're free</small></div></div>
     </div>
-    <div class="warn"><i class="px" data-px="skull"></i><span>Log out in combat = you drop all your items</span></div>
+    <div class="warn"><i class="px" data-px="warning"></i><span>Log out in combat = you drop all your items</span></div>
   </section>
 
   <!-- ============ BOUNTY ============ -->
@@ -325,6 +326,32 @@ details[open] summary::after{content:"−"}
 </main>
 
 <script>
+/* ==========================================================
+   ICONS FROM THE MVP RESOURCE PACK (16×16 PNG, same files as in game).
+   Anything not listed here falls back to the drawn icons below.
+   ========================================================== */
+const PACK = {
+"coin": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAo0lEQVR4nGNgGGjAiEtCTkzoPzL/0at3WNWy4NJ4Z5MCiriKH8N/bAahcJA1v7nxCMUAEQ05BhW/BxiuYUJ3AbJmyYAmBsmAJgYGBgaGNzceYbgKxQA5MaH/6JphAN0Q5PDBcAEMPN9Qh5WN0wXkApwGYPMCXgMevXrHqOL3gEFEQ46BgQG7F2AxgRwLFEcjRurCnZAwNWM1AN0gZC/iUjuwAADxCVSzd6Ap7wAAAABJRU5ErkJggg==",
+"chest": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAA3klEQVR4nGNgGGjAiMyRExP6T4ymR6/ewfXBGSdOnP3PwMDAIHK5C6/mN7plDAwMDAwWFsaMDAwMDCzoCq48fI/XAAldVD6GAXeef2JgYGBgmLT5Fop4nq8axAA09SwMDKh+R9a4atNuBgYGBoYwP1e4uE0qRE5OTOj/o1fvGDFcsK/VlYGBgYHBqXo3g7KyMsPdu3dRxN9gcwEyQA4DmGZkcaLDAOZ0dHGsYYAMVCT5GBgYGBgmpZmgS2EFeF2ADRDtAmIBhgE7zz3BqyHeB5XPyMBAfB5AB8h5gmwAAInqQ65lBlm2AAAAAElFTkSuQmCC",
+"chest_rare": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAA0UlEQVR4nGNgGGjAiMyRExP6T4ymR6/ewfXBGdOuf/3PwMDAcPAGK17N9hq/GRgYGBiyNLkZGRgYGFjQFby/ew6/9Rq6KFwMAz49ucHAwMDA8GxZEYq4VFQflIXFAGS/I2usOPiYgYGBgaHDXhYhnh7KANPz6NU7RgwXWM58wcDAwMBwPF2CQUOSi+HG828o4gwMv/F7ATkMYJpRxIkNA5jTMcUJGMAnowGhy7ahS2EFeF2AHRDpAmIBhgFPTmzAr8Mb1QWMDAzE5wF0gJwnyAYAJlJD4OA7SoEAAAAASUVORK5CYII=",
+"chest_epic": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAA50lEQVR4nKWTIQvCQBiGnwMxi4rBYNOgzTRs/gExWw2CwSwmkz/BZjWZxJ9gWBIMGrTIgkF0mFfOoDe227hNfdLHy73vvd/BQQKeLWXSmb8Qni1l1hICoFLKp7rNubnCD1DDdf6ueti5RnOjmQegPBTCs6XM6AfO9705gLY/Zy0hIgHO8wTA8jgJ6b367DO1Q3oGwrsHjfb0AYA1Lfj6iAHK49zcaINF5wxAf12l2IT7LqzrGN9AmYN6I26FIOoNVPWonhBQydUAGLdWsZV1jA3iSdkgLZGA7WVjNHS1Bl/9AZ3gn/iZF0xdTT8tySbeAAAAAElFTkSuQmCC",
+"chest_legendary": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAA9ElEQVR4nGNgIAD+/zrxn5AaigDj/18n/jOyWTAyMDAwyIkJEWXbo1fvGOEGwBj/X1dANL/chV+3uBtEo2gH4/9fJ/6zoMs/v/YNr35JcQSbkc2CEcOAS/d+MDAwMDCk9X1CEZ9VxAcxwBFVPQsDA6rfkTU+vJrGwMDAwCCvPQsu/jAZIicnJvT/0at3mC54uE8BosnpAQMDfwADw8cNKOLogAk9np9f+4YIB6hmDHFkLzCyWTAiewEWBjCno4sjhwHWWNBT4mBgYGBgODGFA6uTkQHeWMAFsMYCNhcQCzAMWLLnA14NpWguICkPoAPkPEE2AAAGk1s/ux+KZQAAAABJRU5ErkJggg==",
+"key": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAlklEQVR4nGNgGPKAEZkjJyb0H8Z+9OodI6ZyHAbAND68mgaXkNeeRZRBTDDGw5dvUSSQDcPrAjkxof/IihlFOxj/v66AewXmElyABcU00Q5GdEMeHlfCqVne8h6qAf9fV/xHd8Hzs1/we4GBARKI2PyM7vwTU8QYLHJeobCZcClGjgUYhskhs0lKBzD5R6/eMSKrHekAANVuShCjp8w0AAAAAElFTkSuQmCC",
+"gift": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAwElEQVR4nGNgQAISQgr/GQgAnGokhBT+//9j8R+fIQTVICtAVgTjY9PMguG0Mx8Ynr+SYGBgYGCQFGP4z8DAAOcznPkAV/vi3QNGBgYGBkaYwPMFVRBFt+4xMNhsgLBNBFA0MhwJYGBQU4IYntDG8OLdA0a4Cxhu3UO460gAlLEBjY+mjoGBgQlLUJAEKDYA7oX7G/ZgSCra4JajmgtGDUCKhYPvP2JI3jzxnYGBgYHhxfu/OA1ghDGIycrIAJYXAGgVTl7KX9ecAAAAAElFTkSuQmCC",
+"note": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAyklEQVR4nMWSIQ6DUBBEHwRPUtE0FaRpKtCIYuAOGFTFN6RnqEJwjpqva7gDmG+qEU0FN+gJWkH5QEOCIA2jdjOb2ZnNwtIwNqvde46AZZ7XsxxYAPvoMEoW3AEI8Ub5Z/5oBAASNxqQokpRZd0IBSDdbMBfq7xzACDsmFCd9GZV1viBA4AqawSpdtJfZraFfN3GQ07AnB75g4CwY11bfaLNJokQdEf0AwfpZiTfuX5cLdBeVfd4FEFTh3jww7cwtpfjrE+c/crL4wNlczExPST2LAAAAABJRU5ErkJggg==",
+"board": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAZ0lEQVR4nGNkQAISQgr/GYgAL949YISx4QwJIYX/+8+fJ0Y/g6OhIdwQFmSJyxeJMwAZoBhgY2VGmQEwIDX1BlbFz7I1iDMAm0JcgIlolTjAqBcGnReOHDtFmQEXzpFuACMyh5zsDACYxSR4buUczgAAAABJRU5ErkJggg==",
+"trophy": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAA7klEQVR4nGNgoBAwInMkhBT+E6PpxbsHcH0syBqfv5IgylZJMYb/MIMYJYQU/j9Z8IWBgYGB4cytbwzmNnJ4NZ888ojBRI2LgYGBgUEmgQfigjO3vmGqVElhYLgzB6shCPVQA07c+AuXNLfB73xktQwM0EBEDrzn2zjwGiDp9QPOfvHuASMLjIFuED6AEQvIYMeJL3C24J93DAwMDAzvWYSQVKBqQUkH6K7YUPWKgYGBgSGgTQyr7QwMDAxMxDgZH8BIiZtLFOD8q48gXtCWQ3jBt+cB/jCAaSIkhtOAy48+43czGsAbiNgAeiBSDAA6JVKXxCqzaAAAAABJRU5ErkJggg==",
+"fire": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAoUlEQVR4nJWRoRWAMAxErzwUEgWGh2AMxmEKBkAxAuMwBgIHComkKHhtaNJwrm3u55ICERV5bWM1otmOlZUgiQa09RebhAUUeW23/opCVAkkfQDSvKEUHuCJ7RW1mQhJuU6euc2A+dSN8FcvgG6dRnfP7hjxBE2nS8BqmXSA/VhNOehWUg4J9mM1AGDoY3AXzg+45iAgCGHMLOCB0DtqBoAbMBxImAHwMcQAAAAASUVORK5CYII=",
+"mail": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAqklEQVR4nGNgGPKAkYGBgUFCSOE/OZpfvHvAyCAhpPCfXCAhpPCfBWba87dfSbJdUpibgYGBgYEJWQAmSKxmFAOwSWKTQ5fHMACXQlwGYzUAXROyZtuT0aiKSIkFmxNRGLFAtAHomkkyQHuCA1ZxCSGF/wRTonCdAsPbpgdY5V68e8CIER6Bf0r/Swgp/Edm4wtoRnQBCSGF/5avQhkYGBgYjoutxrQFDQAAQJ8Hq7py7MQAAAAASUVORK5CYII=",
+"lock": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAwUlEQVR4nGNkwAEkhBT+I/NfvHvAiE0dVkEJIYX/WZU1KGLT2luwGoIhANP86OE9hicP7zIwMDAwyMgrM8jJK2E1hAWbC2CaLxw9iU0aBTDhcvqFoycZXrx7wPji3QNGmEFZlTUYYYPhgmOHdmO16cnDu3AvIQMU/6CbjgsghwPcBRJCCv+fv5IgRj+DpBjDf5ghqF4484EoA5ABE2ElFBhw8sgjhpNHHg2gC4gBWFMiDJjbyJFmwI4TX0i2l+KEBAB+Ak+EzlybWAAAAABJRU5ErkJggg==",
+"info": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAzUlEQVR4nJWTMRKDIBAADyrLjBWlmTEvoMsT8pc0eYBPsPEvPiGdL4gzUlIxlnZYBAiHQOQ6jtu9O0cIJILVjfbPUgkSqzskLbgOC8pfnteoCB1Y3WgLbvOEBFXLnciXkBAOwTCqliMJzcG646A7jnLbPME6LG5V6l+cDb+WnB09tQrNdY+tEE5Bo7cF8RV83uWkYahUgrCxL+bZ2INUgvxWKJnCq0U/kny8AG73v7DtjgRIAnAUma4+fBBYCQCAE9m8+U7ZxxQT2Ug95x3bJ2/nq7OqigAAAABJRU5ErkJggg==",
+"eye": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAg0lEQVR4nGNgGGjAiE1QQkjhPzbxF+8eYKiHCyBrev72PlbbJIUVsRsmIaTwHxtgaDzzn6HxDFY5mIWMEkIK/7HZyNh0FoX/v84Yu4tw2QyzRUJIAa9LmLB6Fs2/EhNDcCljwGkAsQCnAS/y12BlowPKA5GBgcJohJlGbkKiOCkPPAAAwvu9PSxco4gAAAAASUVORK5CYII=",
+"warning": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAlUlEQVR4nGNgIAAkhBT+E1KDV/P/Exr/8RnChE/z820cDAwMDAzPt3HgdAlOA4gFWA1Atp1BJQWvK/C7AKoZThPjAhTbGRgYphtNg7OxuQK3C9BtxeEKFAPQbccG0F2B3QW4/IxFHG4AMbZjcwWmC9BsyTyXhVeeiZDtyLGAzRWoLsDiRwwXoKljJMXv2AAjAwNlWRYAenA6G2b6Yl8AAAAASUVORK5CYII=",
+"people": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAA2ElEQVR4nKWTMQ6CQBBF3xJOoInBDiisrAyn8AK2XsPGwhvYWnkKQ2KMrSaeAeggJNDZmWC1wMIqiD/ZYn72TWb/ZOFPCZ1pjewCIMkj0fSavhaWkpA1sovDqyhPvZlownEWKg2nY4ddGhI8Ks/1YDtxSPJIGN9ggDhTYUCpDXoouPkf615PAFifKv+4dMoglQmSPBISkLAu8V0allsZFCJUQQ4KEaogxTe4rs297bkeiD6w1Grvt7yfGtQDljIB4uzZCS9mc+1GTIDr5dxrAp3KELsufvqBb708fUxUk/O3AAAAAElFTkSuQmCC",
+"nope": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAv0lEQVR4nJWTLRKDMBCFNxkkClXVoYeorO+pEDkVvrKHKINCRUWHivYxyf4w8AyzId/jhew6MnTp+rWslzg5bZ9YBDi0vloPKatGDYcBPq9d7TzHnxH1a2niOCxApnGOFFLekvgzMJINrd+O6rVNt9db1HwN8tbXAeD5edzVFGoCbNZgkcB8c1C7/4AnUQ2WOLmQMo3/e4YAayblVVaNxGGrFkewUmjijVT19V4rw7yEhQFMiI4PkzqipRFkjfMXDmp0QwBBqfEAAAAASUVORK5CYII=",
+"ok": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAz0lEQVR4nJWTsQ2DMBBFvy0mSIEipYkQO1BlB/r07JBV3Kdnh1TZAVmUyAUjQAo4x5x9hPzO5t6/b+xTEHQ+XedwPYy9StVFmwTqJt/sT8YljTIOE1jU5cbAUo3BHJooDnMw1Kt64vKoMBnnk+h/YEqmm/x7VJFIwLf3PfqWHenO4aIuYbH8jygBdZPWXMkjELQXXTSg4iMwAOhh7NVkHGzbRSYSbNvOX6V4C786+wTA8jx5Cklhd4DNwu5TXs1DODIgE+D4MCVHNDQiSeP8AUOkcOsaouETAAAAAElFTkSuQmCC"
+};
+
 /* ==========================================================
    PIXEL ICONS: 12×12 grids, one letter = one pixel colour.
    ========================================================== */
@@ -421,7 +448,12 @@ const ICONS = {
     return s;
   }
   document.querySelectorAll("[data-px]").forEach((el) => {
-    const s = draw(el.dataset.px, el.dataset.skin); if (s) el.appendChild(s);
+    const name = el.dataset.px;
+    if (PACK[name]) {
+      const img = new Image(16, 16); img.src = PACK[name]; img.alt = ""; img.decoding = "async";
+      el.appendChild(img); return;
+    }
+    const s = draw(name, el.dataset.skin); if (s) el.appendChild(s);
   });
 })();
 </script>

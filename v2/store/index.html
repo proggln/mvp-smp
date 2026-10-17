@@ -121,6 +121,9 @@ button{font:inherit}
 .tile .emo{font-size:42px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.35))}
 .tab .emo{font-size:16px}
 .tile svg{width:44px;height:44px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.35))}
+.packi{display:block;image-rendering:pixelated;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4))}
+.tile .packi{width:56px;height:56px}
+.tab .packi{width:18px;height:18px}
 .art{display:block;position:relative}
 .art.banner{width:calc(100% + 64px);margin:-34px -32px 0;border-radius:28px 28px 0 0;height:130px;object-fit:contain;background:#0081cc}
 .art.stamp{width:140px;height:92px;margin:-4px 0 -4px;object-fit:contain;object-position:left center}
@@ -252,10 +255,10 @@ const CONFIG = {
       perks: ["Everything in MVP", "Animated [MVP+] prefix", "10 extra homes", "Exclusive particle trail", "Private vault"], checkout: "" },
     { cat: "ranks", name: "OG",   image: "stamp",  color: "#7c8cff", price: 29.99, perks: ["Everything in MVP+", "OG tag in chat", "OG role on Discord"], checkout: "" },
     // Crate keys
-    { cat: "keys", name: "Common Keys ×5",    icon: "key",  color: "#9fb4c4", price: 2.99, perks: ["5 Common Crate keys"], checkout: "" },
-    { cat: "keys", name: "Rare Keys ×5",      icon: "key",  color: "#4cc3ff", price: 5.99, perks: ["5 Rare Crate keys"], checkout: "" },
-    { cat: "keys", name: "Epic Keys ×3",      icon: "chest", color: "#a06bff", price: 7.99, perks: ["3 Epic Crate keys"], checkout: "" },
-    { cat: "keys", name: "Legendary Key",     icon: "chest", color: "#ffb347", price: 4.99, perks: ["1 Legendary Crate key"], checkout: "" },
+    { cat: "keys", name: "Common Keys ×5",    icon: "key_common",  color: "#9fb4c4", price: 2.99, perks: ["5 Common Crate keys"], checkout: "" },
+    { cat: "keys", name: "Rare Keys ×5",      icon: "key_rare",  color: "#4cc3ff", price: 5.99, perks: ["5 Rare Crate keys"], checkout: "" },
+    { cat: "keys", name: "Epic Keys ×3",      icon: "key_epic", color: "#a06bff", price: 7.99, perks: ["3 Epic Crate keys"], checkout: "" },
+    { cat: "keys", name: "Legendary Key",     icon: "key_legendary", color: "#ffb347", price: 4.99, perks: ["1 Legendary Crate key"], checkout: "" },
     // MVP Coins
     { cat: "coins", name: "1,000 Coins",  icon: "coin", color: "#ffc94d", price: 1.99,  amount: "1,000",  perks: ["Starter pack"], checkout: "" },
     { cat: "coins", name: "5,000 Coins",  icon: "coin", color: "#ffc94d", price: 8.99,  amount: "5,000",  chip: "+10% bonus",  perks: ["500 bonus coins"], checkout: "" },
@@ -324,7 +327,10 @@ const CONFIG = {
   };
   // these icons are emoji instead of drawn shapes
   const EMOJI = { key: "🔑", chest: "📦", coin: "🪙", paw: "🐾", wand: "🎨" };
+  // icons from the MVP Resource Pack (16×16 PNG, the same pictures players see in game)
+  const PACK = {"coin": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAo0lEQVR4nGNgGGjAiEtCTkzoPzL/0at3WNWy4NJ4Z5MCiriKH8N/bAahcJA1v7nxCMUAEQ05BhW/BxiuYUJ3AbJmyYAmBsmAJgYGBgaGNzceYbgKxQA5MaH/6JphAN0Q5PDBcAEMPN9Qh5WN0wXkApwGYPMCXgMevXrHqOL3gEFEQ46BgQG7F2AxgRwLFEcjRurCnZAwNWM1AN0gZC/iUjuwAADxCVSzd6Ap7wAAAABJRU5ErkJggg==", "key": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAlklEQVR4nGNgGPKAEZkjJyb0H8Z+9OodI6ZyHAbAND68mgaXkNeeRZRBTDDGw5dvUSSQDcPrAjkxof/IihlFOxj/v66AewXmElyABcU00Q5GdEMeHlfCqVne8h6qAf9fV/xHd8Hzs1/we4GBARKI2PyM7vwTU8QYLHJeobCZcClGjgUYhskhs0lKBzD5R6/eMSKrHekAANVuShCjp8w0AAAAAElFTkSuQmCC", "key_common": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAl0lEQVR4nGNgGPKAEZkjJyb0H8Z+9OodI6ZyHAbANK7atBsuEebnSpRBTDDGw5dvUSSQDcPrAjkxof/Iii0sjBlPnDgL9wrMJbgACzLHwsKYEd2QY92eODVblW5HNeDEibP/0V1w5vZr/F5gYIAEIjY/ozt/UpoJQ96sMyhsJlyKkWMBhmFyyGyS0gFM/tGrd4zIakc6AACmHEn/NPVb8wAAAABJRU5ErkJggg==", "key_rare": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAnElEQVR4nGNgGPKAEZkjJyb0H8Z+9OodI6ZyHAbANFYcfAyX6LCXJcogJhjj4cu3KBLIhuF1gZyY0H9kxVma3IzTrn+FewXmElyABZmTpcnNiG6I7YK32PQxMDAwMBxOEEY1YNr1r//RXfD62kn8XmBggAQiNj+jO1+jbBvDjS4vFDYTLsXIsQDDMDlkNknpACb/6NU7RmS1Ix0AAJyfSfKO2yDJAAAAAElFTkSuQmCC", "key_epic": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAl0lEQVR4nGNgGPKAEZkjJyb0H8Z+9OodI6ZyHAbANJ5oeAuXsGgQJsogJhjj4cu3KBLIhuF1gZyY0H9kxVJZjIzPpv2HewXmElyABZkjlcXIiG7I0qCnODVHr5NGNeDZtP//0V1w+cVx/F5gYIAEIjY/ozu/wmoNQ8exEBQ2Ey7FyLEAwzA5ZDZJ6QAm/+jVO0ZktSMdAACIU0nRzAafAwAAAABJRU5ErkJggg==", "key_legendary": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAlklEQVR4nGNgGPKAEZkjJyb0H8Z+9OodI6ZyHAbAND68mgaXkNeeRZRBTDDGw5dvUSSQDcPrAjkxof/IihlFOxj/v66AewXmElyABcU00Q5GdEMeHlfCqVne8h6qAf9fV/xHd8Hzs1/we4GBARKI2PyM7vwTU8QYLHJeobCZcClGjgUYhskhs0lKBzD5R6/eMSKrHekAANVuShCjp8w0AAAAAElFTkSuQmCC", "chest": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAA3klEQVR4nGNgGGjAiMyRExP6T4ymR6/ewfXBGSdOnP3PwMDAIHK5C6/mN7plDAwMDAwWFsaMDAwMDCzoCq48fI/XAAldVD6GAXeef2JgYGBgmLT5Fop4nq8axAA09SwMDKh+R9a4atNuBgYGBoYwP1e4uE0qRE5OTOj/o1fvGDFcsK/VlYGBgYHBqXo3g7KyMsPdu3dRxN9gcwEyQA4DmGZkcaLDAOZ0dHGsYYAMVCT5GBgYGBgmpZmgS2EFeF2ADRDtAmIBhgE7zz3BqyHeB5XPyMBAfB5AB8h5gmwAAInqQ65lBlm2AAAAAElFTkSuQmCC", "crate_epic": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAA50lEQVR4nKWTIQvCQBiGnwMxi4rBYNOgzTRs/gExWw2CwSwmkz/BZjWZxJ9gWBIMGrTIgkF0mFfOoDe227hNfdLHy73vvd/BQQKeLWXSmb8Qni1l1hICoFLKp7rNubnCD1DDdf6ueti5RnOjmQegPBTCs6XM6AfO9705gLY/Zy0hIgHO8wTA8jgJ6b367DO1Q3oGwrsHjfb0AYA1Lfj6iAHK49zcaINF5wxAf12l2IT7LqzrGN9AmYN6I26FIOoNVPWonhBQydUAGLdWsZV1jA3iSdkgLZGA7WVjNHS1Bl/9AZ3gn/iZF0xdTT8tySbeAAAAAElFTkSuQmCC", "crate_legendary": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAA9ElEQVR4nGNgIAD+/zrxn5AaigDj/18n/jOyWTAyMDAwyIkJEWXbo1fvGOEGwBj/X1dANL/chV+3uBtEo2gH4/9fJ/6zoMs/v/YNr35JcQSbkc2CEcOAS/d+MDAwMDCk9X1CEZ9VxAcxwBFVPQsDA6rfkTU+vJrGwMDAwCCvPQsu/jAZIicnJvT/0at3mC54uE8BosnpAQMDfwADw8cNKOLogAk9np9f+4YIB6hmDHFkLzCyWTAiewEWBjCno4sjhwHWWNBT4mBgYGBgODGFA6uTkQHeWMAFsMYCNhcQCzAMWLLnA14NpWguICkPoAPkPEE2AAAGk1s/ux+KZQAAAABJRU5ErkJggg=="};
   const icon = (name) => {
+    if (PACK[name]) { const i = new Image(16, 16); i.src = PACK[name]; i.alt = ""; i.className = "packi"; i.setAttribute("aria-hidden", "true"); return i; }
     if (EMOJI[name]) { const s = document.createElement("span"); s.className = "emo"; s.textContent = EMOJI[name]; s.setAttribute("aria-hidden", "true"); return s; }
     return svg(ICONS[name] || ICONS.star, !!SOLID[name]);
   };
