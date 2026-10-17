@@ -32,7 +32,7 @@ Items without a checkout link show "Coming soon". The site is static, so payment
 
 ## Wiki (v2/wiki/), hidden
 
-`v2/wiki/index.html` is a player guide for the server plugins (coins, land claims, crates, combat, heads and bounties, scoreboard, all commands).
+`v2/wiki/index.html` is a simple picture guide for players (start, coins, claims, crates, combat, bounty, commands). Pixel icons are drawn by the `ICONS` block in its script.
 It is **hidden for now**: no page links to it and it has `noindex, nofollow`, so search engines skip it.
 Open it directly: `https://<username>.github.io/<repo>/v2/wiki/`.
 To make it public later: add a `Wiki` link to the nav of `v2/index.html` and `v2/store/index.html`, and remove the `robots` meta tag.
