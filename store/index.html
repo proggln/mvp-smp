@@ -168,6 +168,9 @@ button{font:inherit}
 .bm .bm-code{margin:20px 0;padding:26px 16px;border-radius:20px;text-align:center;background:rgba(76,195,255,.1);border:2px dashed rgba(76,195,255,.55);font:800 3rem/1 ui-monospace,Consolas,monospace;letter-spacing:.28em;color:#9be0ff;user-select:all}
 .bm .bm-cmd{padding:18px 20px;border-radius:16px;background:rgba(3,10,20,.75);font:700 1.3rem ui-monospace,Consolas,monospace;color:#ffd66b;word-break:break-all;user-select:all}
 .bm .bm-msg{margin-top:16px;font-size:1.02rem;color:#ffb3b3;min-height:1.3em}
+.bm .bm-agree{display:flex;gap:12px;align-items:flex-start;margin-top:18px;font-size:.92rem;line-height:1.5;color:#b9cfe0;cursor:pointer;text-transform:none;letter-spacing:0;font-weight:400}
+.bm .bm-agree input{width:22px;height:22px;flex:none;margin-top:2px;padding:0;accent-color:#2ea2ea;font-size:1rem}
+.bm .bm-agree a{color:#6fd0ff;text-decoration:underline}
 .bm .bm-wait{color:#9be0ff}
 .bm .bm-ok{color:#8ff0a4}
 .bm .bm-sum{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 22px;margin-bottom:24px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);font-size:1.2rem}
@@ -228,6 +231,10 @@ button{font:inherit}
   *,*::before,*::after{animation:none!important;transition:none!important}
   .ip-card{transform:none}
 }
+
+.legal-links{position:relative;z-index:10;display:flex;flex-wrap:wrap;gap:6px 22px;justify-content:center;padding:6px 18px 34px;font-size:.85rem}
+.legal-links a{color:rgba(190,210,225,.85);text-decoration:underline;text-underline-offset:3px}
+.legal-links a:hover{color:#fff}
 </style>
 </head>
 <body>
@@ -274,6 +281,7 @@ button{font:inherit}
   <p class="note" id="note" hidden>Checkout isn't connected yet: items can't be bought right now.</p>
   <p class="legal">MVP SMP is not an official Minecraft product and is not approved by or associated with Mojang or Microsoft. Purchases are for the server only.</p>
 </main>
+<nav class="legal-links" aria-label="Legal"><a href="../privacy/">Privacy Policy</a><a href="../terms/">Terms of Service</a><a href="../refunds/">Refund Policy</a><a href="../support/">Support</a></nav>
 
 <script>
 /* ==========================================================
@@ -456,9 +464,11 @@ const CONFIG = {
   }
   function stepOrder(p, nick, token) {
     const box = shell('<h3>Nickname confirmed</h3><div class="bm-sub bm-ok">Verified: <b>' + esc(nick) + '</b></div>' + summary(p) +
+      '<label class="bm-agree"><input type="checkbox" id="bmc"><span>I agree to the <a href="../terms/" target="_blank" rel="noopener">Terms</a> and <a href="../refunds/" target="_blank" rel="noopener">Refund Policy</a>, and to immediate delivery of these digital items. I understand that once they are delivered I lose the right of withdrawal.</span></label>' +
       '<button class="buy bm-btn" type="button">' + (window.__payReal ? 'Pay ' + esc(priceText(p)) : 'Place order') + '</button><div class="bm-msg"></div>');
-    const btn = box.querySelector(".bm-btn"), msg = box.querySelector(".bm-msg");
+    const btn = box.querySelector(".bm-btn"), msg = box.querySelector(".bm-msg"), agree = box.querySelector("#bmc");
     btn.addEventListener("click", () => {
+      if (!agree.checked) { msg.textContent = "Please tick the box to continue."; return; }
       btn.disabled = true; msg.textContent = "";
       api("/api/order", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token, product: p.id }) })
         .then((r) => {

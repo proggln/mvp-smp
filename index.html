@@ -123,6 +123,10 @@ button{font:inherit}
   *,*::before,*::after{animation:none!important;transition:none!important}
   .ip-card{transform:none}
 }
+
+.legal-links{position:relative;z-index:10;display:flex;flex-wrap:wrap;gap:6px 22px;justify-content:center;padding:6px 18px 34px;font-size:.85rem}
+.legal-links a{color:rgba(190,210,225,.85);text-decoration:underline;text-underline-offset:3px}
+.legal-links a:hover{color:#fff}
 </style>
 </head>
 <body>
@@ -185,6 +189,7 @@ button{font:inherit}
   <p class="legal">MVP SMP is not an official Minecraft product and is not approved by or associated with Mojang or Microsoft.</p>
 </main>
 
+<nav class="legal-links" aria-label="Legal"><a href="privacy/">Privacy Policy</a><a href="terms/">Terms of Service</a><a href="refunds/">Refund Policy</a><a href="support/">Support</a></nav>
 <script>
 /* ==========================================================
    EDIT THIS BLOCK

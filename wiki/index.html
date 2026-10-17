@@ -173,6 +173,10 @@ details[open] summary::after{content:"−"}
 .tile:hover .px,.size:hover .blk,.step:hover .px{animation:bob .9s ease-in-out infinite alternate}
 @keyframes bob{to{transform:translateY(-4px)}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+.legal-links{position:relative;z-index:10;display:flex;flex-wrap:wrap;gap:6px 22px;justify-content:center;padding:6px 18px 34px;font-size:.85rem}
+.legal-links a{color:rgba(190,210,225,.85);text-decoration:underline;text-underline-offset:3px}
+.legal-links a:hover{color:#fff}
 </style>
 </head>
 <body>
@@ -483,6 +487,7 @@ const ICONS = {
   });
 })();
 </script>
+<nav class="legal-links" aria-label="Legal"><a href="../privacy/">Privacy Policy</a><a href="../terms/">Terms of Service</a><a href="../refunds/">Refund Policy</a><a href="../support/">Support</a></nav>
 <script>
 (function(){
   var rm=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
