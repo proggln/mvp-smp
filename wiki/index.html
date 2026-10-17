@@ -53,6 +53,7 @@ p,h1,h2,h3{margin:0}
 .dc{display:inline-block;width:20px;height:15px;flex:none;background:#fff;-webkit-mask:var(--dc) center/contain no-repeat;mask:var(--dc) center/contain no-repeat}
 
 /* ---------- Pixel icons ---------- */
+.blk{display:block;object-fit:contain;filter:drop-shadow(0 4px 6px rgba(0,0,0,.45))}
 .px{display:inline-block;width:48px;height:48px;flex:none;image-rendering:pixelated}
 .px svg,.px img{display:block;width:100%;height:100%;image-rendering:pixelated;filter:drop-shadow(0 3px 0 rgba(0,0,0,.35))}
 .px[data-px="swap"] img{object-fit:contain}
@@ -241,10 +242,10 @@ details[open] summary::after{content:"−"}
 
     <h3 class="label">Sizes</h3>
     <div class="sizes">
-      <div class="size"><div class="area" style="width:30px;height:30px"></div><b>Small</b><small>17×17 · 500</small></div>
-      <div class="size"><div class="area" style="width:46px;height:46px"></div><b>Medium</b><small>33×33 · 1,500</small></div>
-      <div class="size"><div class="area" style="width:64px;height:64px"><i class="px" data-px="house"></i></div><b>Large</b><small>65×65 · 5,000</small></div>
-      <div class="size"><div class="area" style="width:96px;height:96px"><i class="px" data-px="house"></i></div><b>Huge</b><small>129×129 · 15,000</small></div>
+      <div class="size"><img class="blk" src="blocks/iron.png" alt="Small" style="width:44px;height:44px"><b>Small</b><small>17×17 · 500</small></div>
+      <div class="size"><img class="blk" src="blocks/gold.png" alt="Medium" style="width:56px;height:56px"><b>Medium</b><small>33×33 · 1,500</small></div>
+      <div class="size"><img class="blk" src="blocks/diamond.png" alt="Large" style="width:70px;height:70px"><b>Large</b><small>65×65 · 5,000</small></div>
+      <div class="size"><img class="blk" src="blocks/netherite.png" alt="Huge" style="width:88px;height:88px"><b>Huge</b><small>129×129 · 15,000</small></div>
     </div>
 
     <div class="warn"><i class="px" data-px="warning"></i><span>Pay daily upkeep with <code>/protect deposit</code>. Empty = not protected!</span></div>
