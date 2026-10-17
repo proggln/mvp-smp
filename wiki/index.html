@@ -155,6 +155,22 @@ details[open] summary::after{content:"−"}
   .link{padding:10px 13px}
 }
 @media (max-width:470px){.brand-text{display:none}}
+
+/* ---------- Motion (same feel as Home/Store) ---------- */
+.link{position:relative;transition:color .2s,background .2s,transform .2s,box-shadow .2s}
+.link.active{color:#fff}
+.link.active::after{content:"";position:absolute;left:50%;bottom:3px;width:16px;height:2px;margin-left:-8px;border-radius:2px;background:var(--ice,#6fd0ff);box-shadow:0 0 10px var(--ice,#6fd0ff)}
+.link-discord:hover{transform:translateY(-1px);box-shadow:0 10px 28px rgba(0,129,204,.6),inset 0 1px 0 rgba(255,255,255,.35)}
+@keyframes drop{from{opacity:0;transform:translateY(-22px)}to{opacity:1;transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(26px) scale(.97)}to{opacity:1;transform:none}}
+.nav{animation:drop .9s cubic-bezier(.2,.8,.2,1) both}
+.head{animation:rise .8s .1s cubic-bezier(.2,.8,.2,1) both}
+.js .rv{opacity:0;transform:translateY(26px) scale(.97);transition:opacity .7s cubic-bezier(.2,.8,.2,1),transform .7s cubic-bezier(.2,.8,.2,1)}
+.js .rv.in{opacity:1;transform:none}
+.tile,.size,.step{transition:transform .25s,border-color .25s,background .25s}
+.tile:hover,.size:hover,.step:hover{transform:translateY(-4px);border-color:rgba(111,208,255,.45);background:rgba(10,30,50,.7)}
+.tile:hover .px,.size:hover .blk,.step:hover .px{animation:bob .9s ease-in-out infinite alternate}
+@keyframes bob{to{transform:translateY(-4px)}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -465,6 +481,17 @@ const ICONS = {
     }
     const s = draw(name, el.dataset.skin); if (s) el.appendChild(s);
   });
+})();
+</script>
+<script>
+(function(){
+  var rm=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(rm||!("IntersectionObserver" in window))return;
+  document.documentElement.classList.add("js");
+  var els=document.querySelectorAll(".sec,.pick");
+  els.forEach(function(e){e.classList.add("rv")});
+  var io=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting){x.target.classList.add("in");io.unobserve(x.target)}})},{threshold:.08});
+  els.forEach(function(e){io.observe(e)});
 })();
 </script>
 </body>
