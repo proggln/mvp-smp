@@ -271,16 +271,16 @@ const CONFIG = {
       perks: ["[MVP] blue prefix in chat & tab", "12 homes", "+25% income from /jobs", "+25% daily reward", "Gift: 3x Large Protection Blocks (3 days of upkeep included)"], checkout: "" },
     { cat: "ranks", name: "MVP+", image: "mvpplus", color: "#8a5cff", price: 6.99, was: 10.99, period: "/ month", best: true, chip: "★ Best Value",
       perks: ["[MVP+] pink prefix, the brightest in chat & tab", "20 homes", "+40% income from /jobs", "+40% daily reward", "Gift: 5x Large Protection Blocks (3 days of upkeep included)", "Special join message"], checkout: "" },
-    // Crate keys
-    { cat: "keys", name: "Common Keys ×5",    icon: "key_common",  color: "#9fb4c4", price: 2.99, perks: ["5 Common Crate keys"], checkout: "" },
-    { cat: "keys", name: "Rare Keys ×5",      icon: "key_rare",  color: "#4cc3ff", price: 5.99, perks: ["5 Rare Crate keys"], checkout: "" },
-    { cat: "keys", name: "Epic Keys ×3",      icon: "key_epic", color: "#a06bff", price: 7.99, perks: ["3 Epic Crate keys"], checkout: "" },
-    { cat: "keys", name: "Legendary Key",     icon: "key_legendary", color: "#ffb347", price: 4.99, perks: ["1 Legendary Crate key"], checkout: "" },
-    // MVP Coins
-    { cat: "coins", name: "1,000 Coins",  icon: "coin", color: "#ffc94d", price: 1.99,  amount: "1,000",  perks: ["Starter pack"], checkout: "" },
-    { cat: "coins", name: "5,000 Coins",  icon: "coin", color: "#ffc94d", price: 8.99,  amount: "5,000",  chip: "+10% bonus",  perks: ["500 bonus coins"], checkout: "" },
-    { cat: "coins", name: "10,000 Coins", icon: "coin", color: "#ffc94d", price: 15.99, amount: "10,000", chip: "+20% bonus",  perks: ["2,000 bonus coins"], checkout: "" },
-    { cat: "coins", name: "25,000 Coins", icon: "coin", color: "#ffc94d", price: 34.99, amount: "25,000", chip: "Best value", perks: ["7,500 bonus coins"], checkout: "" }
+    // Crate keys (bundles: the more you take, the cheaper a key; prices follow the in-game coin value of each key)
+    { cat: "keys", name: "Common Keys ×25",    icon: "key_common",  color: "#9fb4c4", price: 0.99, perks: ["25 Common Crate keys", "Just 4¢ per key"], checkout: "" },
+    { cat: "keys", name: "Rare Keys ×10",      icon: "key_rare",  color: "#4cc3ff", price: 1.49, perks: ["10 Rare Crate keys", "Just 15¢ per key"], checkout: "" },
+    { cat: "keys", name: "Epic Keys ×5",       icon: "key_epic", color: "#a06bff", price: 2.49, chip: "Popular", perks: ["5 Epic Crate keys", "Just 50¢ per key"], checkout: "" },
+    { cat: "keys", name: "Legendary Keys ×3",  icon: "key_legendary", color: "#ffb347", price: 4.99, was: 5.97, chip: "Best Value", perks: ["3 Legendary Crate keys", "Save 16% (a single key is $1.99)"], checkout: "" },
+    // MVP Coins (the bigger the pack, the more bonus coins)
+    { cat: "coins", name: "1,000 Coins",  icon: "coin", color: "#ffc94d", price: 0.99,  amount: "1,000",  chip: "Starter", perks: ["1,000 coins"], checkout: "" },
+    { cat: "coins", name: "3,300 Coins",  icon: "coin", color: "#ffc94d", price: 2.49,  amount: "3,300",  chip: "+10% bonus", perks: ["3,000 coins + 300 bonus"], checkout: "" },
+    { cat: "coins", name: "8,400 Coins",  icon: "coin", color: "#ffc94d", price: 4.99,  amount: "8,400",  chip: "Popular", perks: ["7,000 coins + 1,400 bonus", "+20% bonus"], checkout: "" },
+    { cat: "coins", name: "19,500 Coins", icon: "coin", color: "#ffc94d", price: 9.99,  amount: "19,500", chip: "Best Value", perks: ["15,000 coins + 4,500 bonus", "+30% bonus"], checkout: "" }
   ],
   categories: [
     { id: "all", label: "All", icon: "grid" },
