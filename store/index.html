@@ -148,12 +148,9 @@ button{font:inherit}
 .perks li{display:flex;gap:10px;align-items:flex-start}
 .perks svg{width:20px;height:20px;flex:none;margin-top:1px;color:var(--tc,#6fd0ff)}
 .perks .soon{color:var(--muted)}
-.buy{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:16px 24px;border:1.5px solid color-mix(in srgb,var(--tc,#2ea2ea) 60%,transparent);border-radius:14px;font-family:inherit;font-weight:700;font-size:1rem;letter-spacing:.02em;line-height:1;color:#fff;cursor:pointer;background:color-mix(in srgb,var(--tc,#2ea2ea) 8%,transparent);box-shadow:none;transition:background .2s,border-color .2s,color .2s,transform .15s}
-.buy svg{width:19px;height:19px;flex:none;transition:transform .2s}
-.buy:hover{background:var(--tc,#2ea2ea);border-color:var(--tc,#2ea2ea);color:#06101c}
-.buy:hover svg{transform:translateX(2px)}
-.buy:active{transform:scale(.985)}
-.buy:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.buy{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:18px 22px;border:0;border-radius:16px;font-family:inherit;font-weight:700;font-size:1.08rem;line-height:1;color:#fff;cursor:pointer;background:linear-gradient(180deg,#22a6f2,#0081cc);box-shadow:0 6px 22px rgba(0,129,204,.4),inset 0 1px 0 rgba(255,255,255,.3);transition:transform .15s,box-shadow .2s,background .15s}
+.buy svg{width:18px;height:18px}
+.buy:hover{transform:translateY(-1px);background:linear-gradient(180deg,#45b6f7,#0a8ee0);box-shadow:0 10px 28px rgba(0,129,204,.6)}
 /* ---- purchase window ---- */
 .bm{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(2,8,16,.78);backdrop-filter:blur(8px)}
 .bm.open{display:flex}
@@ -177,11 +174,7 @@ button{font:inherit}
 .bm .bm-sum span{font-weight:800;color:#ffd66b;font-size:1.3rem}
 .bm ol{padding-left:24px;margin:18px 0 4px;color:#d6e6f2;line-height:1.9;font-size:1.08rem}
 @media (max-width:560px){.bm-box{padding:28px 20px 24px;border-radius:24px}.bm h3{font-size:1.5rem}.bm input{font-size:1.4rem;padding:16px}.bm .bm-code{font-size:2.1rem;letter-spacing:.18em}.bm .bm-cmd{font-size:1.05rem}}
-/* inside the purchase window the main button is solid */
-.bm .buy{background:var(--tc,#2ea2ea);border-color:var(--tc,#2ea2ea);color:#06101c}
-.bm .buy:hover{filter:brightness(1.08);background:var(--tc,#2ea2ea)}
-.buy[disabled]{cursor:not-allowed;color:#9fb2c2;border-color:rgba(255,255,255,.1);background:rgba(255,255,255,.04);transform:none}
-.buy[disabled]:hover{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1);color:#9fb2c2}
+.buy[disabled]{cursor:not-allowed;color:#b9cbd9;background:rgba(255,255,255,.08);box-shadow:none;transform:none}
 
 .tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:26px;animation:rise .9s cubic-bezier(.2,.8,.2,1) .18s both}
 .tab{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(6,16,28,.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#cfe3f1;font-family:inherit;font-size:.92rem;font-weight:600;cursor:pointer;transition:background .2s,border-color .2s,color .2s,transform .15s}
@@ -442,7 +435,7 @@ const CONFIG = {
     const box = shell('<h3>Confirm it is you</h3><div class="bm-sub">Join the server as <b>' + esc(nick) + '</b> and type this command in the game chat:</div>' +
       '<div class="bm-code">' + esc(code) + '</div><div class="bm-cmd">/verify ' + esc(code) + '</div>' +
       '<ol><li>Join <b>' + esc(CONFIG.serverIP) + '</b></li><li>Type the command above</li><li>This window continues by itself</li></ol>' +
-      '<div class="bm-msg bm-wait">Waiting for confirmation...</div><button class="buy bm-btn" type="button" style="background:transparent;border-color:rgba(255,255,255,.18);color:#cfe3f1">Back</button>');
+      '<div class="bm-msg bm-wait">Waiting for confirmation...</div><button class="buy bm-btn" type="button" style="background:rgba(255,255,255,.08);box-shadow:none">Back</button>');
     box.querySelector(".bm-btn").addEventListener("click", () => stepNick(p));
     const msg = box.querySelector(".bm-msg");
     if (poll) clearInterval(poll);
