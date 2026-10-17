@@ -390,6 +390,7 @@ const CONFIG = {
   function api(path, opt) {
     return fetch(CONFIG.api.replace(/\/+$/, "") + path, opt).then((r) => r.json().then((j) => ({ ok: r.ok, status: r.status, j })));
   }
+  if (CONFIG.api) { try { fetch(CONFIG.api.replace(/\/+$/, "") + "/api/config").then(function (r) { return r.json(); }).then(function (j) { window.__payReal = !!j.payments; }).catch(function () {}); } catch (e) {} }
   function openBuy(p) {
     if (!bm) {
       bm = el("div", "bm");
@@ -448,14 +449,15 @@ const CONFIG = {
   }
   function stepOrder(p, nick, token) {
     const box = shell('<h3>Nickname confirmed</h3><div class="bm-sub bm-ok">Verified: <b>' + esc(nick) + '</b></div>' + summary(p) +
-      '<button class="buy bm-btn" type="button">Place order</button><div class="bm-msg"></div>');
+      '<button class="buy bm-btn" type="button">' + (window.__payReal ? 'Pay ' + esc(priceText(p)) : 'Place order') + '</button><div class="bm-msg"></div>');
     const btn = box.querySelector(".bm-btn"), msg = box.querySelector(".bm-msg");
     btn.addEventListener("click", () => {
       btn.disabled = true; msg.textContent = "";
       api("/api/order", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token, product: p.id }) })
         .then((r) => {
+          if (r.ok && r.j.checkoutUrl) { btn.textContent = "Redirecting to secure payment..."; window.location.href = r.j.checkoutUrl; return; }
           if (r.ok) { stepDone(p, nick, r.j); return; }
-          msg.textContent = r.j.error === "payments_disabled" ? "Payments are not open yet. Please come back soon!" :
+          msg.textContent = r.j.error === "payments_disabled" ? "Payments are not open yet. Please come back soon!" : r.j.error === "payment_unavailable" ? "Payment is temporarily unavailable. Try again in a minute." :
             r.j.error === "not_verified" ? "The confirmation expired. Start again." : "Something went wrong. Try again.";
           btn.disabled = false;
         }).catch(() => { msg.textContent = "Cannot reach the store. Try again later."; btn.disabled = false; });
@@ -466,6 +468,26 @@ const CONFIG = {
       '<div class="bm-sub">Stay online as <b>' + esc(nick) + '</b>: your items are delivered in the game within seconds. If you are offline, you get them when you join.</div>' +
       '<button class="buy bm-btn" type="button">Done</button>').querySelector(".bm-btn").addEventListener("click", closeBuy);
   }
+
+  // ------------- coming back from the payment page -------------
+  (function () {
+    var q; try { q = new URLSearchParams(location.search); } catch (e) { return; }
+    var paid = q.get("paid"), canceled = q.get("canceled");
+    if (!paid && !canceled) return;
+    window.addEventListener("load", function () {
+      if (!bm) {
+        bm = el("div", "bm");
+        bm.addEventListener("click", function (e) { if (e.target === bm) closeBuy(); });
+        document.body.appendChild(bm);
+      }
+      bm.classList.add("open");
+      if (paid) shell('<h3>Payment received</h3><div class="bm-sub bm-ok">Thank you for supporting MVP SMP!</div>' +
+        '<div class="bm-sub">Order <b>#' + esc(paid) + '</b>. Join the server: your items are delivered in the game within seconds. If you are offline, you get them when you join.</div>' +
+        '<button class="buy bm-btn" type="button">Done</button>').querySelector(".bm-btn").addEventListener("click", closeBuy);
+      else shell('<h3>Payment canceled</h3><div class="bm-sub">No money was taken. You can try again any time.</div>' +
+        '<button class="buy bm-btn" type="button">Close</button>').querySelector(".bm-btn").addEventListener("click", closeBuy);
+    });
+  })();
   function buyButton(p) {
     const buy = el("button", "buy"); buy.type = "button";
     if (CONFIG.api && p.id) {
