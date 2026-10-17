@@ -130,6 +130,8 @@ button{font:inherit}
 .card h2{position:relative;font:800 1.7rem/1.1 var(--font-head)}
 .price{position:relative;font:800 2.5rem/1 var(--font-head);color:#fff}
 .price small{font-size:.9rem;font-weight:600;color:var(--muted)}
+.price .was{position:absolute;left:0;top:-1.25rem;font:600 1rem/1.2 var(--font-head);color:var(--muted);text-decoration:line-through}
+.price .per{margin-left:2px}
 .perks{position:relative;list-style:none;display:grid;gap:12px;color:#d7e6f2;font-size:1.02rem;flex:1;padding-top:18px;border-top:1px solid rgba(255,255,255,.08)}
 .perks li{display:flex;gap:10px;align-items:flex-start}
 .perks svg{width:20px;height:20px;flex:none;margin-top:1px;color:var(--tc,#6fd0ff)}
@@ -242,17 +244,19 @@ const IMAGES = {
 const CONFIG = {
   serverIP: "play.mvpsmp.net",                    // example IP: replace with the real server address
   discordUrl: "https://discord.gg/CWTBxgBdr",     // Discord invite
-  currency: "€",
+  currency: "$",
   // STORE ITEMS: ready-made EXAMPLES for a Minecraft SMP. Edit names, prices and perks to match your server,
   // and paste a checkout link per item (Tebex, Stripe Payment Link, PayPal...). Empty checkout = "Coming soon".
   // cat: ranks | keys | coins | cosmetics | extras   icon: see ICONS in the script   color: card accent
   // image: "banner" or "stamp" (your brand artwork)   featured: true = big card on top   chip: small badge text
   products: [
     // Ranks
-    { cat: "ranks", name: "VIP",  icon: "star",  color: "#4cc3ff", price: 4.99,  perks: ["[VIP] chat prefix", "2 extra homes", "Daily VIP kit", "Priority join queue"], checkout: "" },
-    { cat: "ranks", name: "MVP",  icon: "crown", color: "#2ea2ea", price: 9.99,  perks: ["Everything in VIP", "[MVP] prefix + name color", "5 extra homes", "Daily MVP kit"], checkout: "" },
-    { cat: "ranks", name: "MVP+", image: "banner", color: "#0081cc", price: 19.99, featured: true, chip: "Top rank",
-      perks: ["Everything in MVP", "Animated [MVP+] prefix", "10 extra homes", "Exclusive particle trail", "Private vault"], checkout: "" },
+    { cat: "ranks", name: "VIP",  icon: "star",  color: "#f2c94c", price: 1.99, period: "/ month", chip: "Starter",
+      perks: ["[VIP] gold prefix in chat & tab", "5 homes", "+10% income from /jobs", "+10% daily reward", "Gift: 3x Small Protection Blocks"], checkout: "" },
+    { cat: "ranks", name: "MVP",  icon: "crown", color: "#2ea2ea", price: 4.99, was: 7.99, period: "/ month",
+      perks: ["[MVP] blue prefix in chat & tab", "12 homes", "+25% income from /jobs", "+25% daily reward", "Gift: 3x Large Protection Blocks"], checkout: "" },
+    { cat: "ranks", name: "MVP+", image: "banner", color: "#0081cc", price: 6.99, was: 10.99, period: "/ month", featured: true, chip: "★ Best Value",
+      perks: ["[MVP+] pink prefix, the brightest in chat & tab", "20 homes", "+40% income from /jobs", "+40% daily reward", "Gift: 5x Large Protection Blocks", "Special join message"], checkout: "" },
     { cat: "ranks", name: "OG",   image: "stamp",  color: "#7c8cff", price: 29.99, perks: ["Everything in MVP+", "OG tag in chat", "OG role on Discord"], checkout: "" },
     // Crate keys
     { cat: "keys", name: "Common Keys ×5",    icon: "key_common",  color: "#9fb4c4", price: 2.99, perks: ["5 Common Crate keys"], checkout: "" },
@@ -359,7 +363,11 @@ const CONFIG = {
   }
   function priceEl(p) {
     const price = el("div", "price"), txt = priceText(p);
-    if (txt) price.textContent = txt; else price.appendChild(el("small", "", "Price coming soon"));
+    if (txt) {
+      if (p.was != null) price.appendChild(el("s", "was", CONFIG.currency + p.was.toFixed(2)));
+      price.appendChild(document.createTextNode(txt));
+      if (p.period) price.appendChild(el("small", "per", " " + p.period));
+    } else price.appendChild(el("small", "", "Price coming soon"));
     return price;
   }
   function artFor(p) {
