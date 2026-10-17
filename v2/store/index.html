@@ -132,6 +132,16 @@ button{font:inherit}
 .price small{font-size:.9rem;font-weight:600;color:var(--muted)}
 .price .was{position:absolute;left:0;top:-1.25rem;font:600 1rem/1.2 var(--font-head);color:var(--muted);text-decoration:line-through}
 .price .per{margin-left:2px}
+.sections{width:100%;display:flex;flex-direction:column;gap:38px;animation:rise .9s cubic-bezier(.2,.8,.2,1) .25s both}
+.sec-title{font:800 1.3rem/1.1 var(--font-head);margin-bottom:14px;text-shadow:0 2px 12px rgba(0,0,0,.6)}
+.sections .grid{animation:none}
+.sections .grid.ranks{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:900px){.sections .grid.ranks{grid-template-columns:1fr}}
+.sections .grid.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:1100px){.sections .grid.four{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.sections .grid.four{grid-template-columns:1fr}}
+.card.best{border-color:var(--tc);box-shadow:0 0 0 1px var(--tc),0 22px 60px rgba(0,129,204,.4)}
+.chip{z-index:2}
 .perks{position:relative;list-style:none;display:grid;gap:12px;color:#d7e6f2;font-size:1.02rem;flex:1;padding-top:18px;border-top:1px solid rgba(255,255,255,.08)}
 .perks li{display:flex;gap:10px;align-items:flex-start}
 .perks svg{width:20px;height:20px;flex:none;margin-top:1px;color:var(--tc,#6fd0ff)}
@@ -218,11 +228,10 @@ button{font:inherit}
 <main class="store" id="store">
   <header class="store-head">
     <h1>Store</h1>
-    <p>Support MVP SMP and unlock ranks, keys, coins and cosmetics.</p>
+    <p>Support MVP SMP and unlock ranks, crate keys and coins.</p>
   </header>
   <div class="tabs" id="tabs" role="tablist" aria-label="Store categories"></div>
-  <section class="hero-wrap" id="hero"></section>
-  <div class="grid" id="grid" aria-live="polite"></div>
+  <div class="sections" id="grid" aria-live="polite"></div>
   <ol class="steps" aria-label="How it works">
     <li><b>1</b><span>Pick an item</span></li>
     <li><b>2</b><span>Pay at checkout</span></li>
@@ -255,9 +264,8 @@ const CONFIG = {
       perks: ["[VIP] gold prefix in chat & tab", "5 homes", "+10% income from /jobs", "+10% daily reward", "Gift: 3x Small Protection Blocks"], checkout: "" },
     { cat: "ranks", name: "MVP",  icon: "crown", color: "#2ea2ea", price: 4.99, was: 7.99, period: "/ month",
       perks: ["[MVP] blue prefix in chat & tab", "12 homes", "+25% income from /jobs", "+25% daily reward", "Gift: 3x Large Protection Blocks"], checkout: "" },
-    { cat: "ranks", name: "MVP+", image: "banner", color: "#0081cc", price: 6.99, was: 10.99, period: "/ month", featured: true, chip: "★ Best Value",
+    { cat: "ranks", name: "MVP+", image: "banner", color: "#0081cc", price: 6.99, was: 10.99, period: "/ month", best: true, chip: "★ Best Value",
       perks: ["[MVP+] pink prefix, the brightest in chat & tab", "20 homes", "+40% income from /jobs", "+40% daily reward", "Gift: 5x Large Protection Blocks", "Special join message"], checkout: "" },
-    { cat: "ranks", name: "OG",   image: "stamp",  color: "#7c8cff", price: 29.99, perks: ["Everything in MVP+", "OG tag in chat", "OG role on Discord"], checkout: "" },
     // Crate keys
     { cat: "keys", name: "Common Keys ×5",    icon: "key_common",  color: "#9fb4c4", price: 2.99, perks: ["5 Common Crate keys"], checkout: "" },
     { cat: "keys", name: "Rare Keys ×5",      icon: "key_rare",  color: "#4cc3ff", price: 5.99, perks: ["5 Rare Crate keys"], checkout: "" },
@@ -267,24 +275,13 @@ const CONFIG = {
     { cat: "coins", name: "1,000 Coins",  icon: "coin", color: "#ffc94d", price: 1.99,  amount: "1,000",  perks: ["Starter pack"], checkout: "" },
     { cat: "coins", name: "5,000 Coins",  icon: "coin", color: "#ffc94d", price: 8.99,  amount: "5,000",  chip: "+10% bonus",  perks: ["500 bonus coins"], checkout: "" },
     { cat: "coins", name: "10,000 Coins", icon: "coin", color: "#ffc94d", price: 15.99, amount: "10,000", chip: "+20% bonus",  perks: ["2,000 bonus coins"], checkout: "" },
-    { cat: "coins", name: "25,000 Coins", icon: "coin", color: "#ffc94d", price: 34.99, amount: "25,000", chip: "Best value", perks: ["7,500 bonus coins"], checkout: "" },
-    // Cosmetics
-    { cat: "cosmetics", name: "Particle Trail", icon: "sparkle", color: "#7c8cff", price: 3.99, perks: ["Particles follow you around", "Choose from several styles"], checkout: "" },
-    { cat: "cosmetics", name: "Custom Chat Tag", icon: "tag",    color: "#4cc3ff", price: 2.99, perks: ["Your own tag next to your name"], checkout: "" },
-    { cat: "cosmetics", name: "Name Color",      icon: "wand",   color: "#ff7ab8", price: 1.99, perks: ["Colored name in chat and tab"], checkout: "" },
-    { cat: "cosmetics", name: "Pet Pack",        icon: "paw",    color: "#6fe3a6", price: 4.99, perks: ["Cosmetic pets that follow you"], checkout: "" },
-    // Extras
-    { cat: "extras", name: "Extra Claim Blocks", icon: "flag",   color: "#2ea2ea", price: 2.49, perks: ["+500 claim blocks"], checkout: "" },
-    { cat: "extras", name: "Extra Homes",        icon: "home",   color: "#4cc3ff", price: 1.99, perks: ["+3 homes"], checkout: "" },
-    { cat: "extras", name: "Unban",              icon: "shield", color: "#6fe3a6", price: 14.99, perks: ["Request to lift a ban", "Rule-breaking bans reviewed by staff"], checkout: "" }
+    { cat: "coins", name: "25,000 Coins", icon: "coin", color: "#ffc94d", price: 34.99, amount: "25,000", chip: "Best value", perks: ["7,500 bonus coins"], checkout: "" }
   ],
   categories: [
     { id: "all", label: "All", icon: "grid" },
     { id: "ranks", label: "Ranks", icon: "crown" },
     { id: "keys", label: "Crate Keys", icon: "key" },
-    { id: "coins", label: "Coins", icon: "coin" },
-    { id: "cosmetics", label: "Cosmetics", icon: "sparkle" },
-    { id: "extras", label: "Extras", icon: "flag" }
+    { id: "coins", label: "Coins", icon: "coin" }
   ]
 };
 
@@ -339,7 +336,7 @@ const CONFIG = {
     return svg(ICONS[name] || ICONS.star, !!SOLID[name]);
   };
   const CHECK = "M5 12.5l4.5 4.5L19 7.5", CART = "M3 4h2l2.4 11h10.4l2-8H6.2M9 20h.01M17 20h.01";
-  const hero = $("#hero"), grid = $("#grid"), tabsEl = $("#tabs");
+  const grid = $("#grid"), tabsEl = $("#tabs");
   let anyOff = false;
   const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
   const priceText = (p) => (p.price != null && p.price !== "" ? (typeof p.price === "number" ? CONFIG.currency + p.price.toFixed(2) : String(p.price)) : "");
@@ -379,7 +376,7 @@ const CONFIG = {
     const tile = el("div", "tile"); tile.appendChild(icon(p.icon)); return tile;
   }
   function card(p, i) {
-    const c = el("article", "card");
+    const c = el("article", "card" + (p.best ? " best" : ""));
     c.style.setProperty("--i", i);
     if (p.color) c.style.setProperty("--tc", p.color);
     if (p.chip) c.appendChild(el("span", "chip", p.chip));
@@ -403,11 +400,17 @@ const CONFIG = {
   }
   function render(cat) {
     anyOff = false;
-    hero.textContent = ""; grid.textContent = "";
-    const items = CONFIG.products.filter((p) => cat === "all" || p.cat === cat);
-    const feat = items.find((p) => p.featured && (cat === "all" || cat === "ranks"));
-    if (feat) hero.appendChild(heroCard(feat));
-    items.filter((p) => p !== feat).forEach((p, i) => grid.appendChild(card(p, i)));
+    grid.textContent = "";
+    CONFIG.categories.filter((c) => c.id !== "all" && (cat === "all" || cat === c.id)).forEach((c) => {
+      const items = CONFIG.products.filter((p) => p.cat === c.id);
+      if (!items.length) return;
+      const sec = el("section", "sec");
+      sec.appendChild(el("h2", "sec-title", c.label));
+      const g = el("div", "grid" + (c.id === "ranks" ? " ranks" : " four"));
+      items.forEach((p, i) => g.appendChild(card(p, i)));
+      sec.appendChild(g);
+      grid.appendChild(sec);
+    });
     $("#note").hidden = !anyOff;
   }
   CONFIG.categories.forEach((c, i) => {
