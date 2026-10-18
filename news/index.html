@@ -238,6 +238,7 @@ button{font:inherit}
 @media (max-width:560px){.mg .mgb{display:flex;width:100%;margin:10px 0 0}.wc-head .mgb{width:auto}}
 
 @media (max-width:400px){.link{padding:10px 6px;font-size:.8rem}.link-discord{padding:9px 10px}}
+.doc.wide{max-width:1040px}
 </style>
 <style>
 .doc{position:relative;z-index:10;max-width:820px;margin:0 auto;padding:118px 20px 40px}
@@ -297,7 +298,7 @@ button{font:inherit}
 .wc-news{margin-top:22px}
 .wc-news h2{margin:0 0 12px}
 .wc-n{padding:16px 18px;border-radius:18px;background:rgba(6,16,28,.6);border:1px solid rgba(255,255,255,.1);margin-bottom:12px}
-.wc-n img{display:block;width:100%;max-height:220px;object-fit:cover;border-radius:12px;margin-bottom:12px}
+.wc-n img{display:block;width:100%;max-width:960px;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:12px;margin-bottom:12px}
 .wc-n b{display:block;font:700 1.02rem var(--font-head)}
 .wc-n small{color:#6fd0ff;font-size:.78rem}
 .wc-v{display:flex;align-items:center;gap:8px;margin-top:12px}
@@ -341,7 +342,7 @@ button{font:inherit}
   </nav>
 </header>
 
-<main class="doc"><h1>News</h1><div class="upd">What is new on the server. Also in the <a href="../app/">Android app</a>.</div><div id="newsroot"></div></main>
+<main class="doc wide"><h1>News</h1><div class="upd">What is new on the server. Also in the <a href="../app/">Android app</a>.</div><div id="newsroot"></div></main>
 <nav class="legal-links" aria-label="Legal"><a href="../privacy/">Privacy Policy</a><a href="../terms/">Terms of Service</a><a href="../refunds/">Refund Policy</a><a href="../seller/">Seller information</a><a href="../manage/">Manage subscription</a><a href="../support/">Support</a></nav>
 <script src="../legal.js"></script>
 <script>
