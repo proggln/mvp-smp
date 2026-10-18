@@ -2,7 +2,7 @@
 window.LEGAL = {
   operator: "MVP+",          // the adult / company that receives the payments
   email:    "info.mvpog@gmail.com",               // public support email
-  country:  "[Country of the operator]",     // for the governing law, e.g. Lithuania
+  country:  "Lithuania",     // for the governing law, e.g. Lithuania
   retention:"1 year",                // how long order records are kept (accounting law, ask your accountant)
   portal:   "https://billing.stripe.com/p/login/[your-portal-id]",   // Stripe: Settings -> Billing -> Customer portal -> activate, then copy the login link
   updated:  "18 October 2026"
