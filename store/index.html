@@ -130,15 +130,15 @@ button{font:inherit}
 .card h2{position:relative;font:800 1.7rem/1.1 var(--font-head)}
 .price{position:relative;font:800 2.5rem/1 var(--font-head);color:#fff}
 .fx{display:block;margin-top:6px;font:500 .8rem/1 var(--font-body,inherit);color:var(--muted)}
-.fxbar{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 18px;font-size:.82rem;color:var(--muted);animation:rise .9s cubic-bezier(.2,.8,.2,1) .22s both}
+.fxbar{position:relative;z-index:40;display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 18px;font-size:.82rem;color:var(--muted);animation:rise .9s cubic-bezier(.2,.8,.2,1) .22s both}
 .fxbtn{display:inline-flex;align-items:center;gap:8px;padding:8px 14px 8px 16px;border-radius:999px;background:rgba(6,16,28,.6);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:#fff;font:700 .85rem/1 var(--font-head,inherit);letter-spacing:.04em;cursor:pointer;transition:border-color .2s,box-shadow .2s,background .2s}
 .fxbtn:hover,.fxbtn[aria-expanded=true]{border-color:rgba(76,195,255,.6);box-shadow:0 0 0 3px rgba(76,195,255,.14),0 8px 24px rgba(0,129,204,.25)}
 .fxbtn svg{width:14px;height:14px;transition:transform .2s}
 .fxbtn[aria-expanded=true] svg{transform:rotate(180deg)}
-.fxmenu{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);z-index:30;display:none;grid-template-columns:repeat(5,1fr);gap:6px;width:min(340px,calc(100vw - 36px));padding:10px;border-radius:20px;background:rgba(6,16,28,.92);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 18px 50px rgba(0,0,0,.55)}
+.fxmenu{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);z-index:30;display:none;grid-template-columns:repeat(5,1fr);gap:6px;width:min(340px,calc(100vw - 36px));padding:10px;border-radius:20px;background:rgba(6,16,28,.98);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 18px 50px rgba(0,0,0,.55)}
 .fxmenu.open{display:grid}
-.fxmenu button{padding:9px 0;border-radius:12px;border:1px solid transparent;background:rgba(255,255,255,.05);color:#cfe3f1;font:600 .78rem/1 var(--font-head,inherit);letter-spacing:.03em;cursor:pointer;transition:background .15s,color .15s,border-color .15s}
-.fxmenu button:hover{background:rgba(76,195,255,.18);color:#fff}
+.fxmenu button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0;border-radius:12px;border:1px solid transparent;background:rgba(255,255,255,.05);color:#cfe3f1;font:600 .78rem/1 var(--font-head,inherit);letter-spacing:.03em;cursor:pointer;transition:background .15s,color .15s,border-color .15s}
+.fxmenu button b{font:700 1rem/1 var(--font-head,inherit)}.fxmenu button i{font:600 .6rem/1 var(--font-head,inherit);font-style:normal;opacity:.65;letter-spacing:.05em}.fxmenu button:hover{background:rgba(76,195,255,.18);color:#fff}
 .fxmenu button.on{background:linear-gradient(180deg,#22a6f2,#0081cc);color:#fff;border-color:rgba(255,255,255,.25)}
 .price small{font-size:.9rem;font-weight:600;color:var(--muted)}
 .price .was{position:absolute;left:0;top:-1.25rem;font:600 1rem/1.2 var(--font-head);color:var(--muted);text-decoration:line-through}
@@ -283,7 +283,7 @@ button{font:inherit}
     <p>Support MVP SMP and unlock ranks, crate keys and coins.</p>
   </header>
   <div class="tabs" id="tabs" role="tablist" aria-label="Store categories"></div>
-  <div class="fxbar"><span>Show approx. price in</span><button type="button" class="fxbtn" id="fxbtn" aria-haspopup="listbox" aria-expanded="false"><span id="fxcur">EUR</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8l5 5 5-5"/></svg></button><div class="fxmenu" id="fxmenu" role="listbox" aria-label="Currency"></div></div>
+  <div class="fxbar"><span>Show approx. price in</span><button type="button" class="fxbtn" id="fxbtn" aria-haspopup="listbox" aria-expanded="false"><span id="fxcur">€ EUR</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8l5 5 5-5"/></svg></button><div class="fxmenu" id="fxmenu" role="listbox" aria-label="Currency"></div></div>
   <div class="sections" id="grid" aria-live="polite"></div>
   <ol class="steps" aria-label="How it works">
     <li><b>1</b><span>Pick an item</span></li>
@@ -715,17 +715,18 @@ const CONFIG = {
 
 /* ---------- Approximate prices in other currencies (display only) ---------- */
 (function () {
-  var LIST = ["EUR","USD","GBP","PLN","CAD","AUD","CHF","SEK","NOK","DKK","CZK","TRY","BRL","UAH","RUB"];
-  var REG = {US:"USD",GB:"GBP",PL:"PLN",CA:"CAD",AU:"AUD",CH:"CHF",SE:"SEK",NO:"NOK",DK:"DKK",CZ:"CZK",TR:"TRY",BR:"BRL",UA:"UAH",RU:"RUB"};
+  var LIST = ["EUR","USD","GBP","PLN","CAD","AUD","CHF","SEK","NOK","DKK","CZK","HUF","RON","TRY","BRL","UAH","RUB","KZT","JPY","INR"];
+  var SYM = {EUR:"€",USD:"$",GBP:"£",PLN:"zł",CAD:"C$",AUD:"A$",CHF:"Fr",SEK:"kr",NOK:"kr",DKK:"kr",CZK:"Kč",HUF:"Ft",RON:"lei",TRY:"₺",BRL:"R$",UAH:"₴",RUB:"₽",KZT:"₸",JPY:"¥",INR:"₹"};
+  var REG = {US:"USD",GB:"GBP",PL:"PLN",CA:"CAD",AU:"AUD",CH:"CHF",SE:"SEK",NO:"NOK",DK:"DKK",CZ:"CZK",TR:"TRY",BR:"BRL",UA:"UAH",RU:"RUB",HU:"HUF",RO:"RON",KZ:"KZT",JP:"JPY",IN:"INR"};
   var rates = null, cur = "EUR", btn = document.getElementById("fxbtn"), menu = document.getElementById("fxmenu"), lab = document.getElementById("fxcur");
   function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function put(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
   var saved = get("fxCur");
   if (saved && LIST.indexOf(saved) >= 0) cur = saved;
   else { var m = (navigator.language || "").match(/-([A-Za-z]{2})$/); if (m && REG[m[1].toUpperCase()]) cur = REG[m[1].toUpperCase()]; }
-  function mark() { lab.textContent = cur; menu.querySelectorAll("button").forEach(function (b) { var on = b.dataset.c === cur; b.classList.toggle("on", on); b.setAttribute("aria-selected", on); }); }
+  function mark() { lab.textContent = SYM[cur] + " " + cur; menu.querySelectorAll("button").forEach(function (b) { var on = b.dataset.c === cur; b.classList.toggle("on", on); b.setAttribute("aria-selected", on); }); }
   function setOpen(o) { menu.classList.toggle("open", o); btn.setAttribute("aria-expanded", o); }
-  LIST.forEach(function (c) { var b = document.createElement("button"); b.type = "button"; b.dataset.c = c; b.setAttribute("role", "option"); b.textContent = c; b.addEventListener("click", function () { cur = c; put("fxCur", cur); mark(); paint(); setOpen(false); }); menu.appendChild(b); });
+  LIST.forEach(function (c) { var b = document.createElement("button"); b.type = "button"; b.dataset.c = c; b.setAttribute("role", "option"); b.innerHTML = "<b>" + SYM[c] + "</b><i>" + c + "</i>"; b.title = c; b.addEventListener("click", function () { cur = c; put("fxCur", cur); mark(); paint(); setOpen(false); }); menu.appendChild(b); });
   btn.addEventListener("click", function (e) { e.stopPropagation(); setOpen(!menu.classList.contains("open")); });
   document.addEventListener("click", function (e) { if (!menu.contains(e.target)) setOpen(false); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") setOpen(false); });
@@ -734,15 +735,20 @@ const CONFIG = {
     document.querySelectorAll(".fx").forEach(function (n) {
       if (cur === "EUR" || !rates || !rates[cur]) { if (n.textContent) n.textContent = ""; return; }
       var v = parseFloat(n.dataset.eur) * rates[cur], t;
-      try { t = new Intl.NumberFormat(undefined, { style: "currency", currency: cur }).format(v); } catch (e) { t = v.toFixed(2) + " " + cur; }
+      try { t = new Intl.NumberFormat(undefined, { style: "currency", currency: cur, currencyDisplay: "narrowSymbol" }).format(v); } catch (e) { t = SYM[cur] + v.toFixed(2); }
       var out = "\u2248 " + t + " (approx.)"; if (n.textContent !== out) n.textContent = out;
     });
   }
-  var cached = null; try { cached = JSON.parse(get("fxRates") || "null"); } catch (e) {}
+  var cached = null; try { cached = JSON.parse(get("fxRates2") || "null"); } catch (e) {}
   if (cached && cached.t && Date.now() - cached.t < 6 * 3600e3) { rates = cached.r; }
+  function ok(r) { rates = r; put("fxRates2", JSON.stringify({ t: Date.now(), r: r })); paint(); }
   function load() {
-    fetch("https://api.frankfurter.dev/v1/latest?base=EUR&symbols=" + LIST.filter(function (c) { return c !== "EUR"; }).join(","))
-      .then(function (r) { return r.json(); }).then(function (j) { if (j && j.rates) { rates = j.rates; put("fxRates", JSON.stringify({ t: Date.now(), r: rates })); paint(); } }).catch(function () {});
+    fetch("https://open.er-api.com/v6/latest/EUR").then(function (r) { return r.json(); })
+      .then(function (j) { if (j && j.rates && j.rates.RUB) ok(j.rates); else throw 0; })
+      .catch(function () {
+        fetch("https://api.frankfurter.dev/v1/latest?base=EUR").then(function (r) { return r.json(); })
+          .then(function (j) { if (j && j.rates) ok(j.rates); }).catch(function () {});
+      });
   }
   if (!rates) load();
   new MutationObserver(paint).observe(document.getElementById("grid"), { childList: true, subtree: true });
