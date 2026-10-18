@@ -312,7 +312,6 @@ const CONFIG = {
   currency: "€",
   // Store backend (Cloudflare Worker): empty = the Buy buttons stay "Coming soon".
   api: (function () { var D = "https://mvp-shop.mvp-shop.workers.dev"; try { var a = new URLSearchParams(location.search).get("api") || ""; return /^https:\/\/[a-z0-9.-]+\.workers\.dev$/i.test(a) ? a : D; } catch (e) { return D; } })(),
-  api: (function () { try { var a = new URLSearchParams(location.search).get("api") || ""; return /^https:\/\/[a-z0-9.-]+\.workers\.dev$/i.test(a) ? a : ""; } catch (e) { return ""; } })(),
   // STORE ITEMS: ready-made EXAMPLES for a Minecraft SMP. Edit names, prices and perks to match your server,
   // and paste a checkout link per item (Tebex, Stripe Payment Link, PayPal...). Empty checkout = "Coming soon".
   // cat: ranks | keys | coins | cosmetics | extras   icon: see ICONS in the script   color: card accent
