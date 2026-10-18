@@ -302,13 +302,17 @@ button{font:inherit}
 .wc-n img{display:block;width:100%;max-width:960px;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:12px;margin-bottom:12px}
 .wc-n b{display:block;font:800 clamp(1.6rem,4.2vw,2.3rem)/1.15 var(--font-head);letter-spacing:-.02em;margin:2px 0 6px;padding-left:14px;border-left:4px solid #22a6f2;background:linear-gradient(90deg,#fff 30%,#9fdcff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;word-break:break-word}
 .wc-n small{display:block;color:#6fd0ff;font-size:.82rem;margin:0 0 10px 18px}
-.wc-v{display:flex;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap}
-.wc-v button{display:inline-flex;align-items:center;gap:9px;min-height:50px;padding:0 20px;border-radius:16px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.05);color:#cfe3f1;font:600 1rem var(--font-body);cursor:pointer;transition:transform .12s,background .15s,border-color .15s}
-.wc-v button b{font:800 1.25rem var(--font-head);-webkit-text-fill-color:currentColor;background:none;border:0;padding:0;margin:0;letter-spacing:0;display:inline}
-.wc-v button:hover{background:rgba(34,166,242,.15);border-color:#6fd0ff}.wc-v button:active{transform:scale(.95)}
-.wc-v button.on{background:linear-gradient(180deg,#22a6f2,#0081cc);border-color:#6fd0ff;color:#fff;box-shadow:0 6px 18px rgba(0,129,204,.4)}
-.wc-v span.eye{display:inline-flex;align-items:center;gap:8px;margin-left:auto;color:#9db6c9;font-size:1.1rem}.wc-v span.eye b{font:800 1.4rem var(--font-head);color:#fff;-webkit-text-fill-color:#fff;background:none;border:0;padding:0;margin:0;display:inline}
-.wc-v span{margin-left:auto;color:#9db6c9;font-size:.9rem}
+.wc-v{display:flex;align-items:center;gap:12px;margin-top:16px;flex-wrap:wrap}
+.wc-v button{display:inline-flex;align-items:center;gap:10px;height:54px;padding:0 24px;border:0;background:transparent;color:#b9d3e6;font:700 1rem var(--font-body);cursor:pointer;transition:background .12s,color .12s}
+.wc-v button b{font:800 1.3rem var(--font-head);-webkit-text-fill-color:currentColor;background:none;border:0;padding:0;margin:0;letter-spacing:0;display:inline;min-width:1ch}
+.wc-v button:hover{background:rgba(255,255,255,.07)}
+.wc-v button:active svg{transform:scale(1.3)}.wc-v button svg{transition:transform .15s}
+.wc-v button:first-of-type{border-right:1px solid rgba(255,255,255,.14)}
+
+.wc-v button.on{color:#fff;background:#0b6fb3}.wc-v button:nth-of-type(2).on{background:#b8323f}
+.wc-v .seg{display:inline-flex}
+.wc-v span.eye{display:inline-flex;align-items:center;gap:10px;margin-left:auto;height:54px;padding:0 22px;border-radius:999px;background:rgba(111,208,255,.1);color:#6fd0ff}.wc-v span.eye b{font:800 1.45rem var(--font-head);color:#fff;-webkit-text-fill-color:#fff;background:none;border:0;padding:0;margin:0;display:inline}
+.wc-v .seg{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:999px;overflow:hidden}
 .wc-vid{position:relative;aspect-ratio:16/9;margin-top:12px;border-radius:12px;overflow:hidden;background:#000}
 .wc-vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .wc-n p a{color:#6fd0ff}
@@ -477,22 +481,26 @@ button{font:inherit}
         var bar = document.createElement("div"); bar.className = "wc-v";
         var up = document.createElement("button"), dn = document.createElement("button"), ey = document.createElement("span");
         up.type = dn.type = "button"; up.setAttribute("aria-label", "Like"); dn.setAttribute("aria-label", "Dislike");
-        var IC_UP = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11v9H4v-9z"/><path d="M7 11l4-8a2.2 2.2 0 0 1 2.2 2.6L12.6 9H19a2 2 0 0 1 2 2.4l-1.4 7A2 2 0 0 1 17.6 20H7"/></svg>';
-      var IC_DN = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(180deg)"><path d="M7 11v9H4v-9z"/><path d="M7 11l4-8a2.2 2.2 0 0 1 2.2 2.6L12.6 9H19a2 2 0 0 1 2 2.4l-1.4 7A2 2 0 0 1 17.6 20H7"/></svg>';
-      var IC_EY = '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+        var IC_UP = '<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M2 10.5h4V21H2zM8 10.5l3.6-7.1c.5-1 2-.9 2.4.2.3.8.3 1.7.1 2.5l-.6 2.4h5.7c1.3 0 2.3 1.2 2 2.5l-1.4 7c-.2 1-1.1 1.9-2.2 1.9H8z"/></svg>';
+      var IC_DN = '<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" style="transform:rotate(180deg)"><path d="M2 10.5h4V21H2zM8 10.5l3.6-7.1c.5-1 2-.9 2.4.2.3.8.3 1.7.1 2.5l-.6 2.4h5.7c1.3 0 2.3 1.2 2 2.5l-1.4 7c-.2 1-1.1 1.9-2.2 1.9H8z"/></svg>';
+      var IC_EY = '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3.2" fill="currentColor"/></svg>';
       function paint() {
           up.innerHTML = IC_UP + "<b>" + n.likes + "</b>"; dn.innerHTML = IC_DN + "<b>" + n.dislikes + "</b>";
           up.className = n.my === 1 ? "on" : ""; dn.className = n.my === -1 ? "on" : "";
           ey.innerHTML = IC_EY + "<b>" + n.views + "</b>";
         }
         function vote(v) {
-          var next = n.my === v ? 0 : v;
-          call("POST", "/api/app/vote", { news_id: n.id, vote: next }, tk).then(function (r) {
-            if (!r.ok || r.j.likes === undefined) { ey.textContent = "Voting opens when the owner sets your nickname."; return; }
-            n.likes = r.j.likes; n.dislikes = r.j.dislikes; n.my = r.j.my; paint();
-          }).catch(function () {});
-        }
-        up.onclick = function () { vote(1); }; dn.onclick = function () { vote(-1); };
+        if (!tk) { note.innerHTML = '<a href="../card/">Create your card</a> to vote.'; return; }
+        var prev = { l: n.likes, d: n.dislikes, m: n.my }, next = n.my === v ? 0 : v;
+        if (n.my === 1) n.likes--; if (n.my === -1) n.dislikes--;
+        if (next === 1) n.likes++; if (next === -1) n.dislikes++;
+        n.my = next; note.textContent = ""; paint();
+        call("POST", "/api/app/vote", { news_id: n.id, vote: next }, tk).then(function (r) {
+          if (!r.ok || r.j.likes === undefined) { n.likes = prev.l; n.dislikes = prev.d; n.my = prev.m; paint(); note.textContent = "Voting opens when the owner sets your nickname."; return; }
+          n.likes = r.j.likes; n.dislikes = r.j.dislikes; n.my = r.j.my; paint();
+        }).catch(function () { n.likes = prev.l; n.dislikes = prev.d; n.my = prev.m; paint(); });
+      }
+      up.onclick = function () { vote(1); }; dn.onclick = function () { vote(-1); };
         bar.append(up, dn, ey); w.appendChild(bar); box.appendChild(w); paint();
         call("POST", "/api/app/view", { news_id: n.id }, tk).then(function (r) { if (r.ok && r.j.views !== undefined) { n.views = r.j.views; paint(); } }).catch(function () {});
       });
