@@ -359,7 +359,11 @@ button{font:inherit}
   var API = "https://mvp-news-api.mvp-shop.workers.dev", KEY = "mvp_card_token", LIMIT = 100;
   var root = document.getElementById("newsroot");
   function esc(t) { return String(t == null ? "" : t).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
-  function getTok() { try { return localStorage.getItem(KEY) || ""; } catch (e) { return ""; } }
+  function getTok() {
+    var t = ""; try { t = localStorage.getItem(KEY) || ""; } catch (e) {}
+    if (!t) { var m = document.cookie.match(new RegExp("(?:^|; )" + KEY + "=([^;]+)")); if (m) { t = m[1]; try { localStorage.setItem(KEY, t); } catch (e) {} } }
+    return t;
+  }
   function call(method, path, body, tok) {
     var o = { method: method, headers: {} };
     if (tok) o.headers["Authorization"] = "Bearer " + tok;

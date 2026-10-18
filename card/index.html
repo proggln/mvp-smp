@@ -359,8 +359,16 @@ button{font:inherit}
   var API = "https://mvp-news-api.mvp-shop.workers.dev", KEY = "mvp_card_token";
   var root = document.getElementById("cardroot"), poll = null, tilt = null;
   function esc(t) { return String(t == null ? "" : t).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
-  function getTok() { try { return localStorage.getItem(KEY) || ""; } catch (e) { return ""; } }
-  function setTok(t) { try { if (t) localStorage.setItem(KEY, t); else localStorage.removeItem(KEY); } catch (e) {} }
+  function getTok() {
+    var t = ""; try { t = localStorage.getItem(KEY) || ""; } catch (e) {}
+    if (!t) { var m = document.cookie.match(new RegExp("(?:^|; )" + KEY + "=([^;]+)")); if (m) { t = m[1]; try { localStorage.setItem(KEY, t); } catch (e) {} } }
+    return t;
+  }
+  function setTok(t) {
+    try { if (t) localStorage.setItem(KEY, t); else localStorage.removeItem(KEY); } catch (e) {}
+    try { document.cookie = KEY + "=" + (t || "") + "; path=/; max-age=" + (t ? 31536000 : 0) + "; SameSite=Lax; Secure"; } catch (e) {}
+    try { if (t && navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
+  }
   function call(method, path, body, tok) {
     var o = { method: method, headers: {} };
     if (tok) o.headers["Authorization"] = "Bearer " + tok;
@@ -423,7 +431,7 @@ button{font:inherit}
     call("GET", "/api/app/me", null, tok).then(function (r) {
       if (r.status === 401) { setTok(""); loginView(); return; }
       if (!r.ok) { root.innerHTML = '<div class="card2 mg"><h1>My card</h1><div class="mgmsg">Cannot load your card. Try again later.</div></div>'; return; }
-      var p = r.j;
+      var p = r.j; setTok(tok);
       root.innerHTML = '<div id="evbox"></div>' +
         '<div class="wc-head"><div><h1>My card</h1><div class="upd" style="margin:6px 0 0">Welcome back, ' + esc(p.nick || "player") + '</div></div><button class="mgb ghost" id="wcout" type="button">Sign out</button></div>' +
         '<div class="wc-grid"><div><div class="wc-stage"><div class="wc" id="wccard">' +
