@@ -227,6 +227,7 @@ button{font:inherit}
 @media (max-width:470px){
   .brand-text{display:none}
 }
+@media (max-width:640px){.nav{padding:6px 6px 6px 14px}.menu{gap:2px}.link{padding:9px 12px}.link-discord{padding:9px 13px}.link-discord .dt{display:none}.dc{width:22px;height:17px}}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
   .ip-card{transform:none}
@@ -259,9 +260,8 @@ button{font:inherit}
     <a href="../" class="link">Home</a>
     <a href="./" class="link active" aria-current="page">Store</a>
     <a href="../wiki/" class="link">Wiki</a>
-    <a href="https://discord.gg/CWTBxgBdr" class="link link-discord" data-discord target="_blank" rel="noopener noreferrer">
-      <i class="dc" aria-hidden="true"></i>
-      Discord
+    <a href="https://discord.gg/CWTBxgBdr" aria-label="Discord" class="link link-discord" data-discord target="_blank" rel="noopener noreferrer">
+      <i class="dc" aria-hidden="true"></i><span class="dt">Discord</span>
     </a>
   </nav>
 </header>

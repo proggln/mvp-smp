@@ -172,6 +172,7 @@ details[open] summary::after{content:"−"}
 .tile:hover,.size:hover,.step:hover{transform:translateY(-4px);border-color:rgba(111,208,255,.45);background:rgba(10,30,50,.7)}
 .tile:hover .px,.size:hover .blk,.step:hover .px{animation:bob .9s ease-in-out infinite alternate}
 @keyframes bob{to{transform:translateY(-4px)}}
+@media (max-width:640px){.nav{padding:6px 6px 6px 14px}.menu{gap:2px}.link{padding:9px 12px}.link-discord{padding:9px 13px}.link-discord .dt{display:none}.dc{width:22px;height:17px}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 
 .legal-links{position:relative;z-index:10;display:flex;flex-wrap:wrap;gap:6px 22px;justify-content:center;padding:6px 18px 34px;font-size:.85rem}
@@ -192,7 +193,7 @@ details[open] summary::after{content:"−"}
     <a href="../" class="link">Home</a>
     <a href="../store/" class="link">Store</a>
     <a href="./" class="link active" aria-current="page">Wiki</a>
-    <a href="https://discord.gg/CWTBxgBdr" class="link link-discord" target="_blank" rel="noopener noreferrer"><i class="dc" aria-hidden="true"></i>Discord</a>
+    <a href="https://discord.gg/CWTBxgBdr" aria-label="Discord" class="link link-discord" target="_blank" rel="noopener noreferrer"><i class="dc" aria-hidden="true"></i><span class="dt">Discord</span></a>
   </nav>
 </header>
 
