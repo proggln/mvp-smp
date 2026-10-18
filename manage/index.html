@@ -263,6 +263,29 @@ button{font:inherit}
 .mgsub{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:16px 18px;border-radius:16px;background:rgba(6,16,28,.6);border:1px solid rgba(255,255,255,.1);margin:12px 0}
 .mgsub b{font:700 1.05rem var(--font-head,inherit)}.mgsub small{display:block;color:var(--muted);margin-top:4px}
 .mgsub .act{display:flex;gap:8px;flex-wrap:wrap}
+.mgsteps{display:flex;gap:8px;margin:0 0 18px}.mgsteps i{flex:1;height:5px;border-radius:99px;background:rgba(255,255,255,.12)}.mgsteps i.on{background:linear-gradient(90deg,#22a6f2,#6fd0ff)}
+.mgwho{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin:0 0 14px;color:#cfe3f1}.mgwho button{background:none;border:0;color:var(--ice);text-decoration:underline;text-underline-offset:3px;cursor:pointer;font:600 .92rem var(--font-body,inherit);padding:8px 0;min-height:44px}
+.mgnote{display:flex;gap:10px;align-items:flex-start;padding:13px 16px;border-radius:14px;margin:0 0 14px;background:rgba(80,200,130,.12);border:1px solid rgba(80,200,130,.35);color:#b9f0cf;font-size:.95rem;line-height:1.45}
+.mgnote.err{background:rgba(241,100,107,.12);border-color:rgba(241,100,107,.4);color:#ffc9cc}
+.sub{padding:18px;border-radius:20px;margin:0 0 14px;background:linear-gradient(180deg,rgba(14,34,56,.75),rgba(5,14,26,.85));border:1px solid rgba(255,255,255,.1)}
+.sub.off{opacity:.92}
+.sub-h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.sub-h b{font:800 1.2rem var(--font-head,inherit)}.sub-h em{font-style:normal;font-size:.78rem;color:var(--muted);margin-left:8px;font-weight:500}
+.badge{font-size:.8rem;font-weight:700;padding:6px 12px;border-radius:999px;white-space:nowrap}
+.badge.ok{background:rgba(80,200,130,.18);color:#8be2a6}.badge.stop{background:rgba(255,184,77,.18);color:#ffcf85}
+.sub dl{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 16px}
+.sub dl div{padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.05)}
+.sub dt{font-size:.78rem;color:var(--muted);margin:0 0 4px}.sub dd{margin:0;font-weight:700;font-size:1rem;color:#fff}
+.sub .mgb{width:100%;min-height:48px}
+.mgb.outline{background:transparent;box-shadow:none;border:1.5px solid rgba(241,100,107,.6);color:#ffb4b8}
+.mgb.outline:hover{background:rgba(241,100,107,.12)}
+.mgmodal{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(2,8,16,.72);backdrop-filter:blur(6px)}
+.mgdlg{width:min(420px,100%);padding:24px 22px;border-radius:24px;background:linear-gradient(180deg,#0f2740,#071626);border:1px solid rgba(255,255,255,.14);box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.mgdlg h3{margin:0 0 8px;font:800 1.35rem var(--font-head,inherit)}.mgdlg p{margin:0 0 18px;color:#cfe3f1;line-height:1.55}
+.mgdlg .mgb{width:100%;min-height:48px;margin-top:10px}
+@media (max-width:420px){.sub dl{gap:8px}.sub dl div{padding:10px 12px}.sub dd{font-size:.92rem}}
+.sub-h em{white-space:nowrap;display:inline-block}
+
 </style>
 </head>
 <body>
@@ -309,10 +332,25 @@ button{font:inherit}
     return fetch(API + path, o).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, status: r.status, j: j }; }); });
   }
   function fmt(ms) { try { return new Date(ms).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" }); } catch (e) { return ""; } }
+  function steps(n) { return '<div class="mgsteps" aria-hidden="true"><i class="on"></i><i class="' + (n >= 2 ? "on" : "") + '"></i><i class="' + (n >= 3 ? "on" : "") + '"></i></div>'; }
+  function money(c) { return "\u20ac" + (c / 100).toFixed(2); }
+  function confirmBox(title, text, yesLabel, noLabel, danger, onYes) {
+    var prev = document.activeElement;
+    var m = document.createElement("div"); m.className = "mgmodal";
+    m.innerHTML = '<div class="mgdlg" role="dialog" aria-modal="true" aria-labelledby="mgdt"><h3 id="mgdt">' + esc(title) + '</h3><p>' + esc(text) + '</p><button type="button" class="mgb ' + (danger ? "danger" : "") + '" id="mgy">' + esc(yesLabel) + '</button><button type="button" class="mgb ghost" id="mgno">' + esc(noLabel) + '</button></div>';
+    document.body.appendChild(m);
+    function close() { document.removeEventListener("keydown", key); m.remove(); if (prev && prev.focus) prev.focus(); }
+    function key(e) { if (e.key === "Escape") close(); }
+    document.addEventListener("keydown", key);
+    m.addEventListener("click", function (e) { if (e.target === m) close(); });
+    m.querySelector("#mgno").addEventListener("click", close);
+    m.querySelector("#mgy").addEventListener("click", function () { close(); onYes(); });
+    m.querySelector("#mgno").focus();
+  }
   function stepNick() {
     if (poll) clearInterval(poll); poll = null;
     var saved = ""; try { saved = localStorage.getItem("mvpsmp.nick") || ""; } catch (e) {}
-    root.innerHTML = '<label for="mgn">Your Minecraft nickname</label><input id="mgn" maxlength="16" autocomplete="off" spellcheck="false" placeholder="Steve" value="' + esc(saved) + '"><button class="mgb" type="button" id="mgg">Continue</button><div class="mgmsg" id="mgm"></div>';
+    root.innerHTML = steps(1) + '<label for="mgn">Your Minecraft nickname</label><input id="mgn" maxlength="16" autocomplete="off" spellcheck="false" placeholder="Steve" value="' + esc(saved) + '"><button class="mgb" type="button" id="mgg">Continue</button><div class="mgmsg" id="mgm"></div>';
     var inp = document.getElementById("mgn"), btn = document.getElementById("mgg"), msg = document.getElementById("mgm");
     function go() {
       var n = inp.value.trim();
@@ -327,7 +365,7 @@ button{font:inherit}
     btn.addEventListener("click", go); inp.addEventListener("keydown", function (e) { if (e.key === "Enter") go(); });
   }
   function stepVerify(code) {
-    root.innerHTML = '<p>Join the server as <b>' + esc(nick) + '</b> and type this command in the game chat:</p><div class="mgcode">' + esc(code) + '</div><div class="mgcmd">/verify ' + esc(code) + '</div><p style="color:var(--muted)">Server: <b>' + esc(SERVER) + '</b>. This page continues by itself.</p><div class="mgmsg ok" id="mgm">Waiting for confirmation...</div><button class="mgb ghost" type="button" id="mgb">Back</button>';
+    root.innerHTML = steps(2) + '<p>Join the server as <b>' + esc(nick) + '</b> and type this command in the game chat:</p><div class="mgcode">' + esc(code) + '</div><div class="mgcmd">/verify ' + esc(code) + '</div><p style="color:var(--muted)">Server: <b>' + esc(SERVER) + '</b>. This page continues by itself.</p><div class="mgmsg ok" id="mgm">Waiting for confirmation...</div><button class="mgb ghost" type="button" id="mgb">Back</button>';
     document.getElementById("mgb").addEventListener("click", stepNick);
     var msg = document.getElementById("mgm");
     if (poll) clearInterval(poll);
@@ -338,38 +376,43 @@ button{font:inherit}
       }).catch(function () {});
     }, 2500);
   }
-  function stepList(note) {
-    root.innerHTML = '<p>Verified: <b>' + esc(nick) + '</b></p><div class="mgmsg ok" id="mgm">Loading your subscriptions...</div>';
+  function stepList(note, isErr) {
+    root.innerHTML = steps(3) + '<div class="mgmsg ok" id="mgm">Loading your subscriptions...</div>';
     api("/api/subs/list", { token: token }).then(function (r) {
       var msg = document.getElementById("mgm");
       if (r.status === 401) { stepNick(); return; }
       if (!r.ok) { msg.className = "mgmsg"; msg.textContent = r.j.error === "payments_disabled" ? "Subscriptions are not open yet." : "Something went wrong. Try again later."; return; }
       var subs = r.j.subs || [];
-      var h = '<p>Verified: <b>' + esc(nick) + '</b></p>';
-      if (note) h += '<div class="mgmsg ok">' + esc(note) + '</div>';
-      if (!subs.length) h += '<p>You have no active subscriptions.</p>';
+      var names = {}; subs.forEach(function (s) { names[s.name] = (names[s.name] || 0) + 1; });
+      var h = steps(3) + '<div class="mgwho"><span>Signed in as <b>' + esc(nick) + '</b></span><button type="button" id="mgchg">Not you?</button></div>';
+      if (note) h += '<div class="mgnote' + (isErr ? " err" : "") + '" role="status">' + esc(note) + '</div>';
+      if (!subs.length) h += '<div class="sub"><div class="sub-h"><b>No subscriptions</b></div><p style="margin:0;color:#cfe3f1">You have no active rank subscriptions on this nickname.</p></div>';
       subs.forEach(function (s) {
-        h += '<div class="mgsub" data-id="' + esc(s.id) + '"><div><b>' + esc(s.name) + '</b><small>' + (s.canceling ? 'Cancelled. Active until ' + esc(fmt(s.periodEnd)) + '.' : 'Renews on ' + esc(fmt(s.periodEnd)) + ' (' + '\u20ac' + (s.cents / 100).toFixed(2) + ' / month).') + '</small></div><div class="act">' +
-          (s.canceling ? '<button class="mgb ghost" type="button" data-act="undo">Keep subscription</button>' : '<button class="mgb danger" type="button" data-act="ask">Cancel subscription</button>') + '</div></div>';
+        var off = !!s.canceling, tag = names[s.name] > 1 ? '<em>ref ' + esc(String(s.id).slice(-4)) + '</em>' : "";
+        h += '<div class="sub' + (off ? " off" : "") + '" data-id="' + esc(s.id) + '" data-name="' + esc(s.name) + '" data-end="' + esc(fmt(s.periodEnd)) + '">' +
+          '<div class="sub-h"><span><b>' + esc(s.name) + '</b>' + tag + '</span><span class="badge ' + (off ? "stop" : "ok") + '">' + (off ? "Cancelled" : "Active") + '</span></div>' +
+          '<dl><div><dt>Price</dt><dd>' + money(s.cents) + ' / month</dd></div><div><dt>' + (off ? "Rank active until" : "Next payment") + '</dt><dd>' + esc(fmt(s.periodEnd)) + '</dd></div></dl>' +
+          (off ? '<button class="mgb" type="button" data-act="undo">Keep subscription</button>' : '<button class="mgb outline" type="button" data-act="ask">Cancel subscription</button>') + '</div>';
       });
-      root.innerHTML = h + '<div class="mgmsg" id="mgm"></div>';
+      root.innerHTML = h;
+      document.getElementById("mgchg").addEventListener("click", function () { token = ""; stepNick(); });
       root.querySelectorAll("button[data-act]").forEach(function (b) { b.addEventListener("click", function () { onAct(b); }); });
-    }).catch(function () { document.getElementById("mgm").textContent = "Cannot reach the store. Try again later."; });
+    }).catch(function () { var m = document.getElementById("mgm"); m.className = "mgmsg"; m.textContent = "Cannot reach the store. Try again later."; });
+  }
+  function doChange(box, id, undo) {
+    box.querySelectorAll("button").forEach(function (x) { x.disabled = true; });
+    var name = box.getAttribute("data-name");
+    api("/api/subs/cancel", { token: token, id: id, undo: undo }).then(function (r) {
+      if (r.status === 401) { stepNick(); return; }
+      if (!r.ok) { stepList("Could not change the subscription. Try again in a minute.", true); return; }
+      var end = r.j && r.j.periodEnd ? fmt(r.j.periodEnd) : box.getAttribute("data-end");
+      stepList(undo ? name + " will renew as usual. Next payment: " + end + "." : name + " is cancelled. You will not be charged again, and your rank stays active until " + end + ".");
+    }).catch(function () { stepList("Cannot reach the store. Try again later.", true); });
   }
   function onAct(b) {
-    var box = b.closest(".mgsub"), id = box.getAttribute("data-id"), act = b.getAttribute("data-act");
-    if (act === "ask") {
-      box.querySelector(".act").innerHTML = '<span style="color:var(--muted)">Are you sure?</span><button class="mgb danger" type="button" data-act="yes">Yes, cancel</button><button class="mgb ghost" type="button" data-act="no">No</button>';
-      box.querySelectorAll("button").forEach(function (x) { x.addEventListener("click", function () { onAct(x); }); });
-      return;
-    }
-    if (act === "no") { stepList(); return; }
-    box.querySelectorAll("button").forEach(function (x) { x.disabled = true; });
-    api("/api/subs/cancel", { token: token, id: id, undo: act === "undo" }).then(function (r) {
-      if (r.status === 401) { stepNick(); return; }
-      if (!r.ok) { box.querySelectorAll("button").forEach(function (x) { x.disabled = false; }); document.getElementById("mgm").textContent = "Could not change the subscription. Try again in a minute."; return; }
-      stepList(act === "undo" ? "Done. Your subscription will renew as usual." : "Done. Your subscription is cancelled. Your rank stays active until " + fmt(r.j.periodEnd) + ".");
-    }).catch(function () { box.querySelectorAll("button").forEach(function (x) { x.disabled = false; }); document.getElementById("mgm").textContent = "Cannot reach the store. Try again later."; });
+    var box = b.closest(".sub"), id = box.getAttribute("data-id"), act = b.getAttribute("data-act"), name = box.getAttribute("data-name"), end = box.getAttribute("data-end");
+    if (act === "undo") { doChange(box, id, true); return; }
+    confirmBox("Cancel " + name + "?", "You will not be charged again. Your rank stays active until " + end + ", and you can change your mind until then.", "Yes, cancel subscription", "Keep it", true, function () { doChange(box, id, false); });
   }
   stepNick();
 })();
