@@ -492,6 +492,8 @@ const CONFIG = {
     var paid = q.get("paid"), canceled = q.get("canceled");
     if (!paid && !canceled) return;
     window.addEventListener("load", function () {
+      // remove paid/canceled from the address: a refresh (F5) must not show this window again
+      try { q.delete("paid"); q.delete("canceled"); var rest = q.toString(); history.replaceState(null, "", location.pathname + (rest ? "?" + rest : "") + location.hash); } catch (e) {}
       if (!bm) {
         bm = el("div", "bm");
         bm.addEventListener("click", function (e) { if (e.target === bm) closeBuy(); });
