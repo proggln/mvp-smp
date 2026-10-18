@@ -1,7 +1,7 @@
 // FILL THIS IN ONCE: these values appear on the Privacy Policy, Terms, Refund Policy and Support pages.
 window.LEGAL = {
-  operator: "[Operator full name]",          // the adult / company that receives the payments
-  email:    "[contact email]",               // public support email
+  operator: "MVP+",          // the adult / company that receives the payments
+  email:    "info.mvpog@gmail.com",               // public support email
   country:  "[Country of the operator]",     // for the governing law, e.g. Lithuania
   retention:"[number] years",                // how long order records are kept (accounting law, ask your accountant)
   portal:   "https://billing.stripe.com/p/login/[your-portal-id]",   // Stripe: Settings -> Billing -> Customer portal -> activate, then copy the login link
