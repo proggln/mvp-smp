@@ -424,7 +424,7 @@ const CONFIG = {
     return bm.querySelector(".bm-box");
   }
   const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  function summary(p) { return '<div class="bm-sum"><b>' + esc(p.name) + '</b><span>' + esc(priceText(p)) + '</span></div>'; }
+  function summary(p) { return '<div class="bm-sum"><b>' + esc(p.name) + '</b><span>' + esc(priceText(p)) + (p.period ? ' <small style="font-weight:600;color:#9db6c9">' + esc(p.period) + '</small>' : '') + '</span></div>'; }
   function stepNick(p) {
     if (poll) clearInterval(poll); poll = null;
     let saved = ""; try { saved = localStorage.getItem(SKEY) || ""; } catch (e) {}
@@ -464,8 +464,8 @@ const CONFIG = {
   }
   function stepOrder(p, nick, token) {
     const box = shell('<h3>Nickname confirmed</h3><div class="bm-sub bm-ok">Verified: <b>' + esc(nick) + '</b></div>' + summary(p) +
-      '<label class="bm-agree"><input type="checkbox" id="bmc"><span>I agree to the <a href="../terms/" target="_blank" rel="noopener">Terms</a> and <a href="../refunds/" target="_blank" rel="noopener">Refund Policy</a>, and to immediate delivery of these digital items. I understand that once they are delivered I lose the right of withdrawal.</span></label>' +
-      '<button class="buy bm-btn" type="button">' + (window.__payReal ? 'Pay ' + esc(priceText(p)) : 'Place order') + '</button><div class="bm-msg"></div>');
+      '<label class="bm-agree"><input type="checkbox" id="bmc"><span>I agree to the <a href="../terms/" target="_blank" rel="noopener">Terms</a> and <a href="../refunds/" target="_blank" rel="noopener">Refund Policy</a>, and to immediate delivery of these digital items. I understand that once they are delivered I lose the right of withdrawal.' + (p.period ? ' I also understand this is a <b>monthly subscription</b> that renews automatically at ' + esc(priceText(p)) + ' per month until I cancel it.' : '') + '</span></label>' +
+      '<button class="buy bm-btn" type="button">' + (window.__payReal ? 'Pay ' + esc(priceText(p)) + (p.period ? ' / month' : '') : 'Place order') + '</button><div class="bm-msg"></div>');
     const btn = box.querySelector(".bm-btn"), msg = box.querySelector(".bm-msg"), agree = box.querySelector("#bmc");
     btn.addEventListener("click", () => {
       if (!agree.checked) { msg.textContent = "Please tick the box to continue."; return; }
@@ -482,7 +482,7 @@ const CONFIG = {
   }
   function stepDone(p, nick, j) {
     shell('<h3>Order #' + esc(j.id) + ' placed</h3><div class="bm-sub bm-ok">' + (j.test ? "Test mode: no payment was taken." : "Thank you!") + '</div>' + summary(p) +
-      '<div class="bm-sub">Stay online as <b>' + esc(nick) + '</b>: your items are delivered in the game within seconds. If you are offline, you get them when you join.</div>' +
+      '<div class="bm-sub">Stay online as <b>' + esc(nick) + '</b>: your items are delivered in the game within seconds. If you are offline, you get them when you join.' + (p.period ? ' You can cancel the subscription any time (see Support).' : '') + '</div>' +
       '<button class="buy bm-btn" type="button">Done</button>').querySelector(".bm-btn").addEventListener("click", closeBuy);
   }
 
