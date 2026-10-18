@@ -354,6 +354,7 @@ button{font:inherit}
 <nav class="legal-links" aria-label="Legal"><a href="../privacy/">Privacy Policy</a><a href="../terms/">Terms of Service</a><a href="../refunds/">Refund Policy</a><a href="../seller/">Seller information</a><a href="../manage/">Manage subscription</a><a href="../support/">Support</a></nav>
 <script src="../legal.js"></script>
 <script src="../ev.js"></script>
+<script src="../push.js"></script>
 <script>
 (function () {
   var API = "https://mvp-news-api.mvp-shop.workers.dev", KEY = "mvp_card_token";
@@ -432,7 +433,7 @@ button{font:inherit}
       if (r.status === 401) { setTok(""); loginView(); return; }
       if (!r.ok) { root.innerHTML = '<div class="card2 mg"><h1>My card</h1><div class="mgmsg">Cannot load your card. Try again later.</div></div>'; return; }
       var p = r.j; setTok(tok);
-      root.innerHTML = '<div id="evbox"></div>' +
+      root.innerHTML = '<div id="pnbox"></div><div id="evbox"></div>' +
         '<div class="wc-head"><div><h1>My card</h1><div class="upd" style="margin:6px 0 0">Welcome back, ' + esc(p.nick || "player") + '</div></div><button class="mgb ghost" id="wcout" type="button">Sign out</button></div>' +
         '<div class="wc-grid"><div><div class="wc-stage"><div class="wc" id="wccard">' +
         '<div class="wc-top"><div class="wc-brand"><img src="../icon-180.png" alt="" width="38" height="38">MVP</div><span class="wc-badge">' + esc(p.rank) + '</span></div>' +
@@ -456,6 +457,7 @@ button{font:inherit}
         });
         c.parentNode.addEventListener("mouseleave", function () { c.style.transform = ""; });
       }
+      mvpPush(document.getElementById("pnbox"));
       mvpEvents(document.getElementById("evbox"), true);
       newsView();
     }).catch(function () { root.innerHTML = '<div class="card2 mg"><h1>My card</h1><div class="mgmsg">Cannot reach the server. Try again later.</div></div>'; });
