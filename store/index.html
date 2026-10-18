@@ -129,6 +129,9 @@ button{font:inherit}
 .art.stamp{width:140px;height:92px;margin:-4px 0 -4px;object-fit:contain;object-position:left center}
 .card h2{position:relative;font:800 1.7rem/1.1 var(--font-head)}
 .price{position:relative;font:800 2.5rem/1 var(--font-head);color:#fff}
+.fx{display:block;margin-top:6px;font:500 .8rem/1 var(--font-body,inherit);color:var(--muted)}
+.fxbar{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin:0 0 14px;font-size:.82rem;color:var(--muted)}
+.fxbar select{background:rgba(6,16,28,.7);color:#fff;border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:6px 10px;font:inherit}
 .price small{font-size:.9rem;font-weight:600;color:var(--muted)}
 .price .was{position:absolute;left:0;top:-1.25rem;font:600 1rem/1.2 var(--font-head);color:var(--muted);text-decoration:line-through}
 .price .per{margin-left:2px}
@@ -272,6 +275,7 @@ button{font:inherit}
     <p>Support MVP SMP and unlock ranks, crate keys and coins.</p>
   </header>
   <div class="tabs" id="tabs" role="tablist" aria-label="Store categories"></div>
+  <div class="fxbar"><label for="fxsel">Show approx. price in</label><select id="fxsel"></select></div>
   <div class="sections" id="grid" aria-live="polite"></div>
   <ol class="steps" aria-label="How it works">
     <li><b>1</b><span>Pick an item</span></li>
@@ -524,6 +528,7 @@ const CONFIG = {
       if (p.was != null) price.appendChild(el("s", "was", CONFIG.currency + p.was.toFixed(2)));
       price.appendChild(document.createTextNode(txt));
       if (p.period) price.appendChild(el("small", "per", " " + p.period));
+      if (typeof p.price === "number") { const fx = el("span", "fx"); fx.dataset.eur = p.price; price.appendChild(fx); }
     } else price.appendChild(el("small", "", "Price coming soon"));
     return price;
   }
@@ -698,6 +703,38 @@ const CONFIG = {
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
+})();
+
+/* ---------- Approximate prices in other currencies (display only) ---------- */
+(function () {
+  var LIST = ["EUR","USD","GBP","PLN","CAD","AUD","CHF","SEK","NOK","DKK","CZK","TRY","BRL","UAH","RUB"];
+  var REG = {US:"USD",GB:"GBP",PL:"PLN",CA:"CAD",AU:"AUD",CH:"CHF",SE:"SEK",NO:"NOK",DK:"DKK",CZ:"CZK",TR:"TRY",BR:"BRL",UA:"UAH",RU:"RUB"};
+  var rates = null, cur = "EUR", sel = document.getElementById("fxsel");
+  function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function put(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  var saved = get("fxCur");
+  if (saved && LIST.indexOf(saved) >= 0) cur = saved;
+  else { var m = (navigator.language || "").match(/-([A-Za-z]{2})$/); if (m && REG[m[1].toUpperCase()]) cur = REG[m[1].toUpperCase()]; }
+  LIST.forEach(function (c) { var o = document.createElement("option"); o.value = c; o.textContent = c; sel.appendChild(o); });
+  sel.value = cur;
+  function paint() {
+    document.querySelectorAll(".fx").forEach(function (n) {
+      if (cur === "EUR" || !rates || !rates[cur]) { if (n.textContent) n.textContent = ""; return; }
+      var v = parseFloat(n.dataset.eur) * rates[cur], t;
+      try { t = new Intl.NumberFormat(undefined, { style: "currency", currency: cur }).format(v); } catch (e) { t = v.toFixed(2) + " " + cur; }
+      var out = "\u2248 " + t + " (approx.)"; if (n.textContent !== out) n.textContent = out;
+    });
+  }
+  sel.addEventListener("change", function () { cur = sel.value; put("fxCur", cur); paint(); });
+  var cached = null; try { cached = JSON.parse(get("fxRates") || "null"); } catch (e) {}
+  if (cached && cached.t && Date.now() - cached.t < 6 * 3600e3) { rates = cached.r; }
+  function load() {
+    fetch("https://api.frankfurter.dev/v1/latest?base=EUR&symbols=" + LIST.filter(function (c) { return c !== "EUR"; }).join(","))
+      .then(function (r) { return r.json(); }).then(function (j) { if (j && j.rates) { rates = j.rates; put("fxRates", JSON.stringify({ t: Date.now(), r: rates })); paint(); } }).catch(function () {});
+  }
+  if (!rates) load();
+  new MutationObserver(paint).observe(document.getElementById("grid"), { childList: true, subtree: true });
+  paint();
 })();
 </script>
 </body>
