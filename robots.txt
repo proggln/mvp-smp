@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /test/
+Disallow: /v2/
+Disallow: /pack/
+
+Sitemap: https://playmvp.org/sitemap.xml
