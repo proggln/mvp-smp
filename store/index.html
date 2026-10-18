@@ -311,7 +311,7 @@ const CONFIG = {
   discordUrl: "https://discord.gg/CWTBxgBdr",     // Discord invite
   currency: "€",
   // Store backend (Cloudflare Worker): empty = the Buy buttons stay "Coming soon".
-  // Test link only: /store/?api=https://<worker>.workers.dev turns the Buy buttons on. Public visitors see "Coming soon".
+  api: (function () { var D = "https://mvp-shop.mvp-shop.workers.dev"; try { var a = new URLSearchParams(location.search).get("api") || ""; return /^https:\/\/[a-z0-9.-]+\.workers\.dev$/i.test(a) ? a : D; } catch (e) { return D; } })(),
   api: (function () { try { var a = new URLSearchParams(location.search).get("api") || ""; return /^https:\/\/[a-z0-9.-]+\.workers\.dev$/i.test(a) ? a : ""; } catch (e) { return ""; } })(),
   // STORE ITEMS: ready-made EXAMPLES for a Minecraft SMP. Edit names, prices and perks to match your server,
   // and paste a checkout link per item (Tebex, Stripe Payment Link, PayPal...). Empty checkout = "Coming soon".
