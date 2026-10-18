@@ -295,6 +295,10 @@ button{font:inherit}
 .wc-n img{display:block;width:100%;max-height:220px;object-fit:cover;border-radius:12px;margin-bottom:12px}
 .wc-n b{display:block;font:700 1.02rem var(--font-head)}
 .wc-n small{color:#6fd0ff;font-size:.78rem}
+.wc-v{display:flex;align-items:center;gap:8px;margin-top:12px}
+.wc-v button{min-height:44px;padding:0 14px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#cfe3f1;font:600 .9rem var(--font-body);cursor:pointer}
+.wc-v button.on{background:rgba(0,129,204,.35);border-color:#6fd0ff;color:#fff}
+.wc-v span{margin-left:auto;color:#9db6c9;font-size:.9rem}
 .wc-n p{margin:6px 0 0;color:#cfe3f1;white-space:pre-wrap;font-size:.95rem;line-height:1.55}
 .wc-how{margin:14px 0 0;padding-left:20px;color:#cfe3f1;line-height:1.7}
 .wc-install{margin-top:18px;font-size:.86rem;color:var(--muted)}
@@ -420,13 +424,34 @@ button{font:inherit}
     }).catch(function () { root.innerHTML = '<div class="card2 mg"><h1>My card</h1><div class="mgmsg">Cannot reach the server. Try again later.</div></div>'; });
   }
   function newsView() {
-    fetch(API + "/api/news?limit=5").then(function (r) { return r.json(); }).then(function (a) {
+    var tk = getTok();
+    fetch(API + "/api/news?limit=5", { headers: tk ? { Authorization: "Bearer " + tk } : {} }).then(function (r) { return r.json(); }).then(function (a) {
       var box = document.getElementById("wcnews"); if (!box) return;
       if (!a.length) { box.innerHTML = '<div class="wc-n"><small>No news yet.</small></div>'; return; }
-      box.innerHTML = a.map(function (n) {
+      box.textContent = "";
+      a.forEach(function (n) {
         var d = ""; try { d = new Date(n.created_at).toLocaleString(); } catch (e) {}
-        return '<div class="wc-n">' + (n.image ? '<img src="' + esc(n.image) + '" alt="" loading="lazy">' : "") + '<b>' + esc(n.title) + '</b><small>' + esc(d) + '</small><p>' + esc(n.body) + '</p></div>';
-      }).join("");
+        var w = document.createElement("div"); w.className = "wc-n";
+        w.innerHTML = (n.image ? '<img src="' + esc(n.image) + '" alt="" loading="lazy">' : "") + '<b>' + esc(n.title) + '</b><small>' + esc(d) + '</small><p>' + esc(n.body) + '</p>';
+        var bar = document.createElement("div"); bar.className = "wc-v";
+        var up = document.createElement("button"), dn = document.createElement("button"), ey = document.createElement("span");
+        up.type = dn.type = "button"; up.setAttribute("aria-label", "Like"); dn.setAttribute("aria-label", "Dislike");
+        function paint() {
+          up.textContent = "\ud83d\udc4d " + n.likes; dn.textContent = "\ud83d\udc4e " + n.dislikes;
+          up.className = n.my === 1 ? "on" : ""; dn.className = n.my === -1 ? "on" : "";
+          ey.textContent = "\ud83d\udc41 " + n.views;
+        }
+        function vote(v) {
+          var next = n.my === v ? 0 : v;
+          call("POST", "/api/app/vote", { news_id: n.id, vote: next }, tk).then(function (r) {
+            if (!r.ok || r.j.likes === undefined) { ey.textContent = "Link your game account to vote."; return; }
+            n.likes = r.j.likes; n.dislikes = r.j.dislikes; n.my = r.j.my; paint();
+          }).catch(function () {});
+        }
+        up.onclick = function () { vote(1); }; dn.onclick = function () { vote(-1); };
+        bar.append(up, dn, ey); w.appendChild(bar); box.appendChild(w); paint();
+        call("POST", "/api/app/view", { news_id: n.id }, tk).then(function (r) { if (r.ok && r.j.views !== undefined) { n.views = r.j.views; paint(); } }).catch(function () {});
+      });
     }).catch(function () {});
   }
   cardView();
