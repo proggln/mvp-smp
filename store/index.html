@@ -137,6 +137,8 @@ button{font:inherit}
 .fxbtn[aria-expanded=true] svg{transform:rotate(180deg)}
 .fxmenu{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);z-index:30;display:none;grid-template-columns:repeat(5,1fr);gap:6px;width:min(340px,calc(100vw - 36px));padding:10px;border-radius:20px;background:rgba(6,16,28,.98);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 18px 50px rgba(0,0,0,.55)}
 .fxmenu.open{display:grid}
+.mgl{text-align:center;margin:-6px 0 20px;font-size:.82rem;color:var(--muted);animation:rise .9s cubic-bezier(.2,.8,.2,1) .26s both}.mgl a{color:var(--ice,#6fd0ff);font-weight:600;text-decoration:none;border-bottom:1px solid rgba(111,208,255,.35)}.mgl a:hover{border-color:var(--ice,#6fd0ff)}
+
 .fxmenu button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0;border-radius:12px;border:1px solid transparent;background:rgba(255,255,255,.05);color:#cfe3f1;font:600 .78rem/1 var(--font-head,inherit);letter-spacing:.03em;cursor:pointer;transition:background .15s,color .15s,border-color .15s}
 .fxmenu button b{font:700 1rem/1 var(--font-head,inherit)}.fxmenu button i{font:600 .6rem/1 var(--font-head,inherit);font-style:normal;opacity:.65;letter-spacing:.05em}.fxmenu button:hover{background:rgba(76,195,255,.18);color:#fff}
 .fxmenu button.on{background:linear-gradient(180deg,#22a6f2,#0081cc);color:#fff;border-color:rgba(255,255,255,.25)}
@@ -282,7 +284,8 @@ button{font:inherit}
     <h1>Store</h1>
   </header>
   <div class="tabs" id="tabs" role="tablist" aria-label="Store categories"></div>
-  <div class="fxbar"><span>Show approx. price in</span><button type="button" class="fxbtn" id="fxbtn" aria-haspopup="listbox" aria-expanded="false"><span id="fxcur">€ EUR</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8l5 5 5-5"/></svg></button><div class="fxmenu" id="fxmenu" role="listbox" aria-label="Currency"></div></div>
+  <div class="fxbar"><span>Show approx. price in</span><button type="button" class="fxbtn" id="fxbtn" aria-haspopup="listbox" aria-expanded="false"><span id="fxcur">€ EUR</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8l5 5 5-5"/></svg></button><div class="fxmenu" id="fxmenu" role="listbox" aria-label="Currency"></div>
+  <div class="mgl">Already have a rank? <a href="../manage/">Manage subscription</a></div></div>
   <div class="sections" id="grid" aria-live="polite"></div>
   <ol class="steps" aria-label="How it works">
     <li><b>1</b><span>Pick an item</span></li>
