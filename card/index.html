@@ -481,7 +481,7 @@ button{font:inherit}
         w.innerHTML = (n.image ? '<img src="' + esc(n.image) + '" alt="" loading="lazy">' : "") + '<b>' + esc(n.title) + '</b><small>' + esc(d) + '</small><p>' + rb.html + '</p>' +
           rb.vids.map(function (id) { return '<div class="wc-vid"><iframe src="https://www.youtube-nocookie.com/embed/' + id + '" title="Video" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>'; }).join("");
         var bar = document.createElement("div"); bar.className = "wc-v";
-        var up = document.createElement("button"), dn = document.createElement("button"), ey = document.createElement("span");
+        var up = document.createElement("button"), dn = document.createElement("button"), ey = document.createElement("span"), note = document.createElement("span");
         up.type = dn.type = "button"; up.setAttribute("aria-label", "Like"); dn.setAttribute("aria-label", "Dislike");
         var IC_UP = '<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M2 10.5h4V21H2zM8 10.5l3.6-7.1c.5-1 2-.9 2.4.2.3.8.3 1.7.1 2.5l-.6 2.4h5.7c1.3 0 2.3 1.2 2 2.5l-1.4 7c-.2 1-1.1 1.9-2.2 1.9H8z"/></svg>';
       var IC_DN = '<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" style="transform:rotate(180deg)"><path d="M2 10.5h4V21H2zM8 10.5l3.6-7.1c.5-1 2-.9 2.4.2.3.8.3 1.7.1 2.5l-.6 2.4h5.7c1.3 0 2.3 1.2 2 2.5l-1.4 7c-.2 1-1.1 1.9-2.2 1.9H8z"/></svg>';
@@ -493,17 +493,18 @@ button{font:inherit}
         }
         function vote(v) {
         if (!tk) { note.innerHTML = '<a href="../card/">Create your card</a> to vote.'; return; }
-        var prev = { l: n.likes, d: n.dislikes, m: n.my }, next = n.my === v ? 0 : v;
+        var prev = { l: n.likes, d: n.dislikes, m: n.my }, next = n.my === v ? 0 : v; var seq = n._s = (n._s || 0) + 1;
         if (n.my === 1) n.likes--; if (n.my === -1) n.dislikes--;
         if (next === 1) n.likes++; if (next === -1) n.dislikes++;
         n.my = next; note.textContent = ""; paint();
         call("POST", "/api/app/vote", { news_id: n.id, vote: next }, tk).then(function (r) {
+          if (seq !== n._s) return;
           if (!r.ok || r.j.likes === undefined) { n.likes = prev.l; n.dislikes = prev.d; n.my = prev.m; paint(); note.textContent = "Voting opens when the owner sets your nickname."; return; }
           n.likes = r.j.likes; n.dislikes = r.j.dislikes; n.my = r.j.my; paint();
-        }).catch(function () { n.likes = prev.l; n.dislikes = prev.d; n.my = prev.m; paint(); });
+        }).catch(function () { if (seq !== n._s) return; n.likes = prev.l; n.dislikes = prev.d; n.my = prev.m; paint(); });
       }
       up.onclick = function () { vote(1); }; dn.onclick = function () { vote(-1); };
-        bar.append(up, dn, ey); w.appendChild(bar); box.appendChild(w); paint();
+        ey.className = "eye"; var seg = document.createElement("div"); seg.className = "seg"; seg.append(up, dn); bar.append(seg, note, ey); w.appendChild(bar); box.appendChild(w); paint();
         call("POST", "/api/app/view", { news_id: n.id }, tk).then(function (r) { if (r.ok && r.j.views !== undefined) { n.views = r.j.views; paint(); } }).catch(function () {});
       });
     }).catch(function () {});

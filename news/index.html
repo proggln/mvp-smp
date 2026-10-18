@@ -408,14 +408,15 @@ button{font:inherit}
       }
       function vote(v) {
         if (!tk) { note.innerHTML = '<a href="../card/">Create your card</a> to vote.'; return; }
-        var prev = { l: n.likes, d: n.dislikes, m: n.my }, next = n.my === v ? 0 : v;
+        var prev = { l: n.likes, d: n.dislikes, m: n.my }, next = n.my === v ? 0 : v; var seq = n._s = (n._s || 0) + 1;
         if (n.my === 1) n.likes--; if (n.my === -1) n.dislikes--;
         if (next === 1) n.likes++; if (next === -1) n.dislikes++;
         n.my = next; note.textContent = ""; paint();
         call("POST", "/api/app/vote", { news_id: n.id, vote: next }, tk).then(function (r) {
+          if (seq !== n._s) return;
           if (!r.ok || r.j.likes === undefined) { n.likes = prev.l; n.dislikes = prev.d; n.my = prev.m; paint(); note.textContent = "Voting opens when the owner sets your nickname."; return; }
           n.likes = r.j.likes; n.dislikes = r.j.dislikes; n.my = r.j.my; paint();
-        }).catch(function () { n.likes = prev.l; n.dislikes = prev.d; n.my = prev.m; paint(); });
+        }).catch(function () { if (seq !== n._s) return; n.likes = prev.l; n.dislikes = prev.d; n.my = prev.m; paint(); });
       }
       up.onclick = function () { vote(1); }; dn.onclick = function () { vote(-1); };
       ey.className = "eye"; var seg = document.createElement("div"); seg.className = "seg"; seg.append(up, dn); bar.append(seg, note, ey); w.appendChild(bar); root.appendChild(w); paint();
