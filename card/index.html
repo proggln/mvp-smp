@@ -318,6 +318,8 @@ button{font:inherit}
 .wc-n p a{color:#6fd0ff}
 .wc-n p{margin:6px 0 0;color:#cfe3f1;white-space:pre-wrap;font-size:.95rem;line-height:1.55}
 .wc-how{margin:14px 0 0;padding-left:20px;color:#cfe3f1;line-height:1.7}
+.wc-styles{margin-top:14px}.wc-slabel{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:#9db6c9;margin-bottom:8px}
+.wc-sw{display:flex;gap:12px;flex-wrap:wrap}.wc-sw button{width:44px;height:44px;border-radius:14px;border:2px solid rgba(255,255,255,.2);cursor:pointer;padding:0;transition:transform .12s}.wc-sw button:active{transform:scale(.92)}.wc-sw button.on{border-color:#fff;box-shadow:0 0 0 3px rgba(111,208,255,.55)}
 .wc-install{margin-top:18px;font-size:.86rem;color:var(--muted)}
 </style>
 </head>
@@ -354,6 +356,7 @@ button{font:inherit}
 <nav class="legal-links" aria-label="Legal"><a href="../privacy/">Privacy Policy</a><a href="../terms/">Terms of Service</a><a href="../refunds/">Refund Policy</a><a href="../seller/">Seller information</a><a href="../manage/">Manage subscription</a><a href="../support/">Support</a></nav>
 <script src="../legal.js"></script>
 <script src="../ev.js"></script>
+<script src="../poll.js"></script>
 <script src="../push.js"></script>
 <script>
 (function () {
@@ -450,6 +453,24 @@ button{font:inherit}
         call("POST", "/api/web/logout", null, tok).catch(function () {}); setTok(""); loginView();
       });
       var c = document.getElementById("wccard");
+      function hexA(h, a) { var n = parseInt(h.slice(1), 16); return "rgba(" + (n >> 16 & 255) + "," + (n >> 8 & 255) + "," + (n & 255) + "," + a + ")"; }
+      function applyTheme(t) { if (!c || !t) return; c.style.background = "linear-gradient(135deg," + t.colors[0] + " 0%," + t.colors[1] + " 55%," + t.colors[2] + " 100%)"; c.style.boxShadow = "0 26px 50px " + hexA(t.colors[1], .45); }
+      var themes = p.themes || [], cur = p.theme || "default";
+      applyTheme(themes.filter(function (t) { return t.id === cur; })[0]);
+      if (themes.length > 1 && c) {
+        var sp = document.createElement("div"); sp.className = "wc-styles"; sp.innerHTML = '<div class="wc-slabel">Card style</div><div class="wc-sw"></div>';
+        var swb = sp.querySelector(".wc-sw");
+        themes.forEach(function (t) {
+          var b = document.createElement("button"); b.type = "button"; b.title = t.name; b.setAttribute("aria-label", t.name); b.className = t.id === cur ? "on" : "";
+          b.style.background = "linear-gradient(135deg," + t.colors.join(",") + ")";
+          b.onclick = function () {
+            cur = t.id; applyTheme(t); Array.prototype.forEach.call(swb.children, function (x) { x.className = ""; }); b.className = "on";
+            call("POST", "/api/app/theme", { theme_id: t.id }, tok).catch(function () {});
+          };
+          swb.appendChild(b);
+        });
+        var ins = document.querySelector(".wc-install"); if (ins) ins.parentNode.insertBefore(sp, ins);
+      }
       if (c && window.matchMedia && window.matchMedia("(hover:hover)").matches) {
         c.parentNode.addEventListener("mousemove", function (e) {
           var b = c.getBoundingClientRect(), x = (e.clientX - b.left) / b.width - .5, y = (e.clientY - b.top) / b.height - .5;
@@ -490,6 +511,7 @@ button{font:inherit}
         var rb = rich(n.body);
         w.innerHTML = (n.image ? '<img src="' + esc(n.image) + '" alt="" loading="lazy">' : "") + '<b>' + esc(n.title) + '</b><small>' + esc(d) + '</small><p>' + rb.html + '</p>' +
           rb.vids.map(function (id) { return '<div class="wc-vid"><iframe src="https://www.youtube-nocookie.com/embed/' + id + '" title="Video" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>'; }).join("");
+        if (n.poll) { var pb = document.createElement("div"); w.appendChild(pb); mvpPoll(pb, n.poll, tk); }
         var bar = document.createElement("div"); bar.className = "wc-v";
         var up = document.createElement("button"), dn = document.createElement("button"), ey = document.createElement("span"), note = document.createElement("span");
         up.type = dn.type = "button"; up.setAttribute("aria-label", "Like"); dn.setAttribute("aria-label", "Dislike");

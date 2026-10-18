@@ -354,6 +354,7 @@ button{font:inherit}
 <nav class="legal-links" aria-label="Legal"><a href="../privacy/">Privacy Policy</a><a href="../terms/">Terms of Service</a><a href="../refunds/">Refund Policy</a><a href="../seller/">Seller information</a><a href="../manage/">Manage subscription</a><a href="../support/">Support</a></nav>
 <script src="../legal.js"></script>
 <script src="../ev.js"></script>
+<script src="../poll.js"></script>
 <script src="../push.js"></script>
 <script>
 (function () {
@@ -402,6 +403,7 @@ button{font:inherit}
       var rb = rich(n.body);
       w.innerHTML = (n.image ? '<img src="' + esc(n.image) + '" alt="" loading="lazy">' : "") + '<b>' + esc(n.title) + '</b><small>' + esc(d) + '</small><p>' + rb.html + '</p>' +
         rb.vids.map(function (id) { return '<div class="wc-vid"><iframe src="https://www.youtube-nocookie.com/embed/' + id + '" title="Video" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>'; }).join("");
+      if (n.poll) { var pb = document.createElement("div"); w.appendChild(pb); mvpPoll(pb, n.poll, tk); }
       var bar = document.createElement("div"); bar.className = "wc-v";
       var up = document.createElement("button"), dn = document.createElement("button"), ey = document.createElement("span"), note = document.createElement("span");
       up.type = dn.type = "button"; up.setAttribute("aria-label", "Like"); dn.setAttribute("aria-label", "Dislike");
