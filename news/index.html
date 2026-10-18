@@ -349,11 +349,13 @@ button{font:inherit}
   </nav>
 </header>
 
-<main class="doc wide"><h1>News</h1><div class="upd">What is new on the server. Also in the <a href="../app/">Android app</a>.</div><div id="newsroot"></div></main>
+<main class="doc wide"><h1>News</h1><div class="upd">What is new on the server. Also in the <a href="../app/">Android app</a>.</div><div id="evbox"></div><div id="newsroot"></div></main>
 <nav class="legal-links" aria-label="Legal"><a href="../privacy/">Privacy Policy</a><a href="../terms/">Terms of Service</a><a href="../refunds/">Refund Policy</a><a href="../seller/">Seller information</a><a href="../manage/">Manage subscription</a><a href="../support/">Support</a></nav>
 <script src="../legal.js"></script>
+<script src="../ev.js"></script>
 <script>
 (function () {
+  mvpEvents(document.getElementById("evbox"), false);
   var API = "https://mvp-news-api.mvp-shop.workers.dev", KEY = "mvp_card_token", LIMIT = 100;
   var root = document.getElementById("newsroot");
   function esc(t) { return String(t == null ? "" : t).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }

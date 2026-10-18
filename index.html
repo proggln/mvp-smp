@@ -72,7 +72,7 @@ button{font:inherit}
 
 /* ---------- Hero ---------- */
 .hero{position:relative;z-index:10;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;align-items:center;padding:92px 18px 26px}
-.center{flex:1;width:100%;display:flex;align-items:center;justify-content:center;perspective:1100px;animation:rise 1s cubic-bezier(.2,.8,.2,1) .15s both}
+.center{flex:1;width:100%;display:flex;flex-direction:column;gap:6px;align-items:center;justify-content:center;perspective:1100px;animation:rise 1s cubic-bezier(.2,.8,.2,1) .15s both}
 @keyframes rise{from{opacity:0;transform:translateY(26px) scale(.97)}to{opacity:1;transform:none}}
 .ip-card{position:relative;border-radius:26px;transform:rotateY(calc(var(--px) * 7deg * var(--tilt))) rotateX(calc(var(--py) * -6deg * var(--tilt)));will-change:transform}
 .glow,.ring{position:absolute;border-radius:inherit;pointer-events:none}
@@ -167,6 +167,7 @@ button{font:inherit}
 <main class="hero" id="home">
   <!-- Center: only the server IP and the Copy button -->
   <div class="center">
+    <div id="evbox" style="width:min(560px,92vw)"></div>
     <div class="ip-card" id="card">
       <span class="glow" aria-hidden="true"></span>
       <span class="ring" aria-hidden="true"></span>
@@ -196,7 +197,9 @@ button{font:inherit}
 </main>
 
 <nav class="legal-links" aria-label="Legal"><a href="privacy/">Privacy Policy</a><a href="terms/">Terms of Service</a><a href="refunds/">Refund Policy</a><a href="seller/">Seller information</a><a href="manage/">Manage subscription</a><a href="support/">Support</a></nav>
+<script src="ev.js"></script>
 <script>
+mvpEvents(document.getElementById("evbox"), true);
 /* ==========================================================
    EDIT THIS BLOCK
    ========================================================== */
