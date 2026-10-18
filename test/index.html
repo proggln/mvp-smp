@@ -125,6 +125,10 @@ button{font:inherit}
   *,*::before,*::after{animation:none!important;transition:none!important}
   .ip-card{transform:none}
 }
+
+@media (max-width:640px){.nav{padding:6px 6px 6px 14px}.menu{gap:2px}.link{padding:9px 12px}.link-discord{padding:9px 13px}.link-discord .dt{display:none}.dc{width:22px;height:17px}}
+@media (max-width:520px){.nav{padding-left:10px;width:calc(100% - 20px)}.menu{gap:0}.link{padding:10px 9px;font-size:.84rem}.link-discord{padding:9px 11px}.brand-text{display:none}}
+@media (max-width:400px){.link{padding:10px 6px;font-size:.8rem}.link-discord{padding:9px 10px}}
 </style>
 </head>
 <body>
@@ -150,9 +154,7 @@ button{font:inherit}
     <a href="../store/" class="link">Store</a>
     <a href="../wiki/" class="link">Wiki</a>
     <a class="link link-discord" data-discord role="link" aria-disabled="true">
-      <i class="dc" aria-hidden="true"></i>
-      Discord
-    </a>
+      <i class="dc" aria-hidden="true"></i><span class="dt">Discord</span></a>
   </nav>
 </header>
 
