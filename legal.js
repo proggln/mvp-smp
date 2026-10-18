@@ -1,6 +1,6 @@
 // FILL THIS IN ONCE: these values appear on the Privacy Policy, Terms, Refund Policy and Support pages.
 window.LEGAL = {
-  operator: "MVP+",          // the adult / company that receives the payments
+  operator: "[Vardenis Pavardenis], individuali veikla (pažyma Nr. [XXXXXX])",   // seller shown ONLY on Terms, Privacy and Refunds. Replace the [brackets] with real data once
   email:    "info.mvpog@gmail.com",               // public support email
   country:  "Lithuania",     // for the governing law, e.g. Lithuania
   retention:"1 year",                // how long order records are kept (accounting law, ask your accountant)
