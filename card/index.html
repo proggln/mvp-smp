@@ -427,7 +427,7 @@ button{font:inherit}
         '<div class="wc-stat"><div class="wc-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#6fd0ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div class="wc-sv">' + esc(fmtTime(p.playtime)) + '</div><div class="wc-sl">Playtime</div></div>' +
         '<div class="wc-stat"><div class="wc-ic"><img src="coin.png" alt=""></div><div class="wc-sv">' + esc(p.coins) + '</div><div class="wc-sl">Coins</div></div>' +
         '<div class="wc-stat"><div class="wc-ic"><img src="sword.png" alt=""></div><div class="wc-sv">' + esc(p.kills) + '</div><div class="wc-sl">Kills</div></div>' +
-        '</div><div class="wc-news"><h2>Latest news</h2><div id="wcnews"></div></div></div></div>';
+        '</div><div class="wc-news"><h2>Latest news <a href="../news/" style="font-size:.85rem;font-weight:600;margin-left:8px">All news</a></h2><div id="wcnews"></div></div></div></div>';
       document.getElementById("wcout").addEventListener("click", function () {
         call("POST", "/api/web/logout", null, tok).catch(function () {}); setTok(""); loginView();
       });
