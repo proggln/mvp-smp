@@ -292,7 +292,7 @@ button{font:inherit}
   <p class="note" id="note" hidden>Checkout isn't connected yet: items can't be bought right now.</p>
   <p class="legal">MVP is not an official Minecraft product and is not approved by or associated with Mojang or Microsoft. Purchases are for the server only.</p>
 </main>
-<nav class="legal-links" aria-label="Legal"><a href="../privacy/">Privacy Policy</a><a href="../terms/">Terms of Service</a><a href="../refunds/">Refund Policy</a><a href="../seller/">Seller information</a><a href="../support/">Support</a></nav>
+<nav class="legal-links" aria-label="Legal"><a href="../privacy/">Privacy Policy</a><a href="../terms/">Terms of Service</a><a href="../refunds/">Refund Policy</a><a href="../seller/">Seller information</a><a href="../manage/">Manage subscription</a><a href="../support/">Support</a></nav>
 
 <script>
 /* ==========================================================
@@ -492,7 +492,7 @@ const CONFIG = {
   }
   function stepDone(p, nick, j) {
     shell('<h3>Order ' + esc(j.ref || ('#' + j.id)) + ' placed</h3><div class="bm-sub bm-ok">' + (j.test ? "Test mode: no payment was taken." : "Thank you!") + '</div>' + summary(p) +
-      '<div class="bm-sub">Stay online as <b>' + esc(nick) + '</b>: your items are delivered in the game within seconds. If you are offline, you get them when you join.' + (p.period ? ' You can cancel the subscription any time (see Support).' : '') + '</div>' +
+      '<div class="bm-sub">Stay online as <b>' + esc(nick) + '</b>: your items are delivered in the game within seconds. If you are offline, you get them when you join.' + (p.period ? ' You can cancel any time: type /mvpshop cancel in the game or open Manage subscription (link at the bottom of the page).' : '') + '</div>' +
       '<button class="buy bm-btn" type="button">Done</button>').querySelector(".bm-btn").addEventListener("click", closeBuy);
   }
 
