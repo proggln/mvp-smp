@@ -385,9 +385,8 @@ button{font:inherit}
     stop();
     root.innerHTML = '<div class="card2 mg"><h1>My card</h1>' +
       '<div class="upd">Your personal MVP card with your rank, coins and stats. No password needed.</div>' +
-      '<button class="mgb" id="wcapp" type="button">Log in via MVP app</button> <button class="mgb ghost" id="wcgo" type="button">Sign in with the game</button> <button class="mgb ghost" id="wcnew" type="button">Create a card without the game</button>' +
+      '<button class="mgb" id="wcapp" type="button">Log in via MVP app</button> <button class="mgb ghost" id="wcgo" type="button" disabled style="opacity:.55;cursor:not-allowed">Sign in with the game (not available yet)</button> <button class="mgb ghost" id="wcnew" type="button">Create a card without the game</button>' +
       '<div class="mgmsg" id="wcm"></div><div class="upd" style="margin-top:12px;font-size:.85rem">Already have the MVP app? Use <b>Log in via MVP app</b> to open the same account here. No game access yet? Create a card here, choose your nickname and wait for registration. Keep this browser: the card is saved in it.</div></div>';
-    document.getElementById("wcgo").addEventListener("click", function () { startLogin("game"); });
     document.getElementById("wcapp").addEventListener("click", function () { startLogin("app"); });
     document.getElementById("wcnew").addEventListener("click", createCard);
   }
