@@ -39,9 +39,8 @@
       "#mvpPromo button.x{position:absolute;top:4px;right:6px;border:0;background:transparent;color:#d6ecfb;font-size:20px;line-height:1;cursor:pointer;padding:4px 6px}" +
       "@keyframes mvpUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}" +
       "@keyframes mvpIn{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}" +
-      "@keyframes mvpFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}" +
-      "@media(min-width:1500px){#mvpPromo{left:calc(50% - 770px);right:auto;bottom:auto;top:190px;width:268px;flex-direction:column;align-items:flex-start;padding:22px 20px 20px;gap:10px;border-radius:26px;" +
-      "animation:mvpIn .7s cubic-bezier(.2,.9,.3,1.1) both,mvpFloat 7s ease-in-out .8s infinite}" +
+            "@media(min-width:1500px){#mvpPromo{left:calc(50% - 770px);right:auto;bottom:auto;top:190px;width:268px;flex-direction:column;align-items:flex-start;padding:22px 20px 20px;gap:10px;border-radius:26px;" +
+      "animation:mvpIn .7s cubic-bezier(.2,.9,.3,1.1) both}" +
       (live ? "#mvpPromo:hover{box-shadow:0 20px 46px rgba(0,0,0,.5),0 0 40px rgba(0,148,230,.45)}#mvpPromo:hover .go{transform:scale(1.04)}" : "") +
       "#mvpPromo img{width:60px;height:60px;border-radius:16px}#mvpPromo b{font-size:1.18rem}#mvpPromo small{font-size:.9rem}#mvpPromo .go{align-self:stretch;margin-top:8px}#mvpPromo button.x{top:8px;right:10px}}" +
       "@media(prefers-reduced-motion:reduce){#mvpPromo{animation:none!important}}";
