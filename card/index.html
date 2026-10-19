@@ -325,6 +325,15 @@ button{font:inherit}
 .wc-mt{min-width:0}.wc-mt b{display:block;color:var(--mc);font-size:.98rem}.wc-mt span{display:block;font-size:.9rem;color:#dbe8f3}.wc-mt small{display:block;font-size:.78rem;color:var(--muted);margin-top:2px}
 .wc-skel{background:linear-gradient(90deg,rgba(255,255,255,.05),rgba(255,255,255,.12),rgba(255,255,255,.05));background-size:200% 100%;animation:wcsk 1.2s linear infinite;min-height:90px}.wc.wc-skel{box-shadow:none}
 @keyframes wcsk{from{background-position:200% 0}to{background-position:-200% 0}}
+.wc-mbtn{display:flex;align-items:center;gap:12px;width:100%;margin:14px 0 0;padding:14px 16px;border-radius:18px;border:1px solid rgba(255,255,255,.12);background:rgba(6,16,28,.6);color:#fff;font:inherit;text-align:left;cursor:pointer;transition:transform .15s,border-color .15s}
+.wc-mbtn:hover{transform:translateY(-1px);border-color:rgba(111,208,255,.5)}.wc-mbtn:focus-visible{outline:2px solid #6fd0ff;outline-offset:2px}
+.wc-mbi{flex:none;width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:rgba(255,179,71,.18)}
+.wc-mbt{flex:1;min-width:0}.wc-mbt b{display:block;font-size:1rem}.wc-mbt span{display:block;font-size:1.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--muted)}.wc-mbc{font-size:1.8rem;color:var(--muted);line-height:1}
+.wc-dlg{width:min(560px,calc(100vw - 32px));max-height:min(80vh,720px);padding:20px;border-radius:24px;border:1px solid rgba(255,255,255,.14);background:#06111d;color:#fff;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.wc-dlg::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(4px)}
+.wc-dh{display:flex;align-items:center;justify-content:space-between;gap:10px}.wc-dh h2{margin:0}.wc-dh small{font-size:.85rem;color:var(--muted);margin-left:6px}
+.wc-dx{border:0;background:rgba(255,255,255,.08);color:#fff;width:40px;height:40px;border-radius:50%;font-size:1.5rem;line-height:1;cursor:pointer}
+.wc-dsub{color:var(--muted);margin:4px 0 14px;font-size:.92rem}.wc-dlg .wc-medals{margin:0}
 </style>
 </head>
 <body>
@@ -456,9 +465,23 @@ button{font:inherit}
       if (JSON.stringify(r.j) !== shown) renderCard(r.j, tok, !!cached);
     }).catch(function () { if (!cached) root.innerHTML = '<div class="card2 mg"><h1>My card</h1><div class="mgmsg">Cannot reach the server. Try again later.</div></div>'; });
   }
+  function medalsBtn(list) {
+    list = list || [];
+    var prev = list.slice(0, 5).map(function (m) { return esc(m.icon || "\u2B50"); }).join(" ");
+    return '<button class="wc-mbtn" id="wcmed" type="button"><span class="wc-mbi" aria-hidden="true">\u{1F3C5}</span><span class="wc-mbt"><b>Medals' + (list.length ? ' (' + list.length + ')' : '') + '</b><span>' + (prev || "See your medals") + '</span></span><span class="wc-mbc" aria-hidden="true">\u203A</span></button>';
+  }
+  function openMedals(list) {
+    var dlg = document.getElementById("wcmdlg");
+    if (!dlg) { dlg = document.createElement("dialog"); dlg.id = "wcmdlg"; dlg.className = "wc-dlg"; document.body.appendChild(dlg);
+      dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); }); }
+    dlg.innerHTML = '<div class="wc-dh"><h2>Medals <small>' + (list || []).length + '</small></h2><button type="button" class="wc-dx" aria-label="Close">\u00D7</button></div>' +
+      '<p class="wc-dsub">Join events and play to collect more.</p>' + (medalsHtml(list) || '<p class="wc-dsub">No medals yet.</p>');
+    dlg.querySelector(".wc-dx").onclick = function () { dlg.close(); };
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", "");
+  }
   function medalsHtml(list) {
     if (!list || !list.length) return "";
-    return '<div class="wc-medals"><h2>Medals <small>' + list.length + '</small></h2><div class="wc-ml">' + list.map(function (m) {
+    return '<div class="wc-medals"><div class="wc-ml">' + list.map(function (m) {
       var col = /^#[0-9a-fA-F]{6}$/.test(m.color || "") ? m.color : "#6fd0ff", d = "";
       try { d = m.awarded_at ? new Date(m.awarded_at).toLocaleDateString([], { year: "numeric", month: "short", day: "numeric" }) : ""; } catch (e) {}
       return '<div class="wc-md" style="--mc:' + col + '"><div class="wc-mi" aria-hidden="true">' + esc(m.icon || "\u2B50") + '</div><div class="wc-mt"><b>[' + esc(m.name) + ']</b><span>' + esc(m.description || "") + '</span>' + (d ? '<small>' + esc(d) + '</small>' : "") + '</div></div>';
@@ -479,7 +502,8 @@ button{font:inherit}
         '<div class="wc-stat"><div class="wc-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#6fd0ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div class="wc-sv">' + esc(fmtTime(p.playtime)) + '</div><div class="wc-sl">Playtime</div></div>' +
         '<div class="wc-stat"><div class="wc-ic"><img src="coin.png" alt=""></div><div class="wc-sv">' + esc(p.coins) + '</div><div class="wc-sl">Coins</div></div>' +
         '<div class="wc-stat"><div class="wc-ic"><img src="sword.png" alt=""></div><div class="wc-sv">' + esc(p.kills) + '</div><div class="wc-sl">Kills</div></div>' +
-        '</div>' + medalsHtml(p.medals) + '<div class="wc-news"><h2>Latest news <a href="../news/" style="font-size:.85rem;font-weight:600;margin-left:8px">All news</a></h2><div id="wcnews"></div></div></div></div>';
+        '</div>' + medalsBtn(p.medals) + '<div class="wc-news"><h2>Latest news <a href="../news/" style="font-size:.85rem;font-weight:600;margin-left:8px">All news</a></h2><div id="wcnews"></div></div></div></div>';
+      document.getElementById("wcmed").addEventListener("click", function () { openMedals(p.medals); });
       document.getElementById("wcout").addEventListener("click", function () {
         call("POST", "/api/web/logout", null, tok).catch(function () {}); setTok(""); putCache(null); loginView();
       });
