@@ -344,7 +344,7 @@ button{font:inherit}
 .wc-hbtns{display:flex;gap:10px;align-items:center}
 .wc-inb{position:relative;width:48px;height:48px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:rgba(6,16,28,.6);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s,border-color .15s}
 .wc-inb:hover{transform:translateY(-1px);border-color:rgba(111,208,255,.5)}.wc-inb:focus-visible{outline:2px solid #6fd0ff;outline-offset:2px}
-.wc-badge{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:#e8424f;color:#fff;font:800 .72rem/20px inherit;text-align:center;box-shadow:0 0 0 2px #06111d}
+.wc-ibadge{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:#e8424f;color:#fff;font:800 .72rem/20px inherit;text-align:center;box-shadow:0 0 0 2px #06111d}
 .wc-idlg{width:min(640px,calc(100vw - 32px))}
 .wc-im{padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);margin:0 0 10px}.wc-im.unread{border-color:rgba(111,208,255,.55);background:rgba(46,162,234,.1)}
 .wc-imh{display:flex;justify-content:space-between;gap:10px;font-size:.78rem;color:var(--muted)}.wc-from{font-weight:700;color:#6fd0ff;text-transform:uppercase;letter-spacing:.06em}
@@ -544,7 +544,7 @@ button{font:inherit}
       if (r.j.unread) {
         call("POST", "/api/app/inbox/read", { all: true }, tok).then(function () {
           p.inbox_unread = 0; putCache(p);
-          var b = document.querySelector("#wcinb .wc-badge"); if (b) b.remove();
+          var b = document.querySelector("#wcinb .wc-ibadge"); if (b) b.remove();
         }).catch(function () {});
       }
     }).catch(function () { box.innerHTML = '<p class="wc-dsub">Cannot reach the server.</p>'; });
@@ -571,7 +571,7 @@ button{font:inherit}
       var keep = again ? { pnbox: document.getElementById("pnbox"), evbox: document.getElementById("evbox"), wcnews: document.getElementById("wcnews") } : null;
       var delBanner = p.delete_at ? '<div class="wc-delbar"><div><b>Your account will be deleted on ' + esc(fmtWhen(p.delete_at)) + '.</b><span>Your card, medals and stats will be removed. Changed your mind?</span></div><button class="mgb" id="wcundel" type="button">Cancel deletion</button></div>' : "";
       root.innerHTML = delBanner + '<div id="pnbox"></div><div id="evbox"></div>' +
-        '<div class="wc-head"><div><h1>My card</h1><div class="upd" style="margin:6px 0 0">Welcome back, ' + esc(p.nick || "player") + '</div></div><div class="wc-hbtns"><button class="wc-inb" id="wcinb" type="button" aria-label="Inbox' + (p.inbox_unread ? ', ' + p.inbox_unread + ' unread' : '') + '" title="Inbox">' + icSvg("inbox", 22, "#6fd0ff") + (p.inbox_unread ? '<span class="wc-badge">' + (p.inbox_unread > 99 ? "99+" : p.inbox_unread) + '</span>' : '') + '</button><button class="mgb ghost" id="wcout" type="button">Sign out</button></div></div>' +
+        '<div class="wc-head"><div><h1>My card</h1><div class="upd" style="margin:6px 0 0">Welcome back, ' + esc(p.nick || "player") + '</div></div><div class="wc-hbtns"><button class="wc-inb" id="wcinb" type="button" aria-label="Inbox' + (p.inbox_unread ? ', ' + p.inbox_unread + ' unread' : '') + '" title="Inbox">' + icSvg("inbox", 22, "#6fd0ff") + (p.inbox_unread ? '<span class="wc-ibadge">' + (p.inbox_unread > 99 ? "99+" : p.inbox_unread) + '</span>' : '') + '</button><button class="mgb ghost" id="wcout" type="button">Sign out</button></div></div>' +
         '<div class="wc-grid"><div><div class="wc-stage"><div class="wc" id="wccard">' +
         '<div class="wc-top"><div class="wc-brand"><img src="../icon-180.png" alt="" width="38" height="38">MVP</div><span class="wc-badge">' + esc(p.rank) + '</span></div>' +
         '<div class="wc-num">' + esc(pad(p.card_no)) + '</div>' +
