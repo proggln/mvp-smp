@@ -10,7 +10,7 @@
     ".pn button.off{background:rgba(255,255,255,.08);box-shadow:none;border:1px solid rgba(255,255,255,.18)}.pn button:disabled{opacity:.6}";
   var BELL = '<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>';
   function ls(k, v) { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} return null; }
-  function post(path, token) { return fetch(API + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token: token }) }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); }); }
+  function post(path, token) { var h = { "Content-Type": "application/json" }, ct = ""; try { ct = localStorage.getItem("mvp_card_token") || ""; } catch (e) {} if (ct) h.Authorization = "Bearer " + ct; return fetch(API + path, { method: "POST", headers: h, body: JSON.stringify({ token: token }) }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); }); }
   var lib = null;
   function load() {
     if (lib) return lib;

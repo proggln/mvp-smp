@@ -341,6 +341,16 @@ button{font:inherit}
 .wc-drow{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:6px}.mgb.wc-danger{background:linear-gradient(180deg,#e2535f,#b8323e);box-shadow:0 8px 22px rgba(184,50,62,.35)}
 .wc-mbp{display:flex!important;gap:6px;align-items:center}.wc-mbp svg{flex:none}.wc-mbc{flex:none;color:var(--muted)}
 .wc-foot{margin:40px 0 0;text-align:center}.wc-dellink{border:0;background:none;padding:6px;color:#6f8597;font:500 .82rem inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}.wc-dellink:hover{color:#ffb3b9}
+.wc-hbtns{display:flex;gap:10px;align-items:center}
+.wc-inb{position:relative;width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,255,255,.14);background:rgba(6,16,28,.6);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s,border-color .15s}
+.wc-inb:hover{transform:translateY(-1px);border-color:rgba(111,208,255,.5)}.wc-inb:focus-visible{outline:2px solid #6fd0ff;outline-offset:2px}
+.wc-badge{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:#e8424f;color:#fff;font:800 .72rem/20px inherit;text-align:center;box-shadow:0 0 0 2px #06111d}
+.wc-idlg{width:min(640px,calc(100vw - 32px))}
+.wc-im{padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);margin:0 0 10px}.wc-im.unread{border-color:rgba(111,208,255,.55);background:rgba(46,162,234,.1)}
+.wc-imh{display:flex;justify-content:space-between;gap:10px;font-size:.78rem;color:var(--muted)}.wc-from{font-weight:700;color:#6fd0ff;text-transform:uppercase;letter-spacing:.06em}
+.wc-imt{display:block;font-size:1.05rem;margin:4px 0 6px}.wc-im p{margin:8px 0 0;white-space:pre-wrap;color:#dbe8f3;overflow-wrap:anywhere}.wc-im img{display:block;width:100%;border-radius:12px;margin:8px 0 0}
+.wc-im .wc-vid{margin-top:10px}.wc-ihide{margin-top:10px;border:0;background:none;color:#6f8597;font:500 .8rem inherit;text-decoration:underline;cursor:pointer;padding:0}.wc-ihide:hover{color:#ffb3b9}
+.wc-im a{color:#6fd0ff;text-decoration:underline}.wc-iempty{text-align:center;color:var(--muted);padding:20px 10px}.wc-iempty svg{opacity:.8}
 </style>
 </head>
 <body>
@@ -473,7 +483,7 @@ button{font:inherit}
     }).catch(function () { if (!cached) root.innerHTML = '<div class="card2 mg"><h1>My card</h1><div class="mgmsg">Cannot reach the server. Try again later.</div></div>'; });
   }
   // medal icons: small pixel pictures drawn here (no emoji)
-  var MPX={pal:{"Y":"#ffcf3a","y":"#c98a00","R":"#e8424f","B":"#2ea2ea","O":"#ff8a1f","k":"#3a1d08","G":"#3fae4a","g":"#2a7a33","W":"#f2f6fa","w":"#b9c6d3","I":"#bfe9ff","C":"#5ee3f0","c":"#d6fbff","T":"#8a5a2b","P":"#9aa7b4","D":"#1f6fa8"},ic:{"medal":["..RR....BB..","..RRR..BBB..","...RRR.BB...","....RRBB....",".....yy.....","...yYYYYy...","..yYYyyYYy..","..YYyYYyYY..","..YYyYYyYY..","..yYYyyYYy..","...yYYYYy...",".....yy....."],"star":[".....YY.....",".....YY.....","....YYYY....","....YYYY....","YYYYYYYYYYYY",".YYYYYYYYYY.","..YYYYYYYY..","...YYYYYY...","...YYYYYY...","..YYY..YYY..","..YY....YY..",".YY......YY."],"trophy":[".YYYYYYYYYY.","YYYYYYYYYYYY","Y.YYYYYYyY.Y","Y.YYYYYYyY.Y",".YYYYYYYyYY.","...YYYYyY...","....YYyY....",".....yY.....",".....yY.....","....yYYY....","...TTTTTT...","...TTTTTT..."],"pumpkin":[".....gg.....",".....g......","..OOOOOOOO..",".OOOOOOOOOO.","OOkkOOOOkkOO","OOkkOOOOkkOO","OOOOOkkOOOOO","OOOOOOOOOOOO","OOkOkkkkOkOO","OOOkkkkkkOOO",".OOOOOOOOOO.","..OOOOOOOO.."],"ghost":["....WWWW....","..WWWWWWWW..",".WWWWWWWWWW.",".WWkkWWkkWW.",".WWkkWWkkWW.",".WWWWWWWWWW.",".WWWWkkWWWW.",".WWWWkkWWWW.",".WWWWWWWWWW.",".WWWWWWWWWW.",".WWW.WW.WWW.",".WW...W..WW."],"tree":[".....YY.....",".....GG.....","....GGGG....","...GGRGGG...","....GGGG....","...GGGGBG...","..GGRGGGGG..","...GGGGGG...","..GGGGGGYG..",".GGGGRGGGGG.",".....TT.....",".....TT....."],"snow":[".....I......","...I.I.I....","....III.....",".I...I...I..","..I..I..I...","IIIIIIIIIII.","..I..I..I...",".I...I...I..","....III.....","...I.I.I....",".....I......","............"],"fire":[".....R......","....RR......","....RRR..R..","...RRRR.RR..","..RRORRRRR..","..RROORRRR..",".RROOOORRRR.",".RROOYOORRR.",".RROYYYORRR.",".RROYYYYORR.","..RROYYORR..","...RRRRRR..."],"sword":["..........WW",".........WwW","........WwW.",".......WwW..","......WwW...","..Y..WwW....","...YWwW.....","....YW......","...TTY......","..TT..Y.....",".TT.........","TT.........."],"diamond":["............","............","...CCCCCC...","..CcCCCCcC..",".CcCCCCCCcC.","CCCCCCCCCCCC",".CCCCCCCCCC.","..CCCCCCCC..","...CCCCCC...","....CCCC....",".....CC.....","............"],"crown":["............","............","Y....Y....Y.","YY..YYY..YY.","YYY.YYY.YYY.","YYYYYYYYYYY.","YYRYYBYYRYY.","YYYYYYYYYYY.","yyyyyyyyyyy.","............","............","............"],"heart":["............",".RRR....RRR.","RRRRR..RRRRR","RRWRRRRRRRRR","RRRRRRRRRRRR","RRRRRRRRRRRR",".RRRRRRRRRR.","..RRRRRRRR..","...RRRRRR...","....RRRR....",".....RR.....","............"],"flag":[".P..........",".PBBBBBB....",".PBBBBBBB...",".PBBWWBBBB..",".PBBWWBBBBB.",".PBBBBBBBB..",".PBBBBBBB...",".P..........",".P..........",".P..........",".P..........","PPP........."]}};
+  var MPX={pal:{"Y":"#ffcf3a","y":"#c98a00","R":"#e8424f","B":"#2ea2ea","O":"#ff8a1f","k":"#3a1d08","G":"#3fae4a","g":"#2a7a33","W":"#f2f6fa","w":"#b9c6d3","I":"#bfe9ff","C":"#5ee3f0","c":"#d6fbff","T":"#8a5a2b","P":"#9aa7b4","D":"#1f6fa8"},ic:{"medal":["..RR....BB..","..RRR..BBB..","...RRR.BB...","....RRBB....",".....yy.....","...yYYYYy...","..yYYyyYYy..","..YYyYYyYY..","..YYyYYyYY..","..yYYyyYYy..","...yYYYYy...",".....yy....."],"star":[".....YY.....",".....YY.....","....YYYY....","....YYYY....","YYYYYYYYYYYY",".YYYYYYYYYY.","..YYYYYYYY..","...YYYYYY...","...YYYYYY...","..YYY..YYY..","..YY....YY..",".YY......YY."],"trophy":[".YYYYYYYYYY.","YYYYYYYYYYYY","Y.YYYYYYyY.Y","Y.YYYYYYyY.Y",".YYYYYYYyYY.","...YYYYyY...","....YYyY....",".....yY.....",".....yY.....","....yYYY....","...TTTTTT...","...TTTTTT..."],"pumpkin":[".....gg.....",".....g......","..OOOOOOOO..",".OOOOOOOOOO.","OOkkOOOOkkOO","OOkkOOOOkkOO","OOOOOkkOOOOO","OOOOOOOOOOOO","OOkOkkkkOkOO","OOOkkkkkkOOO",".OOOOOOOOOO.","..OOOOOOOO.."],"ghost":["....WWWW....","..WWWWWWWW..",".WWWWWWWWWW.",".WWkkWWkkWW.",".WWkkWWkkWW.",".WWWWWWWWWW.",".WWWWkkWWWW.",".WWWWkkWWWW.",".WWWWWWWWWW.",".WWWWWWWWWW.",".WWW.WW.WWW.",".WW...W..WW."],"tree":[".....YY.....",".....GG.....","....GGGG....","...GGRGGG...","....GGGG....","...GGGGBG...","..GGRGGGGG..","...GGGGGG...","..GGGGGGYG..",".GGGGRGGGGG.",".....TT.....",".....TT....."],"snow":[".....I......","...I.I.I....","....III.....",".I...I...I..","..I..I..I...","IIIIIIIIIII.","..I..I..I...",".I...I...I..","....III.....","...I.I.I....",".....I......","............"],"fire":[".....R......","....RR......","....RRR..R..","...RRRR.RR..","..RRORRRRR..","..RROORRRR..",".RROOOORRRR.",".RROOYOORRR.",".RROYYYORRR.",".RROYYYYORR.","..RROYYORR..","...RRRRRR..."],"sword":["..........WW",".........WwW","........WwW.",".......WwW..","......WwW...","..Y..WwW....","...YWwW.....","....YW......","...TTY......","..TT..Y.....",".TT.........","TT.........."],"diamond":["............","............","...CCCCCC...","..CcCCCCcC..",".CcCCCCCCcC.","CCCCCCCCCCCC",".CCCCCCCCCC.","..CCCCCCCC..","...CCCCCC...","....CCCC....",".....CC.....","............"],"crown":["............","............","Y....Y....Y.","YY..YYY..YY.","YYY.YYY.YYY.","YYYYYYYYYYY.","YYRYYBYYRYY.","YYYYYYYYYYY.","yyyyyyyyyyy.","............","............","............"],"heart":["............",".RRR....RRR.","RRRRR..RRRRR","RRWRRRRRRRRR","RRRRRRRRRRRR","RRRRRRRRRRRR",".RRRRRRRRRR.","..RRRRRRRR..","...RRRRRR...","....RRRR....",".....RR.....","............"],"mail":["............","............","DDDDDDDDDDDD","DDIIIIIIIIDD","DIDIIIIIIDID","DIIDIIIIDIID","DIIIDDDDIIID","DIIIIIIIIIID","DIIIIIIIIIID","DDDDDDDDDDDD","............","............"],"flag":[".P..........",".PBBBBBB....",".PBBBBBBB...",".PBBWWBBBB..",".PBBWWBBBBB.",".PBBBBBBBB..",".PBBBBBBB...",".P..........",".P..........",".P..........",".P..........","PPP........."]}};
   function pxSvg(k,size){var r=MPX.ic[k]||MPX.ic.medal,o='<svg viewBox="0 0 12 12" width="'+size+'" height="'+size+'" shape-rendering="crispEdges" aria-hidden="true" focusable="false">';for(var y=0;y<12;y++){var x=0;while(x<12){var ch=r[y].charAt(x),n=1;if(ch==="."){x++;continue}while(x+n<12&&r[y].charAt(x+n)===ch)n++;o+='<rect x="'+x+'" y="'+y+'" width="'+n+'" height="1" fill="'+MPX.pal[ch]+'"/>';x+=n}}return o+'</svg>'}
   function medalsBtn(list) {
     list = list || [];
@@ -499,6 +509,43 @@ button{font:inherit}
     };
     if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", "");
   }
+  // ---------- inbox: messages from the admin and the game server ----------
+  function openInbox(tok, p) {
+    var dlg = document.getElementById("wcidlg");
+    if (!dlg) { dlg = document.createElement("dialog"); dlg.id = "wcidlg"; dlg.className = "wc-dlg wc-idlg"; document.body.appendChild(dlg);
+      dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); });
+      dlg.addEventListener("close", function () { if (location.hash === "#inbox") history.replaceState(null, "", location.pathname + location.search); }); }
+    dlg.innerHTML = '<div class="wc-dh"><h2>Inbox</h2><button type="button" class="wc-dx" aria-label="Close">\u00D7</button></div><div class="wc-il"><p class="wc-dsub">Loading...</p></div>';
+    dlg.querySelector(".wc-dx").onclick = function () { dlg.close(); };
+    if (dlg.showModal) { if (!dlg.open) dlg.showModal(); } else dlg.setAttribute("open", "");
+    var box = dlg.querySelector(".wc-il");
+    call("GET", "/api/app/inbox", null, tok).then(function (r) {
+      if (!r.ok) { box.innerHTML = '<p class="wc-dsub">Could not load your messages. Try again later.</p>'; return; }
+      var items = r.j.items || [];
+      if (!items.length) { box.innerHTML = '<div class="wc-iempty">' + pxSvg("mail", 48) + '<p>No messages yet. Messages from the server and the team will appear here.</p></div>'; return; }
+      box.textContent = "";
+      items.forEach(function (m) {
+        var w = document.createElement("article"); w.className = "wc-im" + (m.read ? "" : " unread");
+        var rb = rich(m.body), d = "";
+        try { d = new Date(m.created_at).toLocaleString([], { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }); } catch (e) {}
+        w.innerHTML = '<div class="wc-imh"><span class="wc-from">' + (m.sender === "server" ? "Game server" : "MVP team") + '</span><time>' + esc(d) + '</time></div>' +
+          '<b class="wc-imt">' + esc(m.title) + '</b>' + (m.image ? '<img src="' + esc(m.image) + '" alt="" loading="lazy">' : '') + '<p>' + rb.html + '</p>' +
+          rb.vids.map(function (id) { return '<div class="wc-vid"><iframe src="https://www.youtube-nocookie.com/embed/' + id + '" title="Video" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>'; }).join("") +
+          '<button type="button" class="wc-ihide">Delete</button>';
+        w.querySelector(".wc-ihide").onclick = function () {
+          w.remove(); call("POST", "/api/app/inbox/read", { id: m.id, hide: true }, tok).catch(function () {});
+          if (!box.children.length) box.innerHTML = '<div class="wc-iempty">' + pxSvg("mail", 48) + '<p>No messages.</p></div>';
+        };
+        box.appendChild(w);
+      });
+      if (r.j.unread) {
+        call("POST", "/api/app/inbox/read", { all: true }, tok).then(function () {
+          p.inbox_unread = 0; putCache(p);
+          var b = document.querySelector("#wcinb .wc-badge"); if (b) b.remove();
+        }).catch(function () {});
+      }
+    }).catch(function () { box.innerHTML = '<p class="wc-dsub">Cannot reach the server.</p>'; });
+  }
   function openMedals(list) {
     var dlg = document.getElementById("wcmdlg");
     if (!dlg) { dlg = document.createElement("dialog"); dlg.id = "wcmdlg"; dlg.className = "wc-dlg"; document.body.appendChild(dlg);
@@ -521,7 +568,7 @@ button{font:inherit}
       var keep = again ? { pnbox: document.getElementById("pnbox"), evbox: document.getElementById("evbox"), wcnews: document.getElementById("wcnews") } : null;
       var delBanner = p.delete_at ? '<div class="wc-delbar"><div><b>Your account will be deleted on ' + esc(fmtWhen(p.delete_at)) + '.</b><span>Your card, medals and stats will be removed. Changed your mind?</span></div><button class="mgb" id="wcundel" type="button">Cancel deletion</button></div>' : "";
       root.innerHTML = delBanner + '<div id="pnbox"></div><div id="evbox"></div>' +
-        '<div class="wc-head"><div><h1>My card</h1><div class="upd" style="margin:6px 0 0">Welcome back, ' + esc(p.nick || "player") + '</div></div><button class="mgb ghost" id="wcout" type="button">Sign out</button></div>' +
+        '<div class="wc-head"><div><h1>My card</h1><div class="upd" style="margin:6px 0 0">Welcome back, ' + esc(p.nick || "player") + '</div></div><div class="wc-hbtns"><button class="wc-inb" id="wcinb" type="button" aria-label="Inbox' + (p.inbox_unread ? ', ' + p.inbox_unread + ' unread' : '') + '" title="Inbox">' + pxSvg("mail", 26) + (p.inbox_unread ? '<span class="wc-badge">' + (p.inbox_unread > 99 ? "99+" : p.inbox_unread) + '</span>' : '') + '</button><button class="mgb ghost" id="wcout" type="button">Sign out</button></div></div>' +
         '<div class="wc-grid"><div><div class="wc-stage"><div class="wc" id="wccard">' +
         '<div class="wc-top"><div class="wc-brand"><img src="../icon-180.png" alt="" width="38" height="38">MVP</div><span class="wc-badge">' + esc(p.rank) + '</span></div>' +
         '<div class="wc-num">' + esc(pad(p.card_no)) + '</div>' +
@@ -535,6 +582,10 @@ button{font:inherit}
         '</div>' + medalsBtn(p.medals) + '<div class="wc-news"><h2>Latest news <a href="../news/" style="font-size:.85rem;font-weight:600;margin-left:8px">All news</a></h2><div id="wcnews"></div></div></div></div>' +
         '<div class="wc-foot"><button class="wc-dellink" id="wcdel" type="button">Delete account</button></div>';
       document.getElementById("wcmed").addEventListener("click", function () { openMedals(p.medals); });
+      document.getElementById("wcinb").addEventListener("click", function () { openInbox(tok, p); });
+      if (location.hash === "#inbox" && !window.__inboxOpened) { window.__inboxOpened = true; openInbox(tok, p); }
+      // a browser that already has notifications on is tied to this card, so personal messages reach it
+      if (!window.__pushLinked) { window.__pushLinked = true; try { var wt = localStorage.getItem("mvp_web_push"); if (wt) call("POST", "/api/app/push-token", { token: wt, kind: "web" }, tok).catch(function () {}); } catch (e) {} }
       document.getElementById("wcdel").addEventListener("click", function () { askDelete(tok, p); });
       var ud = document.getElementById("wcundel");
       if (ud) ud.addEventListener("click", function () {
