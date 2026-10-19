@@ -409,7 +409,7 @@ button{font:inherit}
   function codeView(code, pollTok) {
     var cmd = "/weblogin " + code;
     root.innerHTML = '<div class="card2 mg"><h1>Sign in</h1>' +
-      '<div class="upd">Join the server and type this command in the game chat:</div>' +
+      '<div class="upd">Option 1: open the MVP app, go to Settings, tap <b>Sign in to the website</b> and enter this code. Option 2: join the server and type this command in the game chat:</div>' +
       '<div class="mgcode">' + esc(code) + '</div><div class="mgcmd">' + esc(cmd) + '</div>' +
       '<button class="mgb" id="wccopy" type="button">Copy command</button> <button class="mgb ghost" id="wcback" type="button">Cancel</button>' +
       '<div class="mgmsg ok" id="wcm">Waiting for the game... The code works for 10 minutes.</div></div>';
