@@ -334,6 +334,10 @@ button{font:inherit}
 .wc-dh{display:flex;align-items:center;justify-content:space-between;gap:10px}.wc-dh h2{margin:0}.wc-dh small{font-size:.85rem;color:var(--muted);margin-left:6px}
 .wc-dx{border:0;background:rgba(255,255,255,.08);color:#fff;width:40px;height:40px;border-radius:50%;font-size:1.5rem;line-height:1;cursor:pointer}
 .wc-dsub{color:var(--muted);margin:4px 0 14px;font-size:.92rem}.wc-dlg .wc-medals{margin:0}
+.wc-delbtn{margin:18px 0 0;padding:10px 18px;border-radius:999px;border:1px solid rgba(214,69,80,.5);background:rgba(214,69,80,.12);color:#ffb3b9;font:600 .9rem inherit;cursor:pointer}.wc-delbtn:hover{background:rgba(214,69,80,.22)}
+.wc-delbar{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:16px 18px;margin:0 0 16px;border-radius:18px;background:rgba(214,69,80,.14);border:1px solid rgba(214,69,80,.5)}
+.wc-delbar b{display:block;color:#ffd0d4}.wc-delbar span{display:block;font-size:.9rem;color:#f1c5c9}
+.wc-drow{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:6px}.mgb.wc-danger{background:linear-gradient(180deg,#e2535f,#b8323e);box-shadow:0 8px 22px rgba(184,50,62,.35)}
 </style>
 </head>
 <body>
@@ -470,6 +474,25 @@ button{font:inherit}
     var prev = list.slice(0, 5).map(function (m) { return esc(m.icon || "\u2B50"); }).join(" ");
     return '<button class="wc-mbtn" id="wcmed" type="button"><span class="wc-mbi" aria-hidden="true">\u{1F3C5}</span><span class="wc-mbt"><b>Medals' + (list.length ? ' (' + list.length + ')' : '') + '</b><span>' + (prev || "See your medals") + '</span></span><span class="wc-mbc" aria-hidden="true">\u203A</span></button>';
   }
+  function fmtWhen(ms) { try { return new Date(ms).toLocaleString([], { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" }); } catch (e) { return ""; } }
+  function askDelete(tok, p) {
+    if (p.delete_at) { var b = document.querySelector(".wc-delbar"); if (b) b.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+    var dlg = document.getElementById("wcddlg");
+    if (!dlg) { dlg = document.createElement("dialog"); dlg.id = "wcddlg"; dlg.className = "wc-dlg"; document.body.appendChild(dlg);
+      dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); }); }
+    dlg.innerHTML = '<div class="wc-dh"><h2>Delete account?</h2><button type="button" class="wc-dx" aria-label="Close">\u00D7</button></div>' +
+      '<p class="wc-dsub">Your MVP card, medals, card styles and stats on the website and in the app will be deleted <b>in 3 days</b>. Until then you can cancel it here or in the app. Your Minecraft account and your items in the game are not affected.</p>' +
+      '<div class="wc-drow"><button type="button" class="mgb ghost" id="wcdkeep">Keep my account</button><button type="button" class="mgb wc-danger" id="wcdgo">Delete in 3 days</button></div><div class="mgmsg" id="wcdm"></div>';
+    dlg.querySelector(".wc-dx").onclick = dlg.querySelector("#wcdkeep").onclick = function () { dlg.close(); };
+    dlg.querySelector("#wcdgo").onclick = function () {
+      var b = this, m = dlg.querySelector("#wcdm"); b.disabled = true;
+      call("POST", "/api/app/delete-account", {}, tok).then(function (r) {
+        if (!r.ok) { b.disabled = false; m.textContent = "Could not start the deletion. Try again later."; return; }
+        dlg.close(); p.delete_at = r.j.delete_at; putCache(p); renderCard(p, tok, true); window.scrollTo({ top: 0, behavior: "smooth" });
+      }).catch(function () { b.disabled = false; m.textContent = "Cannot reach the server."; });
+    };
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", "");
+  }
   function openMedals(list) {
     var dlg = document.getElementById("wcmdlg");
     if (!dlg) { dlg = document.createElement("dialog"); dlg.id = "wcmdlg"; dlg.className = "wc-dlg"; document.body.appendChild(dlg);
@@ -490,20 +513,30 @@ button{font:inherit}
   function renderCard(p, tok, again) {
       // on a refresh keep the parts that are already loaded (notifications, timers, news)
       var keep = again ? { pnbox: document.getElementById("pnbox"), evbox: document.getElementById("evbox"), wcnews: document.getElementById("wcnews") } : null;
-      root.innerHTML = '<div id="pnbox"></div><div id="evbox"></div>' +
+      var delBanner = p.delete_at ? '<div class="wc-delbar"><div><b>Your account will be deleted on ' + esc(fmtWhen(p.delete_at)) + '.</b><span>Your card, medals and stats will be removed. Changed your mind?</span></div><button class="mgb" id="wcundel" type="button">Cancel deletion</button></div>' : "";
+      root.innerHTML = delBanner + '<div id="pnbox"></div><div id="evbox"></div>' +
         '<div class="wc-head"><div><h1>My card</h1><div class="upd" style="margin:6px 0 0">Welcome back, ' + esc(p.nick || "player") + '</div></div><button class="mgb ghost" id="wcout" type="button">Sign out</button></div>' +
         '<div class="wc-grid"><div><div class="wc-stage"><div class="wc" id="wccard">' +
         '<div class="wc-top"><div class="wc-brand"><img src="../icon-180.png" alt="" width="38" height="38">MVP</div><span class="wc-badge">' + esc(p.rank) + '</span></div>' +
         '<div class="wc-num">' + esc(pad(p.card_no)) + '</div>' +
         '<div class="wc-bot"><div><div class="wc-lbl">PLAYER</div><div class="wc-val">' + esc((p.nick || "NOT LINKED").toUpperCase()) + '</div></div>' +
         '<div style="text-align:right"><div class="wc-lbl">SINCE</div><div class="wc-val">' + esc(p.since || "") + '</div></div></div></div></div>' +
-        '<div class="wc-install">Tip: on your phone, add this page to your Home Screen and it works like an app.</div></div>' +
+        '<div class="wc-install">Tip: on your phone, add this page to your Home Screen and it works like an app.</div>' +
+        '<button class="wc-delbtn" id="wcdel" type="button">Delete account</button></div>' +
         '<div><div class="wc-stats">' +
         '<div class="wc-stat"><div class="wc-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#6fd0ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div class="wc-sv">' + esc(fmtTime(p.playtime)) + '</div><div class="wc-sl">Playtime</div></div>' +
         '<div class="wc-stat"><div class="wc-ic"><img src="coin.png" alt=""></div><div class="wc-sv">' + esc(p.coins) + '</div><div class="wc-sl">Coins</div></div>' +
         '<div class="wc-stat"><div class="wc-ic"><img src="sword.png" alt=""></div><div class="wc-sv">' + esc(p.kills) + '</div><div class="wc-sl">Kills</div></div>' +
         '</div>' + medalsBtn(p.medals) + '<div class="wc-news"><h2>Latest news <a href="../news/" style="font-size:.85rem;font-weight:600;margin-left:8px">All news</a></h2><div id="wcnews"></div></div></div></div>';
       document.getElementById("wcmed").addEventListener("click", function () { openMedals(p.medals); });
+      document.getElementById("wcdel").addEventListener("click", function () { askDelete(tok, p); });
+      var ud = document.getElementById("wcundel");
+      if (ud) ud.addEventListener("click", function () {
+        ud.disabled = true;
+        call("POST", "/api/app/delete-account", { cancel: true }, tok).then(function (r) {
+          if (r.ok) { p.delete_at = 0; putCache(p); renderCard(p, tok, true); } else { ud.disabled = false; }
+        }).catch(function () { ud.disabled = false; });
+      });
       document.getElementById("wcout").addEventListener("click", function () {
         call("POST", "/api/web/logout", null, tok).catch(function () {}); setTok(""); putCache(null); loginView();
       });
