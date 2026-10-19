@@ -347,7 +347,7 @@ button{font:inherit}
 .wc-ibadge{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:#e8424f;color:#fff;font:800 .72rem/20px inherit;text-align:center;box-shadow:0 0 0 2px #06111d}
 .wc-idlg{width:min(640px,calc(100vw - 32px))}
 .wc-im{padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);margin:0 0 10px}.wc-im.unread{border-color:rgba(111,208,255,.55);background:rgba(46,162,234,.1)}
-.wc-imh{display:flex;justify-content:space-between;gap:10px;font-size:.78rem;color:var(--muted)}.wc-from{font-weight:700;color:#6fd0ff;text-transform:uppercase;letter-spacing:.06em}
+.wc-imh{display:flex;justify-content:space-between;gap:10px;font-size:.78rem;color:var(--muted)}.wc-from{font-weight:700;color:#6fd0ff;text-transform:uppercase;letter-spacing:.06em;display:inline-flex;align-items:center;gap:5px}.wc-ver{flex:none}
 .wc-imt{display:block;font-size:1.05rem;margin:4px 0 6px}.wc-im p{margin:8px 0 0;white-space:pre-wrap;color:#dbe8f3;overflow-wrap:anywhere}.wc-im img{display:block;width:100%;border-radius:12px;margin:8px 0 0}
 .wc-im .wc-vid{margin-top:10px}.wc-ihide{margin-top:10px;border:0;background:none;color:#6f8597;font:500 .8rem inherit;text-decoration:underline;cursor:pointer;padding:0}.wc-ihide:hover{color:#ffb3b9}
 .wc-im a{color:#6fd0ff;text-decoration:underline}.wc-iempty{text-align:center;color:var(--muted);padding:20px 10px}.wc-iempty svg{opacity:.8}
@@ -513,6 +513,7 @@ button{font:inherit}
     if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", "");
   }
   // ---------- inbox: messages from the admin and the game server ----------
+  var VER_SVG = '<svg class="wc-ver" viewBox="0 0 24 24" width="15" height="15" aria-label="Verified" role="img"><path d="M12.00 2.00 L14.23 3.69 L17.00 3.34 L18.08 5.92 L20.66 7.00 L20.31 9.77 L22.00 12.00 L20.31 14.23 L20.66 17.00 L18.08 18.08 L17.00 20.66 L14.23 20.31 L12.00 22.00 L9.77 20.31 L7.00 20.66 L5.92 18.08 L3.34 17.00 L3.69 14.23 L2.00 12.00 L3.69 9.77 L3.34 7.00 L5.92 5.92 L7.00 3.34 L9.77 3.69 Z" fill="#2ea2ea"/><path d="M8 12.3 L10.8 15 L16.2 9.4" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   function openInbox(tok, p) {
     var dlg = document.getElementById("wcidlg");
     if (!dlg) { dlg = document.createElement("dialog"); dlg.id = "wcidlg"; dlg.className = "wc-dlg wc-idlg"; document.body.appendChild(dlg);
@@ -531,7 +532,7 @@ button{font:inherit}
         var w = document.createElement("article"); w.className = "wc-im" + (m.read ? "" : " unread");
         var rb = rich(m.body), d = "";
         try { d = new Date(m.created_at).toLocaleString([], { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }); } catch (e) {}
-        w.innerHTML = '<div class="wc-imh"><span class="wc-from">' + (m.sender === "server" ? "Game server" : "MVP team") + '</span><time>' + esc(d) + '</time></div>' +
+        w.innerHTML = '<div class="wc-imh"><span class="wc-from">' + (m.sender === "server" ? "Game server" : "MVP team" + VER_SVG) + '</span><time>' + esc(d) + '</time></div>' +
           '<b class="wc-imt">' + esc(m.title) + '</b>' + (m.image ? '<img src="' + esc(m.image) + '" alt="" loading="lazy">' : '') + '<p>' + rb.html + '</p>' +
           rb.vids.map(function (id) { return '<div class="wc-vid"><iframe src="https://www.youtube-nocookie.com/embed/' + id + '" title="Video" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>'; }).join("") +
           '<button type="button" class="wc-ihide">Delete</button>';
