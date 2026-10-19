@@ -388,6 +388,7 @@ button{font:inherit}
 <script src="../promo.js"></script>
 <script src="../ev.js"></script>
 <script src="../poll.js"></script>
+<script src="../share.js"></script>
 <script src="../push.js"></script>
 <script>
 (function () {
@@ -707,7 +708,7 @@ button{font:inherit}
         }).catch(function () { if (seq !== n._s) return; n.likes = prev.l; n.dislikes = prev.d; n.my = prev.m; paint(); });
       }
       up.onclick = function () { vote(1); }; dn.onclick = function () { vote(-1); };
-        ey.className = "eye"; var seg = document.createElement("div"); seg.className = "seg"; seg.append(up, dn); bar.append(seg, note, ey); w.appendChild(bar); box.appendChild(w); paint();
+        ey.className = "eye"; var seg = document.createElement("div"); seg.className = "seg"; seg.append(up, dn); bar.append(seg, window.mvpShareBtn ? mvpShareBtn(n) : "", note, ey); w.appendChild(bar); box.appendChild(w); paint();
         call("POST", "/api/app/view", { news_id: n.id }, tk).then(function (r) { if (r.ok && r.j.views !== undefined) { n.views = r.j.views; paint(); } }).catch(function () {});
       });
     }).catch(function () {});
