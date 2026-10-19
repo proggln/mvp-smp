@@ -455,7 +455,7 @@ button{font:inherit}
       var c = document.getElementById("wccard");
       function hexA(h, a) { var n = parseInt(h.slice(1), 16); return "rgba(" + (n >> 16 & 255) + "," + (n >> 8 & 255) + "," + (n & 255) + "," + a + ")"; }
       function applyTheme(t) { if (!c || !t) return; c.style.background = "linear-gradient(135deg," + t.colors[0] + " 0%," + t.colors[1] + " 55%," + t.colors[2] + " 100%)"; c.style.boxShadow = "0 26px 50px " + hexA(t.colors[1], .45); }
-      var themes = p.themes || [], cur = p.theme || "default";
+      var themes = (p.themes || []).filter(function (t) { return !t.app_only; }), cur = p.theme || "default";
       applyTheme(themes.filter(function (t) { return t.id === cur; })[0]);
       if (themes.length > 1 && c) {
         var sp = document.createElement("div"); sp.className = "wc-styles"; sp.innerHTML = '<div class="wc-slabel">Card style</div><div class="wc-sw"></div>';
