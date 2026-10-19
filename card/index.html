@@ -462,7 +462,7 @@ button{font:inherit}
         function regDone(nk) { rb.innerHTML = '<b>Waiting for registration</b><br>Requested nickname: ' + esc(nk) + '. Wait some time, an admin will confirm it.'; }
         if (p.pending_nick) regDone(p.pending_nick);
         else {
-          rb.innerHTML = '<b>Register your account</b><br>Type your exact Minecraft nickname. An admin will confirm it, this can take some time.<br>' +
+          rb.innerHTML = '<b>Register your account</b><br>Type your exact Minecraft nickname. An admin will confirm it, this can take some time. Accounts that are not confirmed within 48 hours are deleted.<br>' +
             '<input id="wcnick" type="text" maxlength="20" placeholder="Nickname" style="margin:10px 8px 0 0;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:transparent;color:inherit">' +
             '<button class="mgb" id="wcreg" type="button">Send</button><div id="wcregm" style="margin-top:8px"></div>';
           rb.querySelector("#wcreg").addEventListener("click", function () {
