@@ -12,9 +12,7 @@
 <meta property="og:image" content="https://proggln.github.io/mvp-smp/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAFYElEQVR42u2ZTWhUVxTH/+fc995MPhpCTJTY2Bg1VEQEW2vBQqAuJBWD2EJLwUVBaV256NKVXXThshRKLViMim2lhUKhaLsRoUKoRSottTFJTX3RyYeTIeN85L177+nimTjJJCGTj7bCu7zFW9w59/+755x7zn1D+OAGnubBeMpHDBADxAAxQAwQA8QAMUAMEAPEADFADPBfDacCVgKBFpggECv/np2KAWwosAYLrE0gj2XBtYlgAwtZUD8zHFoxAAIEYMinB5pbG+uMtUyzrRsRRXTh1sMLP4+qasfMs4GKyeT14ZeaDu9YE/1k9h6JKObBsYljlx9YULT0SnhAoBS9UJt/cVMT4M03q6O1tsfP3RkpsKdsmSOYyEya9ubqz7paq5z5c0+CX4p5xbSws5eQxJQp6IG+wUf5ohVoK6b0EQmMVDl89lAbE7EIlbmRRZjo7KG2KocDI0ZmWNBWrOBRvjjQPzhe0IvSXiGAOIpJ7IP7vg4Dh0mVPkSeIm1lT0vNib3rdV4rplnBo/P6xN71e1pqtBVPkaIZFhwmHQYP7vsk1lW8iNip/BgVCDNrrX3f11rPHeJWTnY079pSp4tPGBSTLupdW+pOdjQbK7PYojFtlplFZLXqgIgwcxAEvu9ba8vTnYgUU/fBtqSnYISiUDCS9FT3wTbFRETl8q21vu8HQfBYPWG1AKYSWhWLRd/3ZY5MhbayrSl5qnODKeooPExRn+rcsK0pqa2U776I+L5fLBaVUpCK5SylEouIUiqXyw0NDZUzOEzayvHda/dtb9CTRk+afdsbju9eq604ZfJFZGhoKJfLKaUqipzlthIi4jhONptNpVJz1VoSwZmujdVJVZ1UZ7o2ioDniB2kUqlsNus4ztLUV1aJ52TIZDLMvG7dOhGZDm8mGCstde5H+58D0FLnzsrdaPLw8HAmk1mO+mUBTDOk02mlVGNjoxWZ3mbFJIKjOxsBiKBUfTRtbGwsnU4vU/0KdKNRPoyOjo6n00xUWoCJYAVWUBo7kfp0Oj06OrrkuF8igBHMt5zrKD81fLU/zUSljRATuEz9LX98ZGREKTXPjsDI6gDUe+QpGEF5q2YFtZ5697u7n/+aVkzhXM1caIWJTt9Mv3/5bn1SzWnECBIK9R6tJIAARDAG3beDoZw0JKnGJTtznwRgQtKhI5f6r/RPuEx6pkBtxWX6YWDi2KV+T3Fpmyl4vCk1LjUk6V5Ozt4OjAHRoqrCopJYACF8fHOy+8/wQKvzVru3s1E5hGwoWqDosesdJhC98cWdK+9sfaWlZvrgj15+8nOvX+wDwVUUhaIIDOAy6jwKLW6M6K/6wu//1tm8hUcrfwqpBE2EcvGP4GJf2NGs3m73Xn3WWZOgnJaimcpXh3Jaus73Xj2ydcfaqigfHKZbI4Wu8715beGwsRI5sMpBlUsPC/L1YPhlX3A9ZaAFLqkEmdW4kRkBEThBRnDtnr52T7evUW9udrs2uq3PcORvseImeLyg95/rvXZ066b6BICBzORr53rHC9pLqKBgAdS6ZIG/svbbgeCbgXAwYwBE0m2FSVxZHYjiFQB7BODOuP2wp/jJb8GBVvfw827kdWNFeWooE3R29/a8tw1AZ3fv/Uygkmr6gLo+rE//Hvzoh7mCQFFkrVLpUx3kMv7oZgIBxgKBcJJcxuTUVSS6Pb68uQ5AT//Ek3umoMqlQigIBS4phgWWUwyWVYkjSUTgJBl5oj7yA1c7PYNZAFx6SyYUQgFhCdGy8gClcUXArHuktcIuRy+z7w1YAekrBjCNMZ+L4i9zMUAMEAPEADFADBADxAAxQAwQA8QAMcD/cfwDZCQBw3PimKAAAAAASUVORK5CYII=">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+<link href="../fonts/fonts.css" rel="stylesheet">
 <style>
 /* ==========================================================
    MVP v2: single file. Brand: blue #0081cc, white, light gray.
@@ -329,15 +327,15 @@ const CONFIG = {
     // Ranks
     { cat: "ranks", id: "vip", name: "VIP",  image: "vip", color: "#f2c94c", price: 1.99, period: "/ month", chip: "Starter",
       perks: ["[VIP] gold prefix in chat & tab", "5 homes", "+10% income from /jobs", "+10% daily reward", "Gift: 3x Small Protection Blocks (3 days of upkeep included)"], checkout: "" },
-    { cat: "ranks", id: "mvp", name: "MVP",  image: "mvp", color: "#2ea2ea", price: 4.99, was: 7.99, period: "/ month",
+    { cat: "ranks", id: "mvp", name: "MVP",  image: "mvp", color: "#2ea2ea", price: 4.99, period: "/ month",
       perks: ["[MVP] blue prefix in chat & tab", "12 homes", "+25% income from /jobs", "+25% daily reward", "Gift: 3x Large Protection Blocks (3 days of upkeep included)"], checkout: "" },
-    { cat: "ranks", id: "mvp-plus", name: "MVP+", image: "mvpplus", color: "#8a5cff", price: 6.99, was: 10.99, period: "/ month", best: true, chip: "★ Best Value",
+    { cat: "ranks", id: "mvp-plus", name: "MVP+", image: "mvpplus", color: "#8a5cff", price: 6.99, period: "/ month", best: true, chip: "★ Best Value",
       perks: ["[MVP+] pink prefix, the brightest in chat & tab", "20 homes", "+40% income from /jobs", "+40% daily reward", "Gift: 5x Large Protection Blocks (3 days of upkeep included)", "Special join message"], checkout: "" },
     // Crate keys (bundles: the more you take, the cheaper a key; prices follow the in-game coin value of each key)
     { cat: "keys", id: "keys-common-25", name: "Common Keys ×25",    icon: "key_common",  color: "#9fb4c4", price: 0.99, perks: ["25 Common Crate keys", "Just 4 cents per key"], checkout: "" },
     { cat: "keys", id: "keys-rare-10", name: "Rare Keys ×10",      icon: "key_rare",  color: "#4cc3ff", price: 1.49, perks: ["10 Rare Crate keys", "Just 15 cents per key"], checkout: "" },
     { cat: "keys", id: "keys-epic-5", name: "Epic Keys ×5",       icon: "key_epic", color: "#a06bff", price: 2.49, chip: "Popular", perks: ["5 Epic Crate keys", "Just 50 cents per key"], checkout: "" },
-    { cat: "keys", id: "keys-legendary-3", name: "Legendary Keys ×3",  icon: "key_legendary", color: "#ffb347", price: 4.99, was: 5.97, chip: "Best Value", perks: ["3 Legendary Crate keys", "Save 16% (a single key is €1.99)"], checkout: "" },
+    { cat: "keys", id: "keys-legendary-3", name: "Legendary Keys ×3",  icon: "key_legendary", color: "#ffb347", price: 4.99, chip: "Best Value", perks: ["3 Legendary Crate keys", "Just €1.66 per key"], checkout: "" },
     // MVP Coins (the bigger the pack, the more bonus coins)
     { cat: "coins", id: "coins-1000", name: "1,000 Coins",  icon: "coin", color: "#2ea2ea", price: 0.99,  amount: "1,000",  chip: "Starter", perks: ["1,000 coins"], checkout: "" },
     { cat: "coins", id: "coins-3300", name: "3,300 Coins",  icon: "coin", color: "#2ea2ea", price: 2.49,  amount: "3,300",  chip: "+10% bonus", perks: ["3,300 coins", "10% more coins"], checkout: "" },
