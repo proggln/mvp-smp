@@ -290,6 +290,7 @@ button{font:inherit}
   <div class="tabs" id="tabs" role="tablist" aria-label="Store categories"></div>
   <div class="fxbar"><span>Show approx. price in</span><button type="button" class="fxbtn" id="fxbtn" aria-haspopup="listbox" aria-expanded="false"><span id="fxcur">€ EUR</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8l5 5 5-5"/></svg></button><div class="fxmenu" id="fxmenu" role="listbox" aria-label="Currency"></div></div>
   <div class="mgl">Already have a rank? <a href="../manage/">Manage subscription</a></div>
+  <div class="mgl">Buying keys? See the exact <a href="../odds/">crate drop chances</a></div>
   <div class="sections" id="grid" aria-live="polite"></div>
   <ol class="steps" aria-label="How it works">
     <li><b>1</b><span>Pick an item</span></li>
@@ -481,7 +482,7 @@ const CONFIG = {
   }
   function stepOrder(p, nick, token) {
     const box = shell('<h3>Nickname confirmed</h3><div class="bm-sub bm-ok">Verified: <b>' + esc(nick) + '</b></div>' + summary(p) +
-      '<label class="bm-agree"><input type="checkbox" id="bmc"><span>I agree to the <a href="../terms/" target="_blank" rel="noopener">Terms</a> and <a href="../refunds/" target="_blank" rel="noopener">Refund Policy</a> (<a href="../seller/" target="_blank" rel="noopener">Seller information</a>), and to immediate delivery of these digital items. I understand that once they are delivered I lose the right of withdrawal.' + (p.period ? ' I also understand this is a <b>monthly subscription</b> that renews automatically at ' + esc(priceText(p)) + ' per month until I cancel it.' : '') + '</span></label>' +
+      '<label class="bm-agree"><input type="checkbox" id="bmc"><span>I agree to the <a href="../terms/" target="_blank" rel="noopener">Terms</a> and <a href="../refunds/" target="_blank" rel="noopener">Refund Policy</a> (<a href="../seller/" target="_blank" rel="noopener">Seller information</a>), ' + (p.period ? 'and I ask the rank to start right away. I understand this is a <b>monthly subscription</b> that renews automatically at ' + esc(priceText(p)) + ' per month until I cancel it, and that if I withdraw within 14 days I pay for the days already used.' : 'and to immediate delivery of these digital items. I understand that once they are delivered I lose the right of withdrawal.') + '</span></label>' +
       '<button class="buy bm-btn" type="button">' + (window.__payReal ? 'Pay ' + esc(priceText(p)) + (p.period ? ' / month' : '') : 'Place order') + '</button><div class="bm-msg"></div>');
     const btn = box.querySelector(".bm-btn"), msg = box.querySelector(".bm-msg"), agree = box.querySelector("#bmc");
     btn.addEventListener("click", () => {
