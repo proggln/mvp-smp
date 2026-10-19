@@ -8,19 +8,9 @@
   }
   apply(get());
   var L='html[data-theme="light"]';
-  var css = L+'{--bg:#fff;--white:#0b1b2b;--muted:#5b6f82;--gray:#33475a;color-scheme:light}' +
-    L+' body{background:#fff;color:#0b1b2b}' +
-    L+' .bg,'+L+' .blob,'+L+' .pgrid,'+L+' .grade,'+L+' .vignette{display:none}' +
-    L+' .nav{background:rgba(255,255,255,.88);border-color:rgba(11,27,43,.12);box-shadow:0 8px 28px rgba(11,27,43,.12)}' +
-    L+' .nav a,'+L+' .nav .menu a{color:#0b1b2b}' +
-    L+' .card2,'+L+' .card,'+L+' .panel{background:#f3f7fb !important;border-color:rgba(11,27,43,.1) !important;color:#0b1b2b}' +
-    L+' h1,'+L+' h2,'+L+' h3,'+L+' h4,'+L+' p,'+L+' li,'+L+' label{color:#0b1b2b}' +
-    L+' *{text-shadow:none !important}' +
-    L+' .stat,'+L+' .ip-card,'+L+' .ip-inner,'+L+' .wc,'+L+' .mgb.ghost{background:#eef3f8 !important;border-color:rgba(11,27,43,.12) !important;color:#0b1b2b !important;box-shadow:0 4px 14px rgba(11,27,43,.08) !important}' +
-    L+' .stat strong,'+L+' .ip-value,'+L+' .mgb.ghost{color:#0b1b2b !important}' +
-    L+' .legal-links a,'+L+' .doc a,'+L+' footer a{color:#33475a !important}' +
-    L+' .logo,'+L+' .brand img,'+L+' .brand svg{filter:invert(1) brightness(.35)}' +
-    L+' .mvp-tt{border-color:rgba(11,27,43,.18);background:rgba(11,27,43,.06);color:#0b1b2b}' +
+  var css = L+'{background:#fff;filter:invert(1) hue-rotate(180deg)}' +
+    L+' img,'+L+' video,'+L+' canvas,'+L+' picture,'+L+' #mvpPromo,'+L+' iframe,'+L+' .wc-ic,'+L+' [style*="background-image"]{filter:invert(1) hue-rotate(180deg)}' +
+    L+' .mvp-tt{filter:none}' +
     '.mvp-tt{flex:none;width:38px;height:38px;margin:0 2px 0 4px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.07);color:#cfe6f7;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0;transition:background .2s,transform .2s}' +
     '.mvp-tt:hover{background:rgba(255,255,255,.16);transform:scale(1.06)}.mvp-tt svg{width:18px;height:18px}';
   var MOON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
