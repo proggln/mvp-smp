@@ -319,6 +319,12 @@ button{font:inherit}
 .wc-styles{margin-top:14px}.wc-slabel{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:#9db6c9;margin-bottom:8px}
 .wc-sw{display:flex;gap:12px;flex-wrap:wrap}.wc-sw button{width:44px;height:44px;border-radius:14px;border:2px solid rgba(255,255,255,.2);cursor:pointer;padding:0;transition:transform .12s}.wc-sw button:active{transform:scale(.92)}.wc-sw button.on{border-color:#fff;box-shadow:0 0 0 3px rgba(111,208,255,.55)}
 .wc-install{margin-top:18px;font-size:.86rem;color:var(--muted)}
+.wc-medals{margin:18px 0 0}.wc-medals h2{margin:0 0 10px}.wc-medals h2 small{font-size:.8rem;font-weight:700;color:var(--muted);margin-left:6px}
+.wc-ml{display:grid;gap:10px}.wc-md{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-left:4px solid var(--mc)}
+.wc-mi{flex:none;width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:color-mix(in srgb,var(--mc) 22%,transparent)}
+.wc-mt{min-width:0}.wc-mt b{display:block;color:var(--mc);font-size:.98rem}.wc-mt span{display:block;font-size:.9rem;color:#dbe8f3}.wc-mt small{display:block;font-size:.78rem;color:var(--muted);margin-top:2px}
+.wc-skel{background:linear-gradient(90deg,rgba(255,255,255,.05),rgba(255,255,255,.12),rgba(255,255,255,.05));background-size:200% 100%;animation:wcsk 1.2s linear infinite;min-height:90px}.wc.wc-skel{box-shadow:none}
+@keyframes wcsk{from{background-position:200% 0}to{background-position:-200% 0}}
 </style>
 </head>
 <body>
@@ -430,13 +436,37 @@ button{font:inherit}
 
   function fmtTime(m) { m = Number(m) || 0; if (m < 60) return m + "m"; var h = Math.floor(m / 60), r = m % 60; return r ? h + "h " + r + "m" : h + "h"; }
   function pad(n) { n = String(n || ""); return n.length === 8 ? n.slice(0, 4) + " " + n.slice(4) : "···· ····"; }
+  // the last loaded card is kept in this browser and shown at once; fresh data replaces it a moment later
+  var CACHE = "mvp_card_cache";
+  function getCache() { try { return JSON.parse(localStorage.getItem(CACHE) || "null"); } catch (e) { return null; } }
+  function putCache(p) { try { if (p) localStorage.setItem(CACHE, JSON.stringify(p)); else localStorage.removeItem(CACHE); } catch (e) {} }
+  function skeleton() {
+    root.innerHTML = '<div class="wc-head"><div><h1>My card</h1><div class="upd" style="margin:6px 0 0">Loading your card...</div></div></div>' +
+      '<div class="wc-grid"><div><div class="wc-stage"><div class="wc wc-skel"></div></div></div><div><div class="wc-stats"><div class="wc-stat wc-skel"></div><div class="wc-stat wc-skel"></div><div class="wc-stat wc-skel"></div></div></div></div>';
+  }
   function cardView() {
     var tok = getTok();
-    if (!tok) { loginView(); return; }
+    if (!tok) { putCache(null); loginView(); return; }
+    var cached = getCache(), shown = cached ? JSON.stringify(cached) : "";
+    if (cached) renderCard(cached, tok, false); else skeleton();
     call("GET", "/api/app/me", null, tok).then(function (r) {
-      if (r.status === 401) { setTok(""); loginView(); return; }
-      if (!r.ok) { root.innerHTML = '<div class="card2 mg"><h1>My card</h1><div class="mgmsg">Cannot load your card. Try again later.</div></div>'; return; }
-      var p = r.j; setTok(tok);
+      if (r.status === 401) { setTok(""); putCache(null); loginView(); return; }
+      if (!r.ok) { if (!cached) root.innerHTML = '<div class="card2 mg"><h1>My card</h1><div class="mgmsg">Cannot load your card. Try again later.</div></div>'; return; }
+      setTok(tok); putCache(r.j);
+      if (JSON.stringify(r.j) !== shown) renderCard(r.j, tok, !!cached);
+    }).catch(function () { if (!cached) root.innerHTML = '<div class="card2 mg"><h1>My card</h1><div class="mgmsg">Cannot reach the server. Try again later.</div></div>'; });
+  }
+  function medalsHtml(list) {
+    if (!list || !list.length) return "";
+    return '<div class="wc-medals"><h2>Medals <small>' + list.length + '</small></h2><div class="wc-ml">' + list.map(function (m) {
+      var col = /^#[0-9a-fA-F]{6}$/.test(m.color || "") ? m.color : "#6fd0ff", d = "";
+      try { d = m.awarded_at ? new Date(m.awarded_at).toLocaleDateString([], { year: "numeric", month: "short", day: "numeric" }) : ""; } catch (e) {}
+      return '<div class="wc-md" style="--mc:' + col + '"><div class="wc-mi" aria-hidden="true">' + esc(m.icon || "\u2B50") + '</div><div class="wc-mt"><b>[' + esc(m.name) + ']</b><span>' + esc(m.description || "") + '</span>' + (d ? '<small>' + esc(d) + '</small>' : "") + '</div></div>';
+    }).join("") + '</div></div>';
+  }
+  function renderCard(p, tok, again) {
+      // on a refresh keep the parts that are already loaded (notifications, timers, news)
+      var keep = again ? { pnbox: document.getElementById("pnbox"), evbox: document.getElementById("evbox"), wcnews: document.getElementById("wcnews") } : null;
       root.innerHTML = '<div id="pnbox"></div><div id="evbox"></div>' +
         '<div class="wc-head"><div><h1>My card</h1><div class="upd" style="margin:6px 0 0">Welcome back, ' + esc(p.nick || "player") + '</div></div><button class="mgb ghost" id="wcout" type="button">Sign out</button></div>' +
         '<div class="wc-grid"><div><div class="wc-stage"><div class="wc" id="wccard">' +
@@ -449,9 +479,9 @@ button{font:inherit}
         '<div class="wc-stat"><div class="wc-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#6fd0ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div class="wc-sv">' + esc(fmtTime(p.playtime)) + '</div><div class="wc-sl">Playtime</div></div>' +
         '<div class="wc-stat"><div class="wc-ic"><img src="coin.png" alt=""></div><div class="wc-sv">' + esc(p.coins) + '</div><div class="wc-sl">Coins</div></div>' +
         '<div class="wc-stat"><div class="wc-ic"><img src="sword.png" alt=""></div><div class="wc-sv">' + esc(p.kills) + '</div><div class="wc-sl">Kills</div></div>' +
-        '</div><div class="wc-news"><h2>Latest news <a href="../news/" style="font-size:.85rem;font-weight:600;margin-left:8px">All news</a></h2><div id="wcnews"></div></div></div></div>';
+        '</div>' + medalsHtml(p.medals) + '<div class="wc-news"><h2>Latest news <a href="../news/" style="font-size:.85rem;font-weight:600;margin-left:8px">All news</a></h2><div id="wcnews"></div></div></div></div>';
       document.getElementById("wcout").addEventListener("click", function () {
-        call("POST", "/api/web/logout", null, tok).catch(function () {}); setTok(""); loginView();
+        call("POST", "/api/web/logout", null, tok).catch(function () {}); setTok(""); putCache(null); loginView();
       });
       var c = document.getElementById("wccard");
       if (!p.nick) {
@@ -498,10 +528,13 @@ button{font:inherit}
         });
         c.parentNode.addEventListener("mouseleave", function () { c.style.transform = ""; });
       }
+      if (keep && keep.wcnews) {
+        ["pnbox", "evbox", "wcnews"].forEach(function (id) { var n = document.getElementById(id); if (n && keep[id]) n.parentNode.replaceChild(keep[id], n); });
+        return;
+      }
       mvpPush(document.getElementById("pnbox"));
       mvpEvents(document.getElementById("evbox"), true);
       newsView();
-    }).catch(function () { root.innerHTML = '<div class="card2 mg"><h1>My card</h1><div class="mgmsg">Cannot reach the server. Try again later.</div></div>'; });
   }
   function rich(text) {
     var re = /\[([^\]]{1,80})\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s<>()\[\]]+)/g;
