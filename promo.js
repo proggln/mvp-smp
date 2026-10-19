@@ -39,10 +39,9 @@
       "#mvpPromo button.x{position:absolute;top:4px;right:6px;border:0;background:transparent;color:#d6ecfb;font-size:20px;line-height:1;cursor:pointer;padding:4px 6px}" +
       "@keyframes mvpUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}" +
       "@keyframes mvpIn{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}" +
-            "@media(min-width:1500px){#mvpPromo{left:calc(50% - 770px);right:auto;bottom:auto;top:190px;width:268px;flex-direction:column;align-items:flex-start;padding:22px 20px 20px;gap:10px;border-radius:26px;" +
-      "animation:mvpIn .7s cubic-bezier(.2,.9,.3,1.1) both}" +
-      (live ? "#mvpPromo:hover{box-shadow:0 20px 46px rgba(0,0,0,.5),0 0 40px rgba(0,148,230,.45)}#mvpPromo:hover .go{transform:scale(1.04)}" : "") +
-      "#mvpPromo img{width:60px;height:60px;border-radius:16px}#mvpPromo b{font-size:1.18rem}#mvpPromo small{font-size:.9rem}#mvpPromo .go{align-self:stretch;margin-top:8px}#mvpPromo button.x{top:8px;right:10px}}" +
+            "#mvpPromo.side{right:auto;bottom:auto;width:268px;flex-direction:column;align-items:flex-start;padding:22px 20px 20px;gap:10px;border-radius:26px;animation:mvpIn .7s cubic-bezier(.2,.9,.3,1.1) both}" +
+      (live ? "#mvpPromo.side:hover{box-shadow:0 20px 46px rgba(0,0,0,.5),0 0 40px rgba(0,148,230,.45)}#mvpPromo.side:hover .go{transform:scale(1.04)}" : "") +
+      "#mvpPromo.side img{width:60px;height:60px;border-radius:16px}#mvpPromo.side b{font-size:1.18rem}#mvpPromo.side small{font-size:.9rem}#mvpPromo.side .go{align-self:stretch;margin-top:8px}#mvpPromo.side button.x{top:8px;right:10px}" +
       "@media(prefers-reduced-motion:reduce){#mvpPromo{animation:none!important}}";
     function hide() { lsSet(KEY, String(Date.now())); var a = document.getElementById("mvpPromo"); if (a) a.remove(); }
     function build() {
@@ -53,6 +52,15 @@
       if (live) d.addEventListener("click", function (e) { if (e.target.closest("button.x") || e.target.closest("a")) return; location.href = href; });
       d.querySelector("button.x").addEventListener("click", function (e) { e.stopPropagation(); hide(); });
       document.body.appendChild(d);
+      // beside the page column when there is room, otherwise a bar at the bottom
+      function place() {
+        var m = document.querySelector("main") || document.body, r = m.getBoundingClientRect();
+        var room = r.left >= 268 + 24 + 12;
+        d.classList.toggle("side", room);
+        if (room) { d.style.left = Math.round(r.left - 268 - 24) + "px"; d.style.top = "150px"; }
+        else { d.style.left = ""; d.style.top = ""; }
+      }
+      place(); window.addEventListener("resize", place); setTimeout(place, 600);
     }
     if (document.body) build(); else document.addEventListener("DOMContentLoaded", build);
   }
