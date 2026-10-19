@@ -339,6 +339,8 @@ button{font:inherit}
 .wc-delbar{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:16px 18px;margin:0 0 16px;border-radius:18px;background:rgba(214,69,80,.14);border:1px solid rgba(214,69,80,.5)}
 .wc-delbar b{display:block;color:#ffd0d4}.wc-delbar span{display:block;font-size:.9rem;color:#f1c5c9}
 .wc-drow{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:6px}.mgb.wc-danger{background:linear-gradient(180deg,#e2535f,#b8323e);box-shadow:0 8px 22px rgba(184,50,62,.35)}
+.wc-mbp{display:flex!important;gap:6px;align-items:center}.wc-mbp svg{flex:none}.wc-mbc{flex:none;color:var(--muted)}
+.wc-foot{margin:40px 0 0;text-align:center}.wc-dellink{border:0;background:none;padding:6px;color:#6f8597;font:500 .82rem inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}.wc-dellink:hover{color:#ffb3b9}
 </style>
 </head>
 <body>
@@ -470,10 +472,13 @@ button{font:inherit}
       if (JSON.stringify(r.j) !== shown) renderCard(r.j, tok, !!cached);
     }).catch(function () { if (!cached) root.innerHTML = '<div class="card2 mg"><h1>My card</h1><div class="mgmsg">Cannot reach the server. Try again later.</div></div>'; });
   }
+  // medal icons: small pixel pictures drawn here (no emoji)
+  var MPX={pal:{"Y":"#ffcf3a","y":"#c98a00","R":"#e8424f","B":"#2ea2ea","O":"#ff8a1f","k":"#3a1d08","G":"#3fae4a","g":"#2a7a33","W":"#f2f6fa","w":"#b9c6d3","I":"#bfe9ff","C":"#5ee3f0","c":"#d6fbff","T":"#8a5a2b","P":"#9aa7b4","D":"#1f6fa8"},ic:{"medal":["..RR....BB..","..RRR..BBB..","...RRR.BB...","....RRBB....",".....yy.....","...yYYYYy...","..yYYyyYYy..","..YYyYYyYY..","..YYyYYyYY..","..yYYyyYYy..","...yYYYYy...",".....yy....."],"star":[".....YY.....",".....YY.....","....YYYY....","....YYYY....","YYYYYYYYYYYY",".YYYYYYYYYY.","..YYYYYYYY..","...YYYYYY...","...YYYYYY...","..YYY..YYY..","..YY....YY..",".YY......YY."],"trophy":[".YYYYYYYYYY.","YYYYYYYYYYYY","Y.YYYYYYyY.Y","Y.YYYYYYyY.Y",".YYYYYYYyYY.","...YYYYyY...","....YYyY....",".....yY.....",".....yY.....","....yYYY....","...TTTTTT...","...TTTTTT..."],"pumpkin":[".....gg.....",".....g......","..OOOOOOOO..",".OOOOOOOOOO.","OOkkOOOOkkOO","OOkkOOOOkkOO","OOOOOkkOOOOO","OOOOOOOOOOOO","OOkOkkkkOkOO","OOOkkkkkkOOO",".OOOOOOOOOO.","..OOOOOOOO.."],"ghost":["....WWWW....","..WWWWWWWW..",".WWWWWWWWWW.",".WWkkWWkkWW.",".WWkkWWkkWW.",".WWWWWWWWWW.",".WWWWkkWWWW.",".WWWWkkWWWW.",".WWWWWWWWWW.",".WWWWWWWWWW.",".WWW.WW.WWW.",".WW...W..WW."],"tree":[".....YY.....",".....GG.....","....GGGG....","...GGRGGG...","....GGGG....","...GGGGBG...","..GGRGGGGG..","...GGGGGG...","..GGGGGGYG..",".GGGGRGGGGG.",".....TT.....",".....TT....."],"snow":[".....I......","...I.I.I....","....III.....",".I...I...I..","..I..I..I...","IIIIIIIIIII.","..I..I..I...",".I...I...I..","....III.....","...I.I.I....",".....I......","............"],"fire":[".....R......","....RR......","....RRR..R..","...RRRR.RR..","..RRORRRRR..","..RROORRRR..",".RROOOORRRR.",".RROOYOORRR.",".RROYYYORRR.",".RROYYYYORR.","..RROYYORR..","...RRRRRR..."],"sword":["..........WW",".........WwW","........WwW.",".......WwW..","......WwW...","..Y..WwW....","...YWwW.....","....YW......","...TTY......","..TT..Y.....",".TT.........","TT.........."],"diamond":["............","............","...CCCCCC...","..CcCCCCcC..",".CcCCCCCCcC.","CCCCCCCCCCCC",".CCCCCCCCCC.","..CCCCCCCC..","...CCCCCC...","....CCCC....",".....CC.....","............"],"crown":["............","............","Y....Y....Y.","YY..YYY..YY.","YYY.YYY.YYY.","YYYYYYYYYYY.","YYRYYBYYRYY.","YYYYYYYYYYY.","yyyyyyyyyyy.","............","............","............"],"heart":["............",".RRR....RRR.","RRRRR..RRRRR","RRWRRRRRRRRR","RRRRRRRRRRRR","RRRRRRRRRRRR",".RRRRRRRRRR.","..RRRRRRRR..","...RRRRRR...","....RRRR....",".....RR.....","............"],"flag":[".P..........",".PBBBBBB....",".PBBBBBBB...",".PBBWWBBBB..",".PBBWWBBBBB.",".PBBBBBBBB..",".PBBBBBBB...",".P..........",".P..........",".P..........",".P..........","PPP........."]}};
+  function pxSvg(k,size){var r=MPX.ic[k]||MPX.ic.medal,o='<svg viewBox="0 0 12 12" width="'+size+'" height="'+size+'" shape-rendering="crispEdges" aria-hidden="true" focusable="false">';for(var y=0;y<12;y++){var x=0;while(x<12){var ch=r[y].charAt(x),n=1;if(ch==="."){x++;continue}while(x+n<12&&r[y].charAt(x+n)===ch)n++;o+='<rect x="'+x+'" y="'+y+'" width="'+n+'" height="1" fill="'+MPX.pal[ch]+'"/>';x+=n}}return o+'</svg>'}
   function medalsBtn(list) {
     list = list || [];
-    var prev = list.slice(0, 5).map(function (m) { return esc(m.icon || "\u2B50"); }).join(" ");
-    return '<button class="wc-mbtn" id="wcmed" type="button"><span class="wc-mbi" aria-hidden="true">\u{1F3C5}</span><span class="wc-mbt"><b>Medals' + (list.length ? ' (' + list.length + ')' : '') + '</b><span>' + (prev || "See your medals") + '</span></span><span class="wc-mbc" aria-hidden="true">\u203A</span></button>';
+    var prev = list.slice(0, 6).map(function (m) { return pxSvg(m.icon, 20); }).join("");
+    return '<button class="wc-mbtn" id="wcmed" type="button"><span class="wc-mbi">' + pxSvg("medal", 28) + '</span><span class="wc-mbt"><b>Medals' + (list.length ? ' (' + list.length + ')' : '') + '</b><span class="wc-mbp">' + (prev || "See your medals") + '</span></span><svg class="wc-mbc" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>';
   }
   function fmtWhen(ms) { try { return new Date(ms).toLocaleString([], { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" }); } catch (e) { return ""; } }
   function askDelete(tok, p) {
@@ -508,7 +513,7 @@ button{font:inherit}
     return '<div class="wc-medals"><div class="wc-ml">' + list.map(function (m) {
       var col = /^#[0-9a-fA-F]{6}$/.test(m.color || "") ? m.color : "#6fd0ff", d = "";
       try { d = m.awarded_at ? new Date(m.awarded_at).toLocaleDateString([], { year: "numeric", month: "short", day: "numeric" }) : ""; } catch (e) {}
-      return '<div class="wc-md" style="--mc:' + col + '"><div class="wc-mi" aria-hidden="true">' + esc(m.icon || "\u2B50") + '</div><div class="wc-mt"><b>[' + esc(m.name) + ']</b><span>' + esc(m.description || "") + '</span>' + (d ? '<small>' + esc(d) + '</small>' : "") + '</div></div>';
+      return '<div class="wc-md" style="--mc:' + col + '"><div class="wc-mi">' + pxSvg(m.icon, 30) + '</div><div class="wc-mt"><b>[' + esc(m.name) + ']</b><span>' + esc(m.description || "") + '</span>' + (d ? '<small>' + esc(d) + '</small>' : "") + '</div></div>';
     }).join("") + '</div></div>';
   }
   function renderCard(p, tok, again) {
@@ -522,13 +527,13 @@ button{font:inherit}
         '<div class="wc-num">' + esc(pad(p.card_no)) + '</div>' +
         '<div class="wc-bot"><div><div class="wc-lbl">PLAYER</div><div class="wc-val">' + esc((p.nick || "NOT LINKED").toUpperCase()) + '</div></div>' +
         '<div style="text-align:right"><div class="wc-lbl">SINCE</div><div class="wc-val">' + esc(p.since || "") + '</div></div></div></div></div>' +
-        '<div class="wc-install">Tip: on your phone, add this page to your Home Screen and it works like an app.</div>' +
-        '<button class="wc-delbtn" id="wcdel" type="button">Delete account</button></div>' +
+        '<div class="wc-install">Tip: on your phone, add this page to your Home Screen and it works like an app.</div></div>' +
         '<div><div class="wc-stats">' +
         '<div class="wc-stat"><div class="wc-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#6fd0ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div class="wc-sv">' + esc(fmtTime(p.playtime)) + '</div><div class="wc-sl">Playtime</div></div>' +
         '<div class="wc-stat"><div class="wc-ic"><img src="coin.png" alt=""></div><div class="wc-sv">' + esc(p.coins) + '</div><div class="wc-sl">Coins</div></div>' +
         '<div class="wc-stat"><div class="wc-ic"><img src="sword.png" alt=""></div><div class="wc-sv">' + esc(p.kills) + '</div><div class="wc-sl">Kills</div></div>' +
-        '</div>' + medalsBtn(p.medals) + '<div class="wc-news"><h2>Latest news <a href="../news/" style="font-size:.85rem;font-weight:600;margin-left:8px">All news</a></h2><div id="wcnews"></div></div></div></div>';
+        '</div>' + medalsBtn(p.medals) + '<div class="wc-news"><h2>Latest news <a href="../news/" style="font-size:.85rem;font-weight:600;margin-left:8px">All news</a></h2><div id="wcnews"></div></div></div></div>' +
+        '<div class="wc-foot"><button class="wc-dellink" id="wcdel" type="button">Delete account</button></div>';
       document.getElementById("wcmed").addEventListener("click", function () { openMedals(p.medals); });
       document.getElementById("wcdel").addEventListener("click", function () { askDelete(tok, p); });
       var ud = document.getElementById("wcundel");
