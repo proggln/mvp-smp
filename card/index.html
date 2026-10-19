@@ -469,7 +469,7 @@ button{font:inherit}
             var nk = rb.querySelector("#wcnick").value.trim(), mm = rb.querySelector("#wcregm");
             if (!/^[A-Za-z0-9_.]{2,20}$/.test(nk)) { mm.textContent = "Use 2-20 letters, digits, _ or ."; return; }
             call("POST", "/api/app/nick-request", { nick: nk }, tok).then(function (r) {
-              if (r.ok) regDone(nk); else mm.textContent = "Could not send. Try again later.";
+              if (r.ok) regDone(nk); else mm.textContent = r.status === 409 ? "This nickname is already taken." : "Could not send. Try again later.";
             }).catch(function () { mm.textContent = "Cannot reach the server."; });
           });
         }
