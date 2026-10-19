@@ -30,15 +30,12 @@ a{color:inherit;text-decoration:none}
 p,h1,h2,h3{margin:0}
 :focus-visible{outline:2px solid var(--ice);outline-offset:3px}
 
-/* ---------- Background ---------- */
-.bg{position:fixed;inset:0;z-index:0;overflow:hidden;background:radial-gradient(ellipse at 50% 30%,#0b3d63 0%,#06182a 45%,#03080f 82%)}
-.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.45}
-.b1{width:48vw;height:48vw;left:-10vw;top:-12vw;background:#0081cc;animation:drift1 26s ease-in-out infinite alternate}
-.b2{width:40vw;height:40vw;right:-8vw;top:18vh;background:#1a4fbf;opacity:.35;animation:drift2 32s ease-in-out infinite alternate}
-@keyframes drift1{to{transform:translate(9vw,7vh) scale(1.15)}}
-@keyframes drift2{to{transform:translate(-8vw,10vh) scale(.9)}}
-.pgrid{position:absolute;inset:0;background-image:linear-gradient(rgba(111,208,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(111,208,255,.05) 1px,transparent 1px);background-size:48px 48px;-webkit-mask:radial-gradient(ellipse at 50% 20%,#000 0%,transparent 75%);mask:radial-gradient(ellipse at 50% 20%,#000 0%,transparent 75%)}
-
+*,*::before,*::after{box-sizing:border-box}
+html{background:#070e17;scroll-padding-top:96px;scroll-behavior:smooth}
+body{margin:0;min-height:100vh;background:#070e17;color:#dbe6ef;font-family:var(--font-body);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+p,h1,h2,h3{margin:0}
+:focus-visible{outline:2px solid var(--ice);outline-offset:3px}
 /* ---------- Nav (same as Store) ---------- */
 .nav{position:fixed;top:max(16px,env(safe-area-inset-top));left:0;right:0;margin-inline:auto;z-index:20;width:min(860px,calc(100% - 28px));display:flex;align-items:center;justify-content:space-between;padding:8px 8px 8px 18px;border-radius:999px;background:rgba(6,16,28,.6);border:1px solid rgba(255,255,255,.09);backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);box-shadow:0 10px 40px rgba(0,0,0,.35)}
 .brand{display:inline-flex;align-items:center;gap:12px}
@@ -59,104 +56,56 @@ p,h1,h2,h3{margin:0}
 .px[data-smooth] img{image-rendering:auto;filter:drop-shadow(0 6px 10px rgba(0,0,0,.45))}
 .px[data-px="portal"] img{transform:scale(1.15);filter:drop-shadow(0 0 3px rgba(190,140,255,.9)) drop-shadow(0 0 14px rgba(160,107,255,.6))}
 
-/* ---------- Page ---------- */
-.wiki{position:relative;z-index:10;max-width:1040px;margin:0 auto;padding:112px 18px 40px}
-.head{text-align:center}
-.head h1{font:900 clamp(2rem,5vw,3rem)/1.05 var(--font-head);text-shadow:0 3px 0 rgba(0,0,0,.35)}
-.head p{margin-top:8px;color:#cfe3f1}
 
-/* picture menu */
-.pick{display:grid;grid-template-columns:repeat(7,1fr);gap:12px;margin:28px 0 34px}
-.pick a{display:flex;flex-direction:column;align-items:center;gap:10px;padding:18px 8px 14px;border-radius:20px;background:rgba(6,16,28,.6);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-weight:600;font-size:.9rem;text-align:center;transition:transform .2s,border-color .2s,background .2s}
-.pick a:hover{transform:translateY(-4px);border-color:rgba(111,208,255,.5);background:rgba(10,30,50,.75)}
-.pick .px{width:52px;height:52px}
-
-/* section card */
-.sec{position:relative;margin-bottom:22px;padding:28px;border-radius:28px;background:linear-gradient(180deg,rgba(14,34,56,.8),rgba(5,14,26,.86));border:1px solid rgba(255,255,255,.09);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 18px 50px rgba(0,0,0,.35);overflow:hidden}
-.sec::before{content:"";position:absolute;left:-20%;right:-20%;top:-75%;height:100%;background:radial-gradient(closest-side,var(--tc,#2ea2ea),transparent);opacity:.22;pointer-events:none}
-.sec-head{position:relative;display:flex;align-items:center;gap:16px;margin-bottom:22px}
-.sec-head .px{width:64px;height:64px}
-.sec h2{font:800 1.7rem/1.1 var(--font-head)}
-.sec-head p{margin-top:4px;color:var(--muted)}
-.label{position:relative;margin:26px 0 12px;font:800 .78rem/1 var(--font-head);letter-spacing:.14em;text-transform:uppercase;color:var(--ice)}
-
-/* flow: picture → picture → picture */
-.flow{position:relative;display:flex;align-items:stretch;gap:10px}
-.step{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:12px;padding:22px 12px 18px;border-radius:22px;background:rgba(3,10,20,.55);border:1px solid rgba(255,255,255,.07);text-align:center}
-.step .px{width:72px;height:72px}
-.step b{font-size:1rem}
-.step small{display:block;margin-top:2px;color:var(--muted);font-size:.86rem}
-.arrow{flex:none;align-self:center;width:26px;height:26px;color:var(--ice);opacity:.8}
-.num{display:inline-grid;place-items:center;width:24px;height:24px;margin-bottom:-4px;border-radius:50%;background:linear-gradient(180deg,#22a6f2,#0081cc);font-size:.78rem;font-weight:800}
-
-/* tiles grid */
-.tiles{position:relative;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
-.tiles.c4{grid-template-columns:repeat(4,1fr)}
-.tiles.c6{grid-template-columns:repeat(6,1fr)}
-.tile{display:flex;flex-direction:column;align-items:center;gap:8px;padding:18px 10px 16px;border-radius:20px;background:rgba(3,10,20,.55);border:1px solid rgba(255,255,255,.07);text-align:center}
-.tile .px{width:56px;height:56px}
-.tile b{font-size:.96rem}
-.big{font:800 1.25rem/1 var(--font-head);color:#ffd66b}
-.big .cn{font:600 .72rem/1 var(--font-body,inherit);font-style:normal;color:var(--muted);margin-left:2px}
-.big.blue{color:#9be0ff}
-.big.red{color:#ff8a8a}
-
-/* command chips */
-code{font-family:var(--font-mono);font-size:.84rem;padding:3px 8px;border-radius:8px;background:rgba(111,208,255,.13);border:1px solid rgba(111,208,255,.25);color:#bfe9ff;white-space:nowrap}
-.cmds{position:relative;display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
-.cmds code{padding:7px 12px;font-size:.88rem}
-
-/* warning bar */
-.warn{position:relative;display:flex;align-items:center;gap:14px;margin-top:18px;padding:12px 16px;border-radius:18px;background:rgba(255,90,90,.12);border:1px solid rgba(255,130,130,.35);font-weight:600;color:#ffe1e1}
-.warn .px{width:40px;height:40px}
-.note{position:relative;display:flex;align-items:center;gap:14px;margin-top:18px;padding:12px 16px;border-radius:18px;background:rgba(0,129,204,.14);border:1px solid rgba(111,208,255,.3);font-weight:600;color:#dff2ff}
-.note .px{width:40px;height:40px}
-
-/* claim sizes picture */
-.sizes{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;align-items:end}
-.size{display:flex;flex-direction:column;align-items:center;gap:10px;padding:16px 8px;border-radius:20px;background:rgba(3,10,20,.55);border:1px solid rgba(255,255,255,.07);text-align:center}
-.area{display:grid;place-items:center;border:2px dashed rgba(111,208,255,.7);border-radius:6px;background:rgba(0,129,204,.18)}
-.area .px{width:24px;height:24px}
-.size b{font-size:1rem}
-.size small{color:var(--muted);font-size:.84rem}
-
-/* commands list */
-details{position:relative;margin-top:4px;border-radius:20px;background:rgba(6,16,28,.6);border:1px solid rgba(255,255,255,.08)}
-summary{display:flex;align-items:center;gap:12px;padding:16px 20px;cursor:pointer;font:700 1.05rem var(--font-head);list-style:none}
+/* ---------- Wiki layout: sidebar + article ---------- */
+.wrap{max-width:1080px;margin:0 auto;padding:104px 18px 30px;display:grid;grid-template-columns:200px 1fr;gap:36px;align-items:start}
+.side{position:sticky;top:96px;font-size:.92rem}
+.side h4{margin:0 0 10px;font:700 .72rem/1 var(--font-head);letter-spacing:.14em;text-transform:uppercase;color:#6f8aa0}
+.side a{display:flex;align-items:center;gap:10px;padding:7px 10px;margin-left:-10px;border-left:2px solid transparent;color:#a9bccb}
+.side a .px{width:20px;height:20px}
+.side a:hover{color:#fff;background:#0e1a27}
+.side a.on{color:#fff;border-left-color:var(--blue);background:#0e1a27}
+.article{min-width:0}
+.article h1{font:800 2rem/1.15 var(--font-head);margin-bottom:6px}
+.lead{color:#8ea6b9;margin-bottom:30px}
+section.topic{margin-bottom:42px}
+.topic h2{display:flex;align-items:center;gap:12px;font:700 1.45rem/1.2 var(--font-head);padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #1d2d3d}
+.topic h2 .px{width:30px;height:30px}
+.topic h3{font:700 1rem/1.2 var(--font-head);margin:22px 0 8px;color:#fff}
+.topic p{margin:0 0 10px}
+.muted{color:#8ea6b9}
+ol.steps{margin:8px 0 14px;padding-left:0;list-style:none;counter-reset:s}
+ol.steps li{counter-increment:s;display:flex;gap:12px;padding:9px 0;border-bottom:1px solid #121f2c}
+ol.steps li::before{content:counter(s);flex:none;width:24px;height:24px;border-radius:4px;background:#12324a;color:#9be0ff;font:700 .8rem/24px var(--font-head);text-align:center}
+ol.steps li:last-child{border-bottom:0}
+ol.steps b{color:#fff}
+table{width:100%;border-collapse:collapse;margin:6px 0 14px;font-size:.93rem}
+th{text-align:left;font:700 .72rem/1 var(--font-head);letter-spacing:.1em;text-transform:uppercase;color:#6f8aa0;padding:8px 12px;border-bottom:1px solid #1d2d3d}
+td{padding:9px 12px;border-bottom:1px solid #121f2c;vertical-align:middle}
+td .px{width:22px;height:22px;vertical-align:middle;margin-right:8px}
+td img.blk{display:inline-block;width:22px;height:22px;vertical-align:middle;margin-right:8px;filter:none}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr:hover td{background:#0b1520}
+code{font-family:var(--font-mono);font-size:.84rem;padding:2px 7px;border-radius:4px;background:#0f2234;border:1px solid #1d3a55;color:#bfe9ff;white-space:nowrap}
+.call{margin:14px 0;padding:11px 14px;border-left:3px solid var(--blue);background:#0b1520;color:#cfe3f1}
+.call.bad{border-left-color:#e5534b;background:#1a0f12;color:#f3d4d2}
+.call b{color:#fff}
+details{margin-top:6px;border:1px solid #1d2d3d;background:#0a1420}
+summary{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;font:700 1rem var(--font-head);list-style:none}
 summary::-webkit-details-marker{display:none}
-summary .px{width:36px;height:36px}
-summary::after{content:"+";margin-left:auto;font-size:1.4rem;color:var(--ice)}
-details[open] summary::after{content:"−"}
-.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:8px;padding:0 20px 20px}
-.list div{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:12px;background:rgba(3,10,20,.5);font-size:.9rem;color:#c9dbe8}
-
-.legal{margin-top:30px;text-align:center;font-size:.7rem;color:rgba(190,210,225,.7)}
-
-/* ---------- Responsive ---------- */
-@media (max-width:900px){.pick{grid-template-columns:repeat(4,1fr)}.tiles.c6{grid-template-columns:repeat(3,1fr)}}
-@media (max-width:640px){
-  .wiki{padding-top:96px}
-  .pick{grid-template-columns:repeat(4,1fr);gap:8px}
-  .pick a{padding:12px 2px 10px;gap:8px;font-size:.74rem;border-radius:16px}
-  .pick .px{width:36px;height:36px}
-  .sec{padding:20px 16px;border-radius:24px}
-  .sec h2{font-size:1.35rem}
-  .sec-head .px{width:52px;height:52px}
-  .flow{flex-direction:column}
-  .arrow{transform:rotate(90deg);margin:-4px 0}
-  .step{flex-direction:row;justify-content:flex-start;text-align:left;padding:14px 16px}
-  .step .px{width:52px;height:52px}
-  .sizes{grid-template-columns:repeat(2,1fr)}
-  .tiles,.tiles.c4{grid-template-columns:repeat(2,1fr)}
-  .tiles.c6{grid-template-columns:repeat(3,1fr);gap:8px}
-  .c6 .tile{padding:14px 4px 12px;font-size:.86rem}
-  .c6 .tile .px{width:44px;height:44px}
-  .c6 code{font-size:.72rem;padding:2px 5px}
-  .link{padding:10px 13px}
+summary::after{content:"+";margin-left:auto;font-size:1.3rem;color:var(--ice)}
+details[open] summary::after{content:"\2212"}
+.cmdtable{margin:0;padding:0 8px 10px}
+.legal{margin-top:34px;font-size:.72rem;color:#6f8aa0}
+@media (max-width:820px){
+  .wrap{grid-template-columns:1fr;gap:18px;padding-top:92px}
+  .side{position:static;display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;border-bottom:1px solid #1d2d3d}
+  .side h4{display:none}
+  .side a{flex:none;margin:0;padding:7px 10px;border-left:0;border:1px solid #1d2d3d;border-radius:999px}
+  .side a.on{border-color:var(--blue)}
+  td .px{display:none}
 }
-@media (max-width:470px){.brand-text{display:none}}
 
-/* ---------- Motion (same feel as Home/Store) ---------- */
 .link{position:relative;transition:color .2s,background .2s,transform .2s,box-shadow .2s}
 .link.active{color:#fff}
 .link.active::after{content:"";position:absolute;left:50%;bottom:3px;width:16px;height:2px;margin-left:-8px;border-radius:2px;background:var(--ice,#6fd0ff);box-shadow:0 0 10px var(--ice,#6fd0ff)}
@@ -164,16 +113,6 @@ details[open] summary::after{content:"−"}
 @keyframes drop{from{opacity:0;transform:translateY(-22px)}to{opacity:1;transform:none}}
 @keyframes rise{from{opacity:0;transform:translateY(26px) scale(.97)}to{opacity:1;transform:none}}
 .nav{animation:drop .9s cubic-bezier(.2,.8,.2,1) both}
-.head{animation:rise .8s .1s cubic-bezier(.2,.8,.2,1) both}
-.js .rv{opacity:0;transform:translateY(26px) scale(.97);transition:opacity .7s cubic-bezier(.2,.8,.2,1),transform .7s cubic-bezier(.2,.8,.2,1)}
-.js .rv.in{opacity:1;transform:none}
-.tile,.size,.step{transition:transform .25s,border-color .25s,background .25s}
-.tile:hover,.size:hover,.step:hover{transform:translateY(-4px);border-color:rgba(111,208,255,.45);background:rgba(10,30,50,.7)}
-.tile:hover .px,.size:hover .blk,.step:hover .px{animation:bob .9s ease-in-out infinite alternate}
-@keyframes bob{to{transform:translateY(-4px)}}
-@media (max-width:640px){.nav{padding:6px 6px 6px 14px}.menu{gap:2px}.link{padding:9px 12px}.link-discord{padding:9px 13px}.link-discord .dt{display:none}.dc{width:22px;height:17px}}
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
-
 .legal-links{position:relative;z-index:10;display:flex;flex-wrap:wrap;gap:6px 22px;justify-content:center;padding:6px 18px 34px;font-size:.85rem}
 .legal-links a{color:rgba(190,210,225,.85);text-decoration:underline;text-underline-offset:3px}
 .legal-links a:hover{color:#fff}
@@ -184,9 +123,6 @@ details[open] summary::after{content:"−"}
 </style>
 </head>
 <body>
-
-<div class="bg" aria-hidden="true"><div class="blob b1"></div><div class="blob b2"></div><div class="pgrid"></div></div>
-
 <header class="nav">
   <a href="../" class="brand" aria-label="MVP home">
     <span class="logo" role="img" aria-label="MVP logo"></span>
@@ -201,14 +137,9 @@ details[open] summary::after{content:"−"}
     <a href="https://discord.gg/CWTBxgBdr" aria-label="Discord" class="link link-discord" target="_blank" rel="noopener noreferrer"><i class="dc" aria-hidden="true"></i><span class="dt">Discord</span></a>
   </nav>
 </header>
-
-<main class="wiki">
-  <header class="head">
-    <h1>How to play</h1>
-    <p>Pick a topic.</p>
-  </header>
-
-  <nav class="pick" aria-label="Topics">
+<div class="wrap">
+  <aside class="side" aria-label="Topics">
+    <h4>Contents</h4>
     <a href="#start"><i class="px" data-px="portal" data-smooth></i>Start</a>
     <a href="#coins"><i class="px" data-px="coin"></i>Coins</a>
     <a href="#claims"><i class="px" data-px="lock"></i>Claims</a>
@@ -216,144 +147,125 @@ details[open] summary::after{content:"−"}
     <a href="#combat"><i class="px" data-px="sword"></i>Combat</a>
     <a href="#bounty"><i class="px" data-px="target"></i>Bounty</a>
     <a href="#commands"><i class="px" data-px="board"></i>Commands</a>
-  </nav>
+  </aside>
+  <main class="article">
+    <h1>How to play</h1>
+    <p class="lead">Everything you need to know about MVP SMP.</p>
 
-  <!-- ============ START ============ -->
-  <section class="sec" id="start" style="--tc:#a06bff">
-    <div class="sec-head"><i class="px" data-px="portal" data-smooth></i><div><h2>Start</h2><p>You join in the lobby.</p></div></div>
-    <div class="flow">
-      <div class="step"><i class="px" data-px="island"></i><div><b>Join</b><small>You spawn in the lobby</small></div></div>
-      <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      <div class="step"><i class="px" data-px="portal" data-smooth></i><div><b>Walk into the portal</b><small>Enter the world</small></div></div>
-      <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      <div class="step"><i class="px" data-px="house"></i><div><b>Back to your spot</b><small>Where you left off</small></div></div>
-    </div>
-    <div class="cmds"><code>/lobby</code></div>
-  </section>
+    <section class="topic" id="start">
+      <h2><i class="px" data-px="portal" data-smooth></i>Start</h2>
+      <ol class="steps">
+        <li><span><b>Join.</b> You spawn in the lobby.</span></li>
+        <li><span><b>Walk into the portal</b> to enter the world.</span></li>
+        <li><span>You arrive back at your spot, where you left off.</span></li>
+      </ol>
+      <p class="muted">Want to go back? Use <code>/lobby</code>.</p>
+    </section>
 
-  <!-- ============ COINS ============ -->
-  <section class="sec" id="coins" style="--tc:#ffc94d">
-    <div class="sec-head"><i class="px" data-px="coin"></i><div><h2>Coins</h2><p>Earn them, spend them. Menu: <code>/coins</code></p></div></div>
+    <section class="topic" id="coins">
+      <h2><i class="px" data-px="coin"></i>Coins</h2>
+      <p>Coins are the server currency. Open the menu with <code>/coins</code>.</p>
+      <h3>Earning</h3>
+      <table>
+        <tr><th>Action</th><th class="num">Coins</th></tr>
+        <tr><td><i class="px" data-px="pickaxe"></i>Mine ores</td><td class="num">+1 to 25</td></tr>
+        <tr><td><i class="px" data-px="sword"></i>Kill mobs</td><td class="num">+2 to 500</td></tr>
+        <tr><td><i class="px" data-px="clock"></i>Play for 10 minutes</td><td class="num">+5</td></tr>
+        <tr><td><i class="px" data-px="gift"></i>Daily reward (<code>/daily</code>)</td><td class="num">+50 per day</td></tr>
+      </table>
+      <h3>Spending and trading</h3>
+      <table>
+        <tr><th>What</th><th>Command</th></tr>
+        <tr><td><i class="px" data-px="bag"></i>Market</td><td><code>/shop</code></td></tr>
+        <tr><td><i class="px" data-px="swap"></i>Trade with a nearby player</td><td><code>/trade</code></td></tr>
+        <tr><td><i class="px" data-px="mail"></i>Send coins</td><td><code>/pay</code></td></tr>
+        <tr><td><i class="px" data-px="diamond"></i>Sell diamonds and valuables</td><td><code>/exchange</code></td></tr>
+        <tr><td><i class="px" data-px="board"></i>Buy orders</td><td><code>/orders</code></td></tr>
+        <tr><td><i class="px" data-px="note"></i>Turn coins into a banknote</td><td><code>/withdraw</code></td></tr>
+      </table>
+      <div class="call bad"><b>Careful:</b> when you die you lose 2% of your coins.</div>
+    </section>
 
-    <h3 class="label">Earn</h3>
-    <div class="tiles c4">
-      <div class="tile"><i class="px" data-px="pickaxe"></i><b>Mine ores</b><span class="big">+1 to 25 <em class="cn">coins</em></span></div>
-      <div class="tile"><i class="px" data-px="sword"></i><b>Kill mobs</b><span class="big">+2 to 500 <em class="cn">coins</em></span></div>
-      <div class="tile"><i class="px" data-px="clock"></i><b>Play 10 min</b><span class="big">+5 <em class="cn">coins</em></span></div>
-      <div class="tile"><i class="px" data-px="gift"></i><b><code>/daily</code></b><span class="big">+50 / day <em class="cn">coins</em></span></div>
-    </div>
+    <section class="topic" id="claims">
+      <h2><i class="px" data-px="lock"></i>Claims</h2>
+      <p>A protection block keeps other players out of your base.</p>
+      <ol class="steps">
+        <li><span><b>Buy a block</b> with <code>/protect</code>.</span></li>
+        <li><span><b>Hold it</b> in your hand. The outline is blue where you can place it and red where you can't.</span></li>
+        <li><span><b>Place it.</b> The land is yours.</span></li>
+      </ol>
+      <h3>Sizes</h3>
+      <table>
+        <tr><th>Block</th><th>Area</th><th class="num">Price</th></tr>
+        <tr><td><img class="blk" src="blocks/iron.png" alt="">Small</td><td>17 x 17</td><td class="num">500 coins</td></tr>
+        <tr><td><img class="blk" src="blocks/gold.png" alt="">Medium</td><td>33 x 33</td><td class="num">1,500 coins</td></tr>
+        <tr><td><img class="blk" src="blocks/diamond.png" alt="">Large</td><td>65 x 65</td><td class="num">5,000 coins</td></tr>
+        <tr><td><img class="blk" src="blocks/netherite.png" alt="">Huge</td><td>129 x 129</td><td class="num">15,000 coins</td></tr>
+      </table>
+      <div class="call bad"><b>Upkeep:</b> pay it daily with <code>/protect deposit</code>. If the balance runs out, the claim is no longer protected.</div>
+      <p>Add a friend with <code>/protect trust &lt;player&gt;</code>. Other options: <code>/protect menu</code>, <code>/protect claims</code>.</p>
+    </section>
 
-    <h3 class="label">Spend &amp; trade</h3>
-    <div class="tiles c6">
-      <div class="tile"><i class="px" data-px="bag"></i><b>Market</b><code>/shop</code></div>
-      <div class="tile"><i class="px" data-px="swap"></i><b>Trade</b><code>/trade</code></div>
-      <div class="tile"><i class="px" data-px="mail"></i><b>Send</b><code>/pay</code></div>
-      <div class="tile"><i class="px" data-px="diamond"></i><b>Sell diamonds</b><code>/exchange</code></div>
-      <div class="tile"><i class="px" data-px="board"></i><b>Buy orders</b><code>/orders</code></div>
-      <div class="tile"><i class="px" data-px="note"></i><b>Banknote</b><code>/withdraw</code></div>
-    </div>
+    <section class="topic" id="crates">
+      <h2><i class="px" data-px="chest"></i>Crates</h2>
+      <ol class="steps">
+        <li><span><b>Get a key.</b> Keys are bought with coins.</span></li>
+        <li><span><b>Open a crate</b> in the lobby or through <code>/crates</code>.</span></li>
+        <li><span><b>Win</b> items or coins.</span></li>
+      </ol>
+      <h3>Key prices</h3>
+      <table>
+        <tr><th>Crate</th><th class="num">Price</th></tr>
+        <tr><td><i class="px" data-px="chest"></i>Common</td><td class="num">40 coins</td></tr>
+        <tr><td><i class="px" data-px="chest_rare"></i>Rare</td><td class="num">150 coins</td></tr>
+        <tr><td><i class="px" data-px="chest_epic"></i>Epic</td><td class="num">550 coins</td></tr>
+        <tr><td><i class="px" data-px="chest_legendary"></i>Legendary</td><td class="num">2,000 coins</td></tr>
+      </table>
+    </section>
 
-    <div class="warn"><i class="px" data-px="skull"></i><span>Die = lose 2% of your coins</span></div>
-  </section>
+    <section class="topic" id="combat">
+      <h2><i class="px" data-px="sword"></i>Combat</h2>
+      <p>After you hit a player you are in combat for 15 seconds. During that time <code>/home</code>, <code>/tp</code> and <code>/lobby</code> do not work. Wait it out and you are free again.</p>
+      <div class="call bad"><b>Do not log out in combat.</b> You will die.</div>
+    </section>
 
-  <!-- ============ CLAIMS ============ -->
-  <section class="sec" id="claims" style="--tc:#0081cc">
-    <div class="sec-head"><i class="px" data-px="lock"></i><div><h2>Claims</h2><p>Protect your base.</p></div></div>
-    <div class="flow">
-      <div class="step"><span class="num">1</span><i class="px" data-px="ironblock" data-smooth></i><div><b>Buy a block</b><small><code>/protect</code></small></div></div>
-      <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      <div class="step"><span class="num">2</span><i class="px" data-px="eye"></i><div><b>Hold it</b><small>Blue = OK, red = no</small></div></div>
-      <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      <div class="step"><span class="num">3</span><i class="px" data-px="lock"></i><div><b>Place it</b><small>Land is yours</small></div></div>
-    </div>
+    <section class="topic" id="bounty">
+      <h2><i class="px" data-px="target"></i>Bounty</h2>
+      <p>Put coins on a player's head with <code>/bounty set</code>. Whoever kills them gets the coins.</p>
+      <p>See the board with <code>/bounty</code> or look up one player with <code>/bounty check &lt;player&gt;</code>.</p>
+    </section>
 
-    <h3 class="label">Sizes</h3>
-    <div class="sizes">
-      <div class="size"><img class="blk" src="blocks/iron.png" alt="Small" style="width:44px;height:44px"><b>Small</b><small>17×17 · 500 coins</small></div>
-      <div class="size"><img class="blk" src="blocks/gold.png" alt="Medium" style="width:56px;height:56px"><b>Medium</b><small>33×33 · 1,500 coins</small></div>
-      <div class="size"><img class="blk" src="blocks/diamond.png" alt="Large" style="width:70px;height:70px"><b>Large</b><small>65×65 · 5,000 coins</small></div>
-      <div class="size"><img class="blk" src="blocks/netherite.png" alt="Huge" style="width:88px;height:88px"><b>Huge</b><small>129×129 · 15,000 coins</small></div>
-    </div>
+    <section class="topic" id="commands">
+      <h2><i class="px" data-px="board"></i>Commands</h2>
+      <details>
+        <summary>Show all commands</summary>
+        <div class="cmdtable"><table>
+          <tr><td><code>/lobby</code></td><td>Lobby</td></tr>
+          <tr><td><code>/coins</code></td><td>Coins menu</td></tr>
+          <tr><td><code>/bal</code></td><td>Your balance</td></tr>
+          <tr><td><code>/pay</code></td><td>Send coins</td></tr>
+          <tr><td><code>/daily</code></td><td>Daily reward</td></tr>
+          <tr><td><code>/baltop</code></td><td>Richest players</td></tr>
+          <tr><td><code>/shop</code></td><td>Market</td></tr>
+          <tr><td><code>/orders</code></td><td>Buy orders</td></tr>
+          <tr><td><code>/exchange</code></td><td>Sell valuables</td></tr>
+          <tr><td><code>/trade</code></td><td>Trade nearby</td></tr>
+          <tr><td><code>/withdraw</code></td><td>Banknote</td></tr>
+          <tr><td><code>/protect</code></td><td>Buy a claim</td></tr>
+          <tr><td><code>/protect menu</code></td><td>Claim settings</td></tr>
+          <tr><td><code>/protect deposit</code></td><td>Pay upkeep</td></tr>
+          <tr><td><code>/protect trust</code></td><td>Add a friend</td></tr>
+          <tr><td><code>/crates</code></td><td>Crates</td></tr>
+          <tr><td><code>/bounty</code></td><td>Bounty board</td></tr>
+          <tr><td><code>/sb</code></td><td>Hide scoreboard</td></tr>
+        </table></div>
+      </details>
+    </section>
 
-    <div class="warn"><i class="px" data-px="warning"></i><span>Pay daily upkeep with <code>/protect deposit</code>. Empty = not protected!</span></div>
-    <div class="note"><i class="px" data-px="people"></i><span>Add friends: <code>/protect trust &lt;player&gt;</code></span></div>
-    <div class="cmds"><code>/protect menu</code><code>/protect claims</code></div>
-  </section>
+    <p class="legal">MVP is not an official Minecraft product and is not approved by or associated with Mojang or Microsoft.</p>
+  </main>
+</div>
 
-  <!-- ============ CRATES ============ -->
-  <section class="sec" id="crates" style="--tc:#a06bff">
-    <div class="sec-head"><i class="px" data-px="chest"></i><div><h2>Crates</h2><p>Open with a key, win loot.</p></div></div>
-    <div class="flow">
-      <div class="step"><i class="px" data-px="key"></i><div><b>Get a key</b><small>Buy with coins</small></div></div>
-      <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      <div class="step"><i class="px" data-px="chest"></i><div><b>Open</b><small>In the lobby or <code>/crates</code></small></div></div>
-      <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      <div class="step"><i class="px" data-px="diamond"></i><div><b>Win</b><small>Items or coins</small></div></div>
-    </div>
-    <h3 class="label">Key price</h3>
-    <div class="tiles c4">
-      <div class="tile"><i class="px" data-px="chest"></i><b>Common</b><span class="big">40 <em class="cn">coins</em></span></div>
-      <div class="tile"><i class="px" data-px="chest_rare"></i><b>Rare</b><span class="big blue">150 <em class="cn">coins</em></span></div>
-      <div class="tile"><i class="px" data-px="chest_epic"></i><b>Epic</b><span class="big" style="color:#d2b8ff">550 <em class="cn">coins</em></span></div>
-      <div class="tile"><i class="px" data-px="chest_legendary"></i><b>Legendary</b><span class="big">2,000 <em class="cn">coins</em></span></div>
-    </div>
-  </section>
-
-  <!-- ============ COMBAT ============ -->
-  <section class="sec" id="combat" style="--tc:#ff5a5a">
-    <div class="sec-head"><i class="px" data-px="sword"></i><div><h2>Combat</h2><p>Don't run from a fight.</p></div></div>
-    <div class="flow">
-      <div class="step"><i class="px" data-px="sword"></i><div><b>Hit a player</b><small>In combat for 15s</small></div></div>
-      <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      <div class="step"><i class="px" data-px="nope"></i><div><b>No teleports</b><small><code>/home</code> <code>/tp</code> <code>/lobby</code></small></div></div>
-      <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      <div class="step"><i class="px" data-px="ok"></i><div><b>Wait it out</b><small>Then you're free</small></div></div>
-    </div>
-    <div class="warn"><i class="px" data-px="warning"></i><span>Log out in combat = you die</span></div>
-  </section>
-
-  <!-- ============ BOUNTY ============ -->
-  <section class="sec" id="bounty" style="--tc:#ff9f1c">
-    <div class="sec-head"><i class="px" data-px="target"></i><div><h2>Bounty</h2><p>Put coins on someone's head.</p></div></div>
-    <div class="flow">
-      <div class="step"><i class="px" data-px="target"></i><div><b>Set a bounty</b><small><code>/bounty set</code></small></div></div>
-      <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      <div class="step"><i class="px" data-px="sword"></i><div><b>Someone kills them</b></div></div>
-      <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      <div class="step"><i class="px" data-px="coin"></i><div><b>Killer gets the coins</b></div></div>
-    </div>
-    <div class="cmds"><code>/bounty</code><code>/bounty check &lt;player&gt;</code></div>
-  </section>
-
-  <!-- ============ COMMANDS ============ -->
-  <section id="commands">
-    <details>
-      <summary><i class="px" data-px="board"></i>All commands</summary>
-      <div class="list">
-        <div><code>/lobby</code>Lobby</div>
-        <div><code>/coins</code>Coins menu</div>
-        <div><code>/bal</code>Your balance</div>
-        <div><code>/pay</code>Send coins</div>
-        <div><code>/daily</code>Daily reward</div>
-        <div><code>/baltop</code>Richest players</div>
-        <div><code>/shop</code>Market</div>
-        <div><code>/orders</code>Buy orders</div>
-        <div><code>/exchange</code>Sell valuables</div>
-        <div><code>/trade</code>Trade nearby</div>
-        <div><code>/withdraw</code>Banknote</div>
-        <div><code>/protect</code>Buy a claim</div>
-        <div><code>/protect menu</code>Claim settings</div>
-        <div><code>/protect deposit</code>Pay upkeep</div>
-        <div><code>/protect trust</code>Add a friend</div>
-        <div><code>/crates</code>Crates</div>
-        <div><code>/bounty</code>Bounty board</div>
-        <div><code>/sb</code>Hide scoreboard</div>
-      </div>
-    </details>
-  </section>
-
-  <p class="legal">MVP is not an official Minecraft product and is not approved by or associated with Mojang or Microsoft.</p>
-</main>
 
 <script>
 /* ==========================================================
@@ -496,13 +408,9 @@ const ICONS = {
 <nav class="legal-links" aria-label="Legal"><a href="../privacy/">Privacy Policy</a><a href="../terms/">Terms of Service</a><a href="../refunds/">Refund Policy</a><a href="../seller/">Seller information</a><a href="../manage/">Manage subscription</a><a href="../support/">Support</a></nav>
 <script>
 (function(){
-  var rm=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if(rm||!("IntersectionObserver" in window))return;
-  document.documentElement.classList.add("js");
-  var els=document.querySelectorAll(".sec,.pick");
-  els.forEach(function(e){e.classList.add("rv")});
-  var io=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting){x.target.classList.add("in");io.unobserve(x.target)}})},{threshold:.08});
-  els.forEach(function(e){io.observe(e)});
+  var links=[].slice.call(document.querySelectorAll(".side a")),secs=links.map(function(a){return document.querySelector(a.getAttribute("href"))});
+  function spy(){var y=window.scrollY+130,cur=0;secs.forEach(function(s,i){if(s&&s.offsetTop<=y)cur=i});links.forEach(function(a,i){a.classList.toggle("on",i===cur)})}
+  window.addEventListener("scroll",spy,{passive:true});spy();
 })();
 </script>
 </body>
