@@ -453,6 +453,25 @@ button{font:inherit}
         call("POST", "/api/web/logout", null, tok).catch(function () {}); setTok(""); loginView();
       });
       var c = document.getElementById("wccard");
+      if (!p.nick) {
+        var rb = document.createElement("div"); rb.className = "wc-install"; rb.style.cssText = "margin:14px 0;padding:14px;border-radius:14px;background:rgba(255,255,255,.06)";
+        var ins0 = document.querySelector(".wc-install");
+        function regDone(nk) { rb.innerHTML = '<b>Waiting for registration</b><br>Requested nickname: ' + esc(nk) + '. Wait some time, an admin will confirm it.'; }
+        if (p.pending_nick) regDone(p.pending_nick);
+        else {
+          rb.innerHTML = '<b>Register your account</b><br>Type your exact Minecraft nickname. An admin will confirm it, this can take some time.<br>' +
+            '<input id="wcnick" type="text" maxlength="20" placeholder="Nickname" style="margin:10px 8px 0 0;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:transparent;color:inherit">' +
+            '<button class="mgb" id="wcreg" type="button">Send</button><div id="wcregm" style="margin-top:8px"></div>';
+          rb.querySelector("#wcreg").addEventListener("click", function () {
+            var nk = rb.querySelector("#wcnick").value.trim(), mm = rb.querySelector("#wcregm");
+            if (!/^[A-Za-z0-9_.]{2,20}$/.test(nk)) { mm.textContent = "Use 2-20 letters, digits, _ or ."; return; }
+            call("POST", "/api/app/nick-request", { nick: nk }, tok).then(function (r) {
+              if (r.ok) regDone(nk); else mm.textContent = "Could not send. Try again later.";
+            }).catch(function () { mm.textContent = "Cannot reach the server."; });
+          });
+        }
+        if (ins0) ins0.parentNode.insertBefore(rb, ins0);
+      }
       function hexA(h, a) { var n = parseInt(h.slice(1), 16); return "rgba(" + (n >> 16 & 255) + "," + (n >> 8 & 255) + "," + (n & 255) + "," + a + ")"; }
       function applyTheme(t) { if (!c || !t) return; c.style.background = "linear-gradient(135deg," + t.colors[0] + " 0%," + t.colors[1] + " 55%," + t.colors[2] + " 100%)"; c.style.boxShadow = "0 26px 50px " + hexA(t.colors[1], .45); }
       var themes = (p.themes || []).filter(function (t) { return !t.app_only; }), cur = p.theme || "default";
