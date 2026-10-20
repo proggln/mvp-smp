@@ -454,10 +454,10 @@ button{font:inherit}
       if (create) { nk = document.getElementById("wcnn").value.trim(); if (!/^[A-Za-z0-9_.]{2,16}$/.test(nk)) { msg.textContent = "Nickname: 2 to 16 letters, numbers, _ or ."; return; } }
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)) { msg.textContent = "Type a valid e-mail."; return; }
       b.disabled = true; msg.textContent = "";
-      call("POST", "/api/web/email-start", { email: em }).then(function (r) {
+      call("POST", "/api/web/email-start", { email: em, create: create ? true : undefined }).then(function (r) {
         if (r.ok) return codeEmailView(em, create && document.getElementById("wcnl0").checked, nk);
         b.disabled = false;
-        msg.textContent = r.status === 429 ? "Too many tries. Wait a little." : r.status === 503 ? "E-mail sign in is not ready yet." : "Could not send the code. Try again later.";
+        msg.textContent = r.status === 409 ? "This e-mail already has an account. Use Log in below instead." : r.status === 429 ? "Too many tries. Wait a little." : r.status === 503 ? "E-mail sign in is not ready yet." : "Could not send the code. Try again later.";
       }).catch(function () { b.disabled = false; msg.textContent = "Cannot reach the server."; });
     });
   }
