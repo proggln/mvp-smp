@@ -635,7 +635,7 @@ button{font:inherit}
     if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", "");
   }
   function mountDock(p, tok) {
-    if (!p.nick || !p.email || document.getElementById("mvpdock")) return;
+    if (!(p.nick || p.display_name) || !p.email || document.getElementById("mvpdock")) return;
     dkCss();
     var a = document.createElement("aside"); a.id = "mvpdock"; a.className = "dk"; a.setAttribute("aria-label", "Friends"); document.body.appendChild(a);
     dockList(a, tok, function () { openFriends(p, tok); });
@@ -650,7 +650,7 @@ button{font:inherit}
     dlg.querySelector(".wc-dx").onclick = function () { dlg.close(); };
     if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", "");
     var body = dlg.querySelector("#frbody");
-    if (!p.nick) { dlg.querySelector("#frsub").textContent = ""; body.innerHTML = '<div class="st-grp"><div class="st-r"><div class="st-t"><b>Link your Minecraft account first</b><span>Friends use your Minecraft nickname. Close this window and use Get link command on your card.</span></div></div></div>'; return; }
+    if (!(p.nick || p.display_name)) { dlg.querySelector("#frsub").textContent = ""; body.innerHTML = '<div class="st-grp"><div class="st-r"><div class="st-t"><b>Link your Minecraft account first</b><span>Friends use your Minecraft nickname. Close this window and use Get link command on your card.</span></div></div></div>'; return; }
     function row(f, kind) {
       var dot = kind === "friend" ? '<span class="wc-sdot' + (f.online ? " on" : "") + '" style="flex:none"></span>' : "";
       var sub = kind === "friend" ? (f.online ? "Online now" : "Last seen " + ago(f.last_online)) : kind === "in" ? "Wants to be your friend" : kind === "sug" ? f.mutual + " mutual friend" + (f.mutual === 1 ? "" : "s") : kind === "blk" ? "Blocked" : "Request sent";
@@ -663,7 +663,7 @@ button{font:inherit}
         if (!r.ok) { body.innerHTML = '<div class="st-note" style="padding:14px">Could not load friends. Try again later.</div>'; return; }
         var j = r.j, on = j.friends.filter(function (f) { return f.online; }).length;
         dlg.querySelector("#frsub").textContent = j.friends.length ? on + " of " + j.friends.length + " online" : "No friends yet";
-        body.innerHTML = '<div class="st-lab">Add a friend</div><div class="st-grp"><div class="st-r"><input class="st-in" id="fradd" type="text" maxlength="20" placeholder="Minecraft nickname" style="margin:0;flex:1;width:auto"><button type="button" class="st-b" id="frgo">Send request</button></div><div class="st-msg" id="frmsg"></div></div>' +
+        body.innerHTML = '<div class="st-lab">Add a friend</div><div class="st-grp"><div class="st-r"><input class="st-in" id="fradd" type="text" maxlength="24" placeholder="Minecraft nickname" style="margin:0;flex:1;width:auto"><button type="button" class="st-b" id="frgo">Send request</button></div><div class="st-msg" id="frmsg"></div></div>' +
           grp("Requests for you", j.incoming, "in") + grp("Friends", j.friends, "friend") + '<div id="frsug"></div>' + grp("Sent requests", j.outgoing, "out") + grp("Blocked", j.blocked || [], "blk") +
           (j.friends.length || j.incoming.length || j.outgoing.length ? "" : '<p class="st-note" style="margin:14px 6px">Type a friend’s Minecraft nickname above. When they accept, you can see when they are online.</p>');
         var msg = body.querySelector("#frmsg");
