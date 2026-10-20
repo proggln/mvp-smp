@@ -396,6 +396,7 @@ button{font:inherit}
 <script src="../ev.js"></script>
 <script src="../poll.js"></script>
 <script src="../share.js"></script>
+<script src="../comments.js"></script>
 <script src="../push.js"></script>
 <script>
 (function () {
@@ -561,8 +562,8 @@ button{font:inherit}
     if (!p.nick) { dlg.querySelector("#frsub").textContent = ""; body.innerHTML = '<div class="st-grp"><div class="st-r"><div class="st-t"><b>Link your Minecraft account first</b><span>Friends use your Minecraft nickname. Close this window and use Get link command on your card.</span></div></div></div>'; return; }
     function row(f, kind) {
       var dot = kind === "friend" ? '<span class="wc-sdot' + (f.online ? " on" : "") + '" style="flex:none"></span>' : "";
-      var sub = kind === "friend" ? (f.online ? "Online now" : "Last seen " + ago(f.last_online)) : kind === "in" ? "Wants to be your friend" : "Request sent";
-      var btns = kind === "in" ? '<button type="button" class="st-b" data-a="accept" data-n="' + esc(f.nick) + '">Accept</button><button type="button" class="st-b" data-a="decline" data-n="' + esc(f.nick) + '">Decline</button>' : kind === "out" ? '<button type="button" class="st-b" data-a="remove" data-n="' + esc(f.nick) + '">Cancel</button>' : '<button type="button" class="st-b" data-a="remove" data-n="' + esc(f.nick) + '">Remove</button>';
+      var sub = kind === "friend" ? (f.online ? "Online now" : "Last seen " + ago(f.last_online)) : kind === "in" ? "Wants to be your friend" : kind === "sug" ? f.mutual + " mutual friend" + (f.mutual === 1 ? "" : "s") : kind === "blk" ? "Blocked" : "Request sent";
+      var btns = kind === "in" ? '<button type="button" class="st-b" data-a="accept" data-n="' + esc(f.nick) + '">Accept</button><button type="button" class="st-b" data-a="decline" data-n="' + esc(f.nick) + '">Decline</button><button type="button" class="st-b red" data-a="block" data-n="' + esc(f.nick) + '">Block</button>' : kind === "out" ? '<button type="button" class="st-b" data-a="remove" data-n="' + esc(f.nick) + '">Cancel</button>' : kind === "sug" ? '<button type="button" class="st-b" data-a="request" data-n="' + esc(f.nick) + '">Add</button>' : kind === "blk" ? '<button type="button" class="st-b" data-a="unblock" data-n="' + esc(f.nick) + '">Unblock</button>' : '<button type="button" class="st-b" data-a="remove" data-n="' + esc(f.nick) + '">Remove</button>';
       return '<div class="st-r">' + dot + '<div class="st-t"><b><a href="../u/?n=' + encodeURIComponent(f.nick) + '" style="color:#fff;text-decoration:none">' + esc(f.nick) + '</a></b><span>' + esc(sub) + '</span></div>' + btns + '</div>';
     }
     function grp(title, list, kind) { return list.length ? '<div class="st-lab">' + title + '</div><div class="st-grp">' + list.map(function (f) { return row(f, kind); }).join("") + '</div>' : ""; }
@@ -572,7 +573,7 @@ button{font:inherit}
         var j = r.j, on = j.friends.filter(function (f) { return f.online; }).length;
         dlg.querySelector("#frsub").textContent = j.friends.length ? on + " of " + j.friends.length + " online" : "No friends yet";
         body.innerHTML = '<div class="st-lab">Add a friend</div><div class="st-grp"><div class="st-r"><input class="st-in" id="fradd" type="text" maxlength="20" placeholder="Minecraft nickname" style="margin:0;flex:1;width:auto"><button type="button" class="st-b" id="frgo">Send request</button></div><div class="st-msg" id="frmsg"></div></div>' +
-          grp("Requests for you", j.incoming, "in") + grp("Friends", j.friends, "friend") + grp("Sent requests", j.outgoing, "out") +
+          grp("Requests for you", j.incoming, "in") + grp("Friends", j.friends, "friend") + '<div id="frsug"></div>' + grp("Sent requests", j.outgoing, "out") + grp("Blocked", j.blocked || [], "blk") +
           (j.friends.length || j.incoming.length || j.outgoing.length ? "" : '<p class="st-note" style="margin:14px 6px">Type a friend’s Minecraft nickname above. When they accept, you can see when they are online.</p>');
         var msg = body.querySelector("#frmsg");
         body.querySelector("#frgo").onclick = function () {
@@ -580,17 +581,26 @@ button{font:inherit}
           call("POST", "/api/app/friends/request", { nick: n }, tok).then(function (r2) {
             b.disabled = false;
             if (r2.ok) { load(); return; }
-            msg.textContent = r2.j.error === "no_player" ? "No player with this nickname has an MVP card." : r2.j.error === "self" ? "That is you." : r2.j.error === "limit" ? "Your friends list is full." : r2.j.error === "too_many" ? "Too many tries. Wait a little." : "Could not send. Try again later.";
+            msg.textContent = r2.j.error === "no_player" ? "No player with this nickname has an MVP card." : r2.j.error === "self" ? "That is you." : r2.j.error === "limit" ? "Your friends list is full." : r2.j.error === "too_many" ? "Too many requests. Wait a little." : r2.j.error === "too_many_pending" ? "You have too many unanswered requests." : r2.j.error === "cooldown" ? "You can not send a request to this player right now." : r2.j.error === "you_blocked" ? "You blocked this player. Unblock them first." : r2.j.error === "email_first" ? "Add an e-mail to your account first." : "Could not send. Try again later.";
           }).catch(function () { b.disabled = false; msg.textContent = "Cannot reach the server."; });
         };
         Array.prototype.forEach.call(body.querySelectorAll("[data-a]"), function (el) {
           el.onclick = function () {
-            var a = el.getAttribute("data-a"), n = el.getAttribute("data-n"), path = a === "remove" ? "/api/app/friends/remove" : "/api/app/friends/respond", bd = { nick: n };
+            var a = el.getAttribute("data-a"), n = el.getAttribute("data-n"), path = a === "remove" ? "/api/app/friends/remove" : a === "request" ? "/api/app/friends/request" : a === "block" ? "/api/app/friends/block" : a === "unblock" ? "/api/app/friends/unblock" : "/api/app/friends/respond", bd = { nick: n };
             if (a === "accept") bd.accept = true; if (a === "decline") bd.accept = false;
             if (a === "remove" && !window.confirm("Remove " + n + "?")) return;
+            if (a === "block" && !window.confirm("Block " + n + "? They will not be able to send you requests, and will not be told.")) return;
             el.disabled = true; call("POST", path, bd, tok).then(function () { load(); }).catch(function () { el.disabled = false; });
           };
         });
+        call("GET", "/api/app/friends/suggestions", null, tok).then(function (r3) {
+          var host = body.querySelector("#frsug");
+          if (!host || !r3.ok || !r3.j.items || !r3.j.items.length) return;
+          host.innerHTML = grp("People you may know", r3.j.items, "sug");
+          Array.prototype.forEach.call(host.querySelectorAll("[data-a]"), function (el) {
+            el.onclick = function () { el.disabled = true; call("POST", "/api/app/friends/request", { nick: el.getAttribute("data-n") }, tok).then(function (r4) { if (r4.ok) { el.textContent = "Sent"; } else { el.disabled = false; el.textContent = r4.status === 429 ? "Later" : "Error"; } }).catch(function () { el.disabled = false; }); };
+          });
+        }).catch(function () {});
       }).catch(function () { body.innerHTML = '<div class="st-note" style="padding:14px">Cannot reach the server.</div>'; });
     }
     load();
@@ -612,7 +622,7 @@ button{font:inherit}
         '<div class="st-msg" id="stmm"></div>' +
       '</div>' +
       '<div class="st-lab">Notifications</div><div class="st-grp"><div class="st-r">' + ICO2(ICN.bell) + '<div class="st-t"><b>MVP news by e-mail</b><span>' + (p.email ? "You can turn this off any time. Every e-mail has an unsubscribe link." : "Add an e-mail first.") + '</span></div><input type="checkbox" class="st-sw" id="stnl" aria-label="Send me MVP news by e-mail"' + (p.newsletter ? " checked" : "") + (p.email ? "" : " disabled") + '></div><div class="st-msg" id="stnm"></div></div>' +
-      '<div class="st-lab">Profile</div><div class="st-grp"><div class="st-r">' + ICO2(ICN.card) + '<div class="st-t"><b>Public profile</b><span>' + (p.nick ? "Off: only you and your friends see your card and badges. On: anyone with the link." : "Link your Minecraft account first.") + '</span></div><input type="checkbox" class="st-sw" id="stpp" aria-label="Public profile"' + (p.profile_public ? " checked" : "") + (p.nick ? "" : " disabled") + '></div>' + (p.nick ? '<div class="st-r">' + ICO2(ICN.dev) + '<div class="st-t"><b>My profile page</b><span>See how others see you</span></div><a class="st-b" href="../u/?n=' + encodeURIComponent(p.nick) + '" style="text-decoration:none">Open</a></div>' : '') + '<div class="st-msg" id="stpm"></div></div>' +
+      '<div class="st-lab">Profile</div><div class="st-grp"><div class="st-r">' + ICO2(ICN.card) + '<div class="st-t"><b>Public profile</b><span>' + (p.nick ? "Off: only you and your friends see your card and badges. On: anyone with the link." : "Link your Minecraft account first.") + '</span></div><input type="checkbox" class="st-sw" id="stpp" aria-label="Public profile"' + (p.profile_public ? " checked" : "") + (p.nick ? "" : " disabled") + '></div>' + (p.nick ? '<div class="st-r">' + ICO2(ICN.cube) + '<div class="st-t"><b>Show me in suggestions</b><span>Others may see you in People you may know when you have friends in common.</span></div><input type="checkbox" class="st-sw" id="stsg" aria-label="Show me in suggestions"' + (p.hide_suggest ? "" : " checked") + '></div><div class="st-r">' + ICO2(ICN.dev) + '<div class="st-t"><b>My profile page</b><span>See how others see you</span></div><a class="st-b" href="../u/?n=' + encodeURIComponent(p.nick) + '" style="text-decoration:none">Open</a></div>' : '') + '<div class="st-msg" id="stpm"></div></div>' +
       '<div class="st-lab">Security</div><div class="st-grp">' +
         '<div class="st-r">' + ICO2(ICN.dev) + '<div class="st-t"><b>Other devices</b><span>Sign out everywhere except here</span></div><button type="button" class="st-b" id="stall">Sign out</button></div>' +
         '<div class="st-r">' + ICO2(ICN.out) + '<div class="st-t"><b>This device</b><span>Sign out of this browser</span></div><button type="button" class="st-b" id="stout">Sign out</button></div><div class="st-msg" id="stsm"></div>' +
@@ -667,6 +677,14 @@ button{font:inherit}
       call("POST", "/api/app/profile-public", { on: cb.checked }, tok).then(function (r) {
         cb.disabled = false;
         if (r.ok) { p.profile_public = cb.checked; putCache(p); m.textContent = cb.checked ? "Your profile is public." : "Your profile is private again."; }
+        else { cb.checked = !cb.checked; m.textContent = "Could not save. Try again later."; }
+      }).catch(function () { cb.disabled = false; cb.checked = !cb.checked; m.textContent = "Cannot reach the server."; });
+    };
+    if (q("stsg")) q("stsg").onchange = function () {
+      var cb = this, m = q("stpm"); cb.disabled = true;
+      call("POST", "/api/app/hide-suggest", { on: !cb.checked }, tok).then(function (r) {
+        cb.disabled = false;
+        if (r.ok) { p.hide_suggest = !cb.checked; putCache(p); m.textContent = cb.checked ? "You can appear in suggestions." : "You are hidden from suggestions."; }
         else { cb.checked = !cb.checked; m.textContent = "Could not save. Try again later."; }
       }).catch(function () { cb.disabled = false; cb.checked = !cb.checked; m.textContent = "Cannot reach the server."; });
     };
@@ -1011,7 +1029,7 @@ button{font:inherit}
         }).catch(function () { if (seq !== n._s) return; n.likes = prev.l; n.dislikes = prev.d; n.my = prev.m; paint(); });
       }
       up.onclick = function () { vote(1); }; dn.onclick = function () { vote(-1); };
-        ey.className = "eye"; var seg = document.createElement("div"); seg.className = "seg"; seg.append(up, dn); bar.append(seg, window.mvpShareBtn ? mvpShareBtn(n) : "", note, ey); w.appendChild(bar); box.appendChild(w); paint();
+        ey.className = "eye"; var seg = document.createElement("div"); seg.className = "seg"; seg.append(up, dn); bar.append(seg, window.mvpShareBtn ? mvpShareBtn(n) : "", note, ey); w.appendChild(bar); if (window.mvpComments) w.appendChild(mvpComments(n.id)); box.appendChild(w); paint();
         call("POST", "/api/app/view", { news_id: n.id }, tk).then(function (r) { if (r.ok && r.j.views !== undefined) { n.views = r.j.views; paint(); } }).catch(function () {});
       });
     }).catch(function () {});
