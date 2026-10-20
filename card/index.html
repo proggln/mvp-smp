@@ -468,18 +468,14 @@ button{font:inherit}
       }).catch(function () { b.disabled = false; msg.textContent = "Cannot reach the server."; });
     });
   }
-  // e-mail account box: shows the e-mail, links / unlinks the Minecraft account
+  // link box: only while the account is not linked to Minecraft
   function accountBox(p, tok, before) {
+    if (p.nick) return;
     var box = document.createElement("div"); box.className = "wc-install"; box.style.cssText = "margin:14px 0;padding:14px;border-radius:14px;background:rgba(255,255,255,.06)";
-    var h = '<b>Account</b><br>E-mail: ' + esc(p.email || "not added") + '<br>';
-    if (p.nick) h += 'Minecraft: <b>' + esc(p.nick) + '</b> <button class="mgb ghost" id="wcunl" type="button" style="margin-left:6px">Unlink</button><div class="upd" style="margin-top:6px;font-size:.85rem">Changed your nickname? Unlink, then link again in the game.</div>';
-    else h += 'Minecraft: <b>not linked</b><br>To see your stats, link your game account: <button class="mgb" id="wclink" type="button" style="margin-top:8px">Get link command</button>';
-    h += '<label style="display:flex;gap:10px;align-items:center;margin-top:12px;cursor:pointer"><input type="checkbox" id="wcnl" style="width:20px;height:20px;min-width:20px;flex:none;margin:0;padding:0;accent-color:#0081cc"' + (p.newsletter ? " checked" : "") + '> Send me MVP news by e-mail (you can unsubscribe any time)</label>';
-    h += '<div id="wcam" style="margin-top:8px"></div>';
-    box.innerHTML = h;
+    box.innerHTML = '<b>Link your Minecraft account</b><br>To see your stats and play with this account, link your game account.<br><button class="mgb" id="wclink" type="button" style="margin-top:10px">Get link command</button><div id="wcam" style="margin-top:8px"></div>';
     before.parentNode.insertBefore(box, before);
-    var m = box.querySelector("#wcam"), lb = box.querySelector("#wclink"), ub = box.querySelector("#wcunl");
-    if (lb) lb.addEventListener("click", function () {
+    var m = box.querySelector("#wcam"), lb = box.querySelector("#wclink");
+    lb.addEventListener("click", function () {
       lb.disabled = true;
       call("POST", "/api/app/link-code", {}, tok).then(function (r) {
         lb.disabled = false;
@@ -487,22 +483,90 @@ button{font:inherit}
         m.innerHTML = 'Join the server, log in there, and type: <div class="mgcmd">/link ' + esc(r.j.code) + '</div>The code works for 10 minutes.';
       }).catch(function () { lb.disabled = false; m.textContent = "Cannot reach the server."; });
     });
-    var nl = box.querySelector("#wcnl");
-    if (nl) nl.addEventListener("change", function () {
-      nl.disabled = true;
-      call("POST", "/api/app/newsletter", { on: nl.checked }, tok).then(function (r) {
-        nl.disabled = false;
-        if (r.ok) { p.newsletter = nl.checked; putCache(p); m.textContent = nl.checked ? "You will get MVP news by e-mail." : "You are unsubscribed."; }
-        else { nl.checked = !nl.checked; m.textContent = "Could not save. Try again later."; }
-      }).catch(function () { nl.disabled = false; nl.checked = !nl.checked; m.textContent = "Cannot reach the server."; });
-    });
-    if (ub) ub.addEventListener("click", function () {
+  }
+  // ---------- Settings (v2) ----------
+  var SET_CSS = false;
+  function openSettings(p, tok) {
+    if (!SET_CSS) {
+      SET_CSS = true;
+      var st = document.createElement("style");
+      st.textContent = ".wc-sdlg{max-height:min(86vh,820px);overflow:auto}.st-sec{padding:14px 0;border-top:1px solid rgba(255,255,255,.09)}.st-sec h3{margin:0 0 8px;font:700 .8rem/1 Montserrat,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--ice,#6fd0ff)}.st-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:6px 0}.st-row span{color:var(--muted,#9db6c9);font-size:.92rem}.st-row b{color:#fff}.st-note{color:var(--muted,#9db6c9);font-size:.84rem;margin:6px 0 0}.st-msg{margin-top:8px;font-size:.9rem;min-height:1.2em}.st-in{padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:transparent;color:inherit;margin:8px 8px 0 0;width:min(260px,100%)}.st-switch{display:flex;align-items:center;gap:10px;cursor:pointer}.wc-sbtn{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background:rgba(6,16,28,.6);color:#cfe3f1;cursor:pointer}.wc-sbtn:hover{background:rgba(255,255,255,.1)}";
+      document.head.appendChild(st);
+    }
+    var dlg = document.getElementById("wcsdlg");
+    if (!dlg) { dlg = document.createElement("dialog"); dlg.id = "wcsdlg"; dlg.className = "wc-dlg wc-sdlg"; document.body.appendChild(dlg);
+      dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); }); }
+    var CB = 'style="width:20px;height:20px;min-width:20px;flex:none;margin:0;padding:0;accent-color:#0081cc"';
+    dlg.innerHTML = '<div class="wc-dh"><h2>Settings</h2><button type="button" class="wc-dx" aria-label="Close">×</button></div>' +
+      '<div class="st-sec"><h3>Account</h3><div class="st-row"><span>E-mail: <b>' + esc(p.email || "not added") + '</b></span><button type="button" class="mgb ghost" id="stem">' + (p.email ? "Change e-mail" : "Add e-mail") + '</button></div><div id="stemf"></div><div class="st-row"><span>Card number: <b>' + esc(pad(p.card_no)) + '</b></span></div></div>' +
+      '<div class="st-sec"><h3>Minecraft</h3>' + (p.nick
+        ? '<div class="st-row"><span>Linked to <b>' + esc(p.nick) + '</b></span><button type="button" class="mgb ghost" id="stunl">Unlink</button></div><div class="st-note">Changed your nickname? Unlink here, then link again in the game with /link.</div>'
+        : '<div class="st-row"><span>Not linked yet</span></div><div class="st-note">Close this window and use <b>Get link command</b> on your card.</div>') + '<div class="st-msg" id="stmm"></div></div>' +
+      '<div class="st-sec"><h3>E-mails</h3><label class="st-switch"><input type="checkbox" id="stnl" ' + CB + (p.newsletter ? " checked" : "") + (p.email ? "" : " disabled") + '> Send me MVP news by e-mail</label><div class="st-note">' + (p.email ? "You can unsubscribe any time. Every e-mail also has an unsubscribe link." : "Add an e-mail first.") + '</div><div class="st-msg" id="stnm"></div></div>' +
+      '<div class="st-sec"><h3>Security</h3><div class="st-row"><span>Sign out of all your other devices</span><button type="button" class="mgb ghost" id="stall">Sign out others</button></div><div class="st-row"><span>Sign out on this device</span><button type="button" class="mgb ghost" id="stout">Sign out</button></div><div class="st-msg" id="stsm"></div></div>' +
+      '<div class="st-sec"><h3>Your data</h3><div class="st-row"><span>Download everything we store about your account</span><button type="button" class="mgb ghost" id="stdl">Download (JSON)</button></div><div class="st-msg" id="stdm"></div></div>' +
+      '<div class="st-sec"><h3>Danger zone</h3><div class="st-row"><span>Delete your account (3 days to cancel)</span><button type="button" class="mgb wc-danger" id="stdel">Delete account</button></div></div>';
+    var q = function (id) { return dlg.querySelector("#" + id); };
+    dlg.querySelector(".wc-dx").onclick = function () { dlg.close(); };
+    // change / add e-mail
+    q("stem").onclick = function () {
+      var f = q("stemf");
+      f.innerHTML = '<input class="st-in" id="stne" type="email" maxlength="254" placeholder="new@example.com"><button type="button" class="mgb" id="stsc">Send code</button><div class="st-msg" id="stfm"></div>';
+      q("stsc").onclick = function () {
+        var em = q("stne").value.trim().toLowerCase(), m = q("stfm"), b = this;
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)) { m.textContent = "Type a valid e-mail."; return; }
+        b.disabled = true; m.textContent = "";
+        call("POST", "/api/app/email-change-start", { email: em }, tok).then(function (r) {
+          if (!r.ok) { b.disabled = false; m.textContent = r.status === 409 ? (r.j.error === "email_taken" ? "This e-mail is already used by another account." : "This is already your e-mail.") : r.status === 429 ? "Too many tries. Wait a little." : "Could not send the code. Try again later."; return; }
+          f.innerHTML = '<div class="st-note">We sent a code to <b>' + esc(em) + '</b>.</div><input class="st-in" id="stcode" inputmode="numeric" maxlength="6" placeholder="000000" style="width:140px;letter-spacing:4px"><button type="button" class="mgb" id="stok">Confirm</button><div class="st-msg" id="stfm"></div>';
+          q("stok").onclick = function () {
+            var code = q("stcode").value.trim(), m2 = q("stfm"), b2 = this;
+            if (!/^\d{6}$/.test(code)) { m2.textContent = "The code has 6 digits."; return; }
+            b2.disabled = true;
+            call("POST", "/api/app/email-change-verify", { email: em, code: code }, tok).then(function (r2) {
+              if (!r2.ok) { b2.disabled = false; m2.textContent = r2.j.error === "email_taken" ? "This e-mail is already used by another account." : "Wrong or expired code."; return; }
+              p.email = r2.j.email; putCache(p); renderCard(p, tok, true); openSettings(p, tok);
+            }).catch(function () { b2.disabled = false; m2.textContent = "Cannot reach the server."; });
+          };
+        }).catch(function () { b.disabled = false; m.textContent = "Cannot reach the server."; });
+      };
+    };
+    // unlink
+    if (q("stunl")) q("stunl").onclick = function () {
       if (!window.confirm("Unlink " + p.nick + " from this account? Your card and coins stay.")) return;
-      ub.disabled = true;
+      var b = this; b.disabled = true;
       call("POST", "/api/app/unlink", {}, tok).then(function (r) {
-        if (r.ok) { p.nick = ""; p.linked = false; putCache(p); renderCard(p, tok, true); } else { ub.disabled = false; m.textContent = "Could not unlink. Try again later."; }
-      }).catch(function () { ub.disabled = false; m.textContent = "Cannot reach the server."; });
-    });
+        if (r.ok) { p.nick = ""; p.linked = false; putCache(p); dlg.close(); renderCard(p, tok, true); } else { b.disabled = false; q("stmm").textContent = "Could not unlink. Try again later."; }
+      }).catch(function () { b.disabled = false; q("stmm").textContent = "Cannot reach the server."; });
+    };
+    // newsletter
+    q("stnl").onchange = function () {
+      var cb = this, m = q("stnm"); cb.disabled = true;
+      call("POST", "/api/app/newsletter", { on: cb.checked }, tok).then(function (r) {
+        cb.disabled = false;
+        if (r.ok) { p.newsletter = cb.checked; putCache(p); m.textContent = cb.checked ? "You will get MVP news by e-mail." : "You are unsubscribed."; }
+        else { cb.checked = !cb.checked; m.textContent = "Could not save. Try again later."; }
+      }).catch(function () { cb.disabled = false; cb.checked = !cb.checked; m.textContent = "Cannot reach the server."; });
+    };
+    // security
+    q("stall").onclick = function () {
+      var b = this; b.disabled = true;
+      call("POST", "/api/web/logout-all", {}, tok).then(function (r) { b.disabled = false; q("stsm").textContent = r.ok ? "Other devices are signed out." : "Could not do it. Try again later."; }).catch(function () { b.disabled = false; q("stsm").textContent = "Cannot reach the server."; });
+    };
+    q("stout").onclick = function () { dlg.close(); document.getElementById("wcout").click(); };
+    // download data
+    q("stdl").onclick = function () {
+      var b = this; b.disabled = true;
+      call("GET", "/api/app/export", null, tok).then(function (r) {
+        b.disabled = false;
+        if (!r.ok) { q("stdm").textContent = "Could not load your data. Try again later."; return; }
+        var blob = new Blob([JSON.stringify(r.j, null, 2)], { type: "application/json" }), a = document.createElement("a");
+        a.href = URL.createObjectURL(blob); a.download = "mvp-my-data.json"; document.body.appendChild(a); a.click(); a.remove();
+        q("stdm").textContent = "Downloaded.";
+      }).catch(function () { b.disabled = false; q("stdm").textContent = "Cannot reach the server."; });
+    };
+    q("stdel").onclick = function () { dlg.close(); askDelete(tok, p); };
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", "");
   }
   function createCard() {
     var btn = document.getElementById("wcnew"), msg = document.getElementById("wcm");
@@ -685,7 +749,15 @@ button{font:inherit}
         call("POST", "/api/web/logout", null, tok).catch(function () {}); setTok(""); putCache(null); loginView();
       });
       var c = document.getElementById("wccard");
-      if (V2 && p.email) accountBox(p, tok, document.querySelector(".wc-install"));
+      if (V2) {
+        var hb = document.querySelector(".wc-hbtns"), ob = document.getElementById("wcout");
+        if (hb && ob) {
+          var sb = document.createElement("button"); sb.type = "button"; sb.className = "wc-sbtn"; sb.id = "wcset"; sb.setAttribute("aria-label", "Settings"); sb.title = "Settings";
+          sb.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>';
+          hb.insertBefore(sb, ob); sb.addEventListener("click", function () { openSettings(p, tok); });
+        }
+        if (p.email) accountBox(p, tok, document.querySelector(".wc-install"));
+      }
       if (!p.nick && !(V2 && p.email)) {
         var rb = document.createElement("div"); rb.className = "wc-install"; rb.style.cssText = "margin:14px 0;padding:14px;border-radius:14px;background:rgba(255,255,255,.06)";
         var ins0 = document.querySelector(".wc-install");
