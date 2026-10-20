@@ -473,6 +473,7 @@ button{font:inherit}
     var h = '<b>Account</b><br>E-mail: ' + esc(p.email || "not added") + '<br>';
     if (p.nick) h += 'Minecraft: <b>' + esc(p.nick) + '</b> <button class="mgb ghost" id="wcunl" type="button" style="margin-left:6px">Unlink</button><div class="upd" style="margin-top:6px;font-size:.85rem">Changed your nickname? Unlink, then link again in the game.</div>';
     else h += 'Minecraft: <b>not linked</b><br>To see your stats, link your game account: <button class="mgb" id="wclink" type="button" style="margin-top:8px">Get link command</button>';
+    h += '<label style="display:flex;gap:10px;align-items:center;margin-top:12px;cursor:pointer"><input type="checkbox" id="wcnl"' + (p.newsletter ? " checked" : "") + '> Send me MVP news by e-mail (you can unsubscribe any time)</label>';
     h += '<div id="wcam" style="margin-top:8px"></div>';
     box.innerHTML = h;
     before.parentNode.insertBefore(box, before);
@@ -484,6 +485,15 @@ button{font:inherit}
         if (!r.ok || !r.j.code) { m.textContent = "Could not make a code. Try again later."; return; }
         m.innerHTML = 'Join the server, log in there, and type: <div class="mgcmd">/link ' + esc(r.j.code) + '</div>The code works for 10 minutes.';
       }).catch(function () { lb.disabled = false; m.textContent = "Cannot reach the server."; });
+    });
+    var nl = box.querySelector("#wcnl");
+    if (nl) nl.addEventListener("change", function () {
+      nl.disabled = true;
+      call("POST", "/api/app/newsletter", { on: nl.checked }, tok).then(function (r) {
+        nl.disabled = false;
+        if (r.ok) { p.newsletter = nl.checked; putCache(p); m.textContent = nl.checked ? "You will get MVP news by e-mail." : "You are unsubscribed."; }
+        else { nl.checked = !nl.checked; m.textContent = "Could not save. Try again later."; }
+      }).catch(function () { nl.disabled = false; nl.checked = !nl.checked; m.textContent = "Cannot reach the server."; });
     });
     if (ub) ub.addEventListener("click", function () {
       if (!window.confirm("Unlink " + p.nick + " from this account? Your card and coins stay.")) return;
