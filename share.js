@@ -2,6 +2,8 @@
    On phones it opens the system share sheet (Discord, Snapchat, WhatsApp, ...); on computers a small menu. */
 (function () {
   var API = "https://mvp-news-api.mvp-shop.workers.dev";
+  var me = document.currentScript, BASE = me ? me.src.replace(/share\.js(\?.*)?$/, "") : "/";
+  function logo(k) { return '<img src="' + BASE + 'img/share/' + k + '.png" alt="" width="34" height="34">'; }
   var css = ".wc-v button.wc-share{height:54px;padding:0 20px;border:1px solid rgba(255,255,255,.14)!important;border-radius:999px;background:rgba(255,255,255,.06);color:#b9d3e6;gap:8px}" +
     ".wc-v button.wc-share:hover{background:rgba(255,255,255,.12);color:#fff}" +
     ".wc-shm{position:fixed;inset:0;z-index:80;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.55);padding:16px}" +
@@ -11,7 +13,7 @@
     ".wc-shg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}" +
     ".wc-shg a,.wc-shg button{display:flex;flex-direction:column;gap:5px;align-items:center;justify-content:center;min-height:64px;padding:0 10px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#e6f2fb;font:600 .9rem inherit;text-decoration:none;cursor:pointer;text-align:center}" +
     ".wc-shg a:hover,.wc-shg button:hover{background:rgba(111,208,255,.14);border-color:rgba(111,208,255,.45)}" +
-    ".wc-shg i{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:11px;color:#fff;background:var(--bc)}.wc-shg .wide{flex-direction:row;min-height:48px}.wc-shg .wide i{background:none;width:auto;height:auto}" +
+    ".wc-shg img{display:block;width:34px;height:34px;object-fit:contain;border-radius:9px}.wc-shg i{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:11px;color:#fff;background:var(--bc)}.wc-shg .wide{flex-direction:row;min-height:48px}.wc-shg .wide i{background:none;width:auto;height:auto}" +
     ".wc-shg .wide{grid-column:1/-1;background:linear-gradient(180deg,#22a6f2,#0081cc);border:0;color:#fff}" +
     ".wc-shx{display:block;margin:12px auto 0;border:0;background:none;color:#9db6c9;font:600 .9rem inherit;cursor:pointer}.wc-shmsg{min-height:1.2em;margin-top:10px;text-align:center;color:#7be3a0;font-size:.88rem}";
   var IC = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.2 10.8 L15.8 6.2"/><path d="M8.2 13.2 L15.8 17.8"/></svg>';
@@ -36,19 +38,19 @@
     style();
     var e = encodeURIComponent, u = e(url), t = e(title);
     var links = [
-      ["WhatsApp", "https://wa.me/?text=" + e(title + " " + url), "phone", "#25d366"],
-      ["Telegram", "https://t.me/share/url?url=" + u + "&text=" + t, "send", "#229ed9"],
-      ["Snapchat", "https://www.snapchat.com/scan?attachmentUrl=" + u, "camera", "#e6c800"],
-      ["X", "https://twitter.com/intent/tweet?url=" + u + "&text=" + t, "pen", "#3a3a3a"],
-      ["Facebook", "https://www.facebook.com/sharer/sharer.php?u=" + u, "people", "#1877f2"],
-      ["Reddit", "https://www.reddit.com/submit?url=" + u + "&title=" + t, "up", "#ff4500"],
+      ["WhatsApp", "https://wa.me/?text=" + e(title + " " + url), "whatsapp"],
+      ["Telegram", "https://t.me/share/url?url=" + u + "&text=" + t, "telegram"],
+      ["Snapchat", "https://www.snapchat.com/scan?attachmentUrl=" + u, "snapchat"],
+      ["X", "https://twitter.com/intent/tweet?url=" + u + "&text=" + t, "x"],
+      ["Facebook", "https://www.facebook.com/sharer/sharer.php?u=" + u, "facebook"],
+      ["Reddit", "https://www.reddit.com/submit?url=" + u + "&title=" + t, "reddit"],
       ["Email", "mailto:?subject=" + t + "&body=" + e(title + "\n" + url), "mail", "#5b6f82"]
     ];
     var m = document.createElement("div"); m.className = "wc-shm"; m.setAttribute("role", "dialog"); m.setAttribute("aria-label", "Share");
-    m.innerHTML = '<div class="wc-shb"><h3>Share</h3><p></p><div class="wc-shg"><button type="button" class="wide" data-a="copy"><i>' + gi("link") + '</i>Copy link</button><button type="button" data-a="discord"><i style="--bc:#5865f2">' + gi("chat") + '</i>Discord</button></div><div class="wc-shmsg"></div><button type="button" class="wc-shx">Close</button></div>';
+    m.innerHTML = '<div class="wc-shb"><h3>Share</h3><p></p><div class="wc-shg"><button type="button" class="wide" data-a="copy"><i>' + gi("link") + '</i>Copy link</button><button type="button" data-a="discord">' + logo("discord") + 'Discord</button></div><div class="wc-shmsg"></div><button type="button" class="wc-shx">Close</button></div>';
     m.querySelector("p").textContent = url;
     var g = m.querySelector(".wc-shg"), msg = m.querySelector(".wc-shmsg");
-    links.forEach(function (l) { var a = document.createElement("a"); a.innerHTML = '<i style="--bc:' + l[3] + '">' + gi(l[2]) + '</i>'; a.appendChild(document.createTextNode(l[0])); a.href = l[1]; a.target = "_blank"; a.rel = "noopener noreferrer"; g.appendChild(a); });
+    links.forEach(function (l) { var a = document.createElement("a"); a.innerHTML = l[3] ? '<i style="--bc:' + l[3] + '">' + gi(l[2]) + '</i>' : logo(l[2]); a.appendChild(document.createTextNode(l[0])); a.href = l[1]; a.target = "_blank"; a.rel = "noopener noreferrer"; g.appendChild(a); });
     function close() { m.remove(); document.removeEventListener("keydown", esc); }
     function esc(ev) { if (ev.key === "Escape") close(); }
     m.addEventListener("click", function (ev) { if (ev.target === m) close(); });
