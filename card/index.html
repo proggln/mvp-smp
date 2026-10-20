@@ -1050,7 +1050,7 @@ button{font:inherit}
   }
   function cardView() {
     var tok = getTok();
-    if (!tok) { putCache(null); loginView(); return; }
+    if (!tok) { putCache(null); if (location.hash === "#signup") { emailView(true); } else loginView(); return; }
     var cached = getCache(), shown = cached ? JSON.stringify(cached) : "";
     if (cached) renderCard(cached, tok, false); else skeleton();
     call("GET", "/api/app/me", null, tok).then(function (r) {
