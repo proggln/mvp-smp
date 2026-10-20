@@ -441,11 +441,12 @@ button{font:inherit}
       if (r.ok && r.j.token) { setTok(r.j.token); cardView(); return; }
       if (r.ok && r.j.status === "need_name") {
         root.innerHTML = '<div class="card2 mg"><h1>Create your MVP account</h1><div class="upd">Google confirmed ' + esc(r.j.email || "your e-mail") + '. Choose your Minecraft nickname to finish.</div>' +
-          '<input id="wcgn" type="text" autocomplete="off" maxlength="16" placeholder="Your Minecraft nickname" style="' + INPUT + 'min-width:240px"><div style="margin-top:12px"><button class="mgb" id="wcgo" type="button">Create account</button> <button class="mgb ghost" id="wcgb" type="button">Back</button></div><div class="mgmsg" id="wcm"></div></div>';
+          '<input id="wcgn" type="text" autocomplete="off" maxlength="16" placeholder="Your Minecraft nickname" style="' + INPUT + 'min-width:240px"><label style="display:flex;gap:10px;align-items:center;margin-top:14px;cursor:pointer;font-size:.92rem"><input type="checkbox" id="wcga" style="width:20px;height:20px;min-width:20px;flex:none;margin:0;padding:0;accent-color:#0081cc"> <span>I agree to the <a href="../terms/" target="_blank" rel="noopener">Terms of Service</a> and the <a href="../privacy/" target="_blank" rel="noopener">Privacy Policy</a></span></label><div style="margin-top:12px"><button class="mgb" id="wcgo" type="button">Create account</button> <button class="mgb ghost" id="wcgb" type="button">Back</button></div><div class="mgmsg" id="wcm"></div></div>';
         document.getElementById("wcgb").addEventListener("click", loginView);
         document.getElementById("wcgo").addEventListener("click", function () {
           var nk = document.getElementById("wcgn").value.trim(), m2 = document.getElementById("wcm");
           if (!/^[A-Za-z0-9_.]{2,16}$/.test(nk)) { m2.textContent = "Nickname: 2 to 16 letters, numbers, _ or ."; return; }
+          if (!document.getElementById("wcga").checked) { m2.textContent = "Please agree to the Terms and the Privacy Policy."; return; }
           googleSignIn(cred, nk);
         });
         return;
@@ -489,7 +490,7 @@ button{font:inherit}
     root.innerHTML = '<div class="card2 mg"><h1>' + (create ? "Create your MVP account" : "Log in with e-mail") + '</h1><div class="upd">' + (create ? "Choose a nickname and type your e-mail. We send you a 6-digit code. No password needed." : "Type your e-mail. We send you a 6-digit code. No password needed.") + '</div>' +
       (create ? '<input id="wcnn" type="text" autocomplete="off" maxlength="16" placeholder="Your Minecraft nickname" value="' + esc(pre.nick || "") + '" style="' + INPUT + 'min-width:240px"><div class="upd" style="font-size:.82rem;margin-top:6px">Your account shows this name plus a short code until you link your Minecraft account with /link. Then your real game nickname is used.</div>' : "") +
       '<input id="wcem" type="email" autocomplete="email" maxlength="254" placeholder="you@example.com" value="' + esc(pre.email || "") + '" style="' + INPUT + 'min-width:240px">' +
-      (create ? '<label style="display:flex;gap:10px;align-items:center;margin-top:14px;cursor:pointer;font-size:.92rem"><input type="checkbox" id="wcnl0" style="width:20px;height:20px;min-width:20px;flex:none;margin:0;padding:0;accent-color:#0081cc"> Send me MVP news by e-mail (optional, you can unsubscribe any time)</label>' : '') +
+      (create ? '<label style="display:flex;gap:10px;align-items:center;margin-top:14px;cursor:pointer;font-size:.92rem"><input type="checkbox" id="wcnl0" style="width:20px;height:20px;min-width:20px;flex:none;margin:0;padding:0;accent-color:#0081cc"> <span>I agree to the <a href="../terms/" target="_blank" rel="noopener">Terms of Service</a> and the <a href="../privacy/" target="_blank" rel="noopener">Privacy Policy</a></span></label>' : '') +
       '<div style="margin-top:12px"><button class="mgb" id="wcsend" type="button">Send code</button> <button class="mgb ghost" id="wcback" type="button">Back</button></div><div class="mgmsg" id="wcm">' + (pre.msg ? esc(pre.msg) : "") + '</div>' +
       '<div class="upd" style="margin-top:12px;font-size:.9rem">' + (create ? 'Already have an account? <a href="#" id="wcswitch">Log in</a>' : 'Don\u2019t have an MVP account yet? <a href="#" id="wcswitch">Create one</a>') + '</div></div>';
     document.getElementById("wcback").addEventListener("click", loginView);
@@ -499,9 +500,10 @@ button{font:inherit}
       var em = document.getElementById("wcem").value.trim().toLowerCase(), msg = document.getElementById("wcm"), b = this, nk = "";
       if (create) { nk = document.getElementById("wcnn").value.trim(); if (!/^[A-Za-z0-9_.]{2,16}$/.test(nk)) { msg.textContent = "Nickname: 2 to 16 letters, numbers, _ or ."; return; } }
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)) { msg.textContent = "Type a valid e-mail."; return; }
+      if (create && !document.getElementById("wcnl0").checked) { msg.textContent = "Please agree to the Terms and the Privacy Policy."; return; }
       b.disabled = true; msg.textContent = "";
       call("POST", "/api/web/email-start", { email: em, create: create ? true : undefined }).then(function (r) {
-        if (r.ok) return codeEmailView(em, create && document.getElementById("wcnl0").checked, nk);
+        if (r.ok) return codeEmailView(em, false, nk);
         b.disabled = false;
         msg.textContent = r.status === 409 ? "This e-mail already has an account. Use Log in below instead." : r.status === 429 ? "Too many tries. Wait a little." : r.status === 503 ? "E-mail sign in is not ready yet." : "Could not send the code. Try again later.";
       }).catch(function () { b.disabled = false; msg.textContent = "Cannot reach the server."; });
