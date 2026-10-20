@@ -531,15 +531,67 @@ button{font:inherit}
     document.body.appendChild(dlg);
     if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", "");
   }
-  // ---------- Settings (v2) ----------
+  // ---------- Friends ----------
   var SET_CSS = false;
-  function openSettings(p, tok) {
+  function stCss() {
     if (!SET_CSS) {
       SET_CSS = true;
       var st = document.createElement("style");
       st.textContent = ".wc-sdlg{width:min(520px,calc(100vw - 24px));max-height:min(88vh,860px);overflow:auto;padding:0}.st-top{display:flex;align-items:center;gap:14px;padding:20px 20px 16px;background:linear-gradient(180deg,rgba(0,129,204,.22),rgba(0,129,204,0))}.st-av{width:52px;height:52px;border-radius:16px;background:linear-gradient(180deg,#22a6f2,#0081cc);display:grid;place-items:center;font:800 1.4rem Montserrat,sans-serif;color:#fff;flex:none}.st-who{flex:1;min-width:0}.st-who h2{margin:0 0 2px;font-size:1.25rem}.st-who div{color:var(--muted,#9db6c9);font-size:.88rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.st-body{padding:0 16px 18px}.st-lab{margin:16px 6px 8px;font:700 .72rem/1 Montserrat,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--muted,#9db6c9)}.st-grp{border-radius:18px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.035);overflow:hidden}.st-r{display:flex;align-items:center;gap:12px;padding:13px 14px;border-top:1px solid rgba(255,255,255,.07)}.st-r:first-child{border-top:0}.st-ic{width:36px;height:36px;border-radius:11px;background:rgba(111,208,255,.12);color:#6fd0ff;display:grid;place-items:center;flex:none}.st-t{flex:1;min-width:0}.st-t b{display:block;font-size:.95rem;font-weight:600;color:#fff}.st-t span{display:block;color:var(--muted,#9db6c9);font-size:.82rem;margin-top:2px;overflow-wrap:anywhere}.st-b{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);color:#fff;border-radius:999px;padding:8px 15px;font:700 .85rem Montserrat,sans-serif;cursor:pointer;flex:none}.st-b:hover{background:rgba(255,255,255,.14)}.st-b:disabled{opacity:.5;cursor:default}.st-b.red{border-color:rgba(226,83,95,.55);color:#ffb3b9;background:rgba(226,83,95,.14)}.st-ic.red{background:rgba(226,83,95,.14);color:#ff8e97}.st-sub{padding:0 14px 13px 62px}.st-note{color:var(--muted,#9db6c9);font-size:.82rem;margin:0}.st-msg{font-size:.86rem;min-height:0;padding:0 14px 10px 62px;color:#9fe3b5}.st-msg:empty{display:none}.st-in{padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:transparent;color:inherit;margin:8px 8px 0 0;width:min(240px,100%)}.st-sw{appearance:none;-webkit-appearance:none;width:46px;height:28px;min-width:46px;border-radius:999px;background:rgba(255,255,255,.18);position:relative;cursor:pointer;margin:0;border:0;flex:none;transition:background .2s}.st-sw::after{content:\"\";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .2s}.st-sw:checked{background:#0081cc}.st-sw:checked::after{transform:translateX(18px)}.st-sw:disabled{opacity:.45;cursor:default}.st-sw:focus-visible{outline:2px solid #6fd0ff;outline-offset:2px}.st-x{position:absolute;top:16px;right:16px}";
       document.head.appendChild(st);
     }
+  }
+
+  function openFriends(p, tok) {
+    stCss();
+    var dlg = document.getElementById("wcfdlg");
+    if (!dlg) { dlg = document.createElement("dialog"); dlg.id = "wcfdlg"; dlg.className = "wc-dlg wc-sdlg"; document.body.appendChild(dlg);
+      dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); }); }
+    var ago = function (ms) { if (!ms) return "a long time ago"; var s2 = Math.max(1, Math.floor((Date.now() - ms) / 1000)); if (s2 < 3600) return Math.max(1, Math.floor(s2 / 60)) + " min ago"; if (s2 < 86400) return Math.floor(s2 / 3600) + " h ago"; return Math.floor(s2 / 86400) + " d ago"; };
+    dlg.innerHTML = '<div class="st-top"><div class="st-av"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 3-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="17.5" cy="9" r="2.5"/><path d="M17.5 14c2.6 0 4 1.8 4 4.5"/></svg></div><div class="st-who"><h2>Friends</h2><div id="frsub">Loading...</div></div><button type="button" class="wc-dx" aria-label="Close">×</button></div><div class="st-body" id="frbody"></div>';
+    dlg.querySelector(".wc-dx").onclick = function () { dlg.close(); };
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", "");
+    var body = dlg.querySelector("#frbody");
+    if (!p.nick) { dlg.querySelector("#frsub").textContent = ""; body.innerHTML = '<div class="st-grp"><div class="st-r"><div class="st-t"><b>Link your Minecraft account first</b><span>Friends use your Minecraft nickname. Close this window and use Get link command on your card.</span></div></div></div>'; return; }
+    function row(f, kind) {
+      var dot = kind === "friend" ? '<span class="wc-sdot' + (f.online ? " on" : "") + '" style="flex:none"></span>' : "";
+      var sub = kind === "friend" ? (f.online ? "Online now" : "Last seen " + ago(f.last_online)) : kind === "in" ? "Wants to be your friend" : "Request sent";
+      var btns = kind === "in" ? '<button type="button" class="st-b" data-a="accept" data-n="' + esc(f.nick) + '">Accept</button><button type="button" class="st-b" data-a="decline" data-n="' + esc(f.nick) + '">Decline</button>' : kind === "out" ? '<button type="button" class="st-b" data-a="remove" data-n="' + esc(f.nick) + '">Cancel</button>' : '<button type="button" class="st-b" data-a="remove" data-n="' + esc(f.nick) + '">Remove</button>';
+      return '<div class="st-r">' + dot + '<div class="st-t"><b><a href="../u/?n=' + encodeURIComponent(f.nick) + '" style="color:#fff;text-decoration:none">' + esc(f.nick) + '</a></b><span>' + esc(sub) + '</span></div>' + btns + '</div>';
+    }
+    function grp(title, list, kind) { return list.length ? '<div class="st-lab">' + title + '</div><div class="st-grp">' + list.map(function (f) { return row(f, kind); }).join("") + '</div>' : ""; }
+    function load() {
+      call("GET", "/api/app/friends", null, tok).then(function (r) {
+        if (!r.ok) { body.innerHTML = '<div class="st-note" style="padding:14px">Could not load friends. Try again later.</div>'; return; }
+        var j = r.j, on = j.friends.filter(function (f) { return f.online; }).length;
+        dlg.querySelector("#frsub").textContent = j.friends.length ? on + " of " + j.friends.length + " online" : "No friends yet";
+        body.innerHTML = '<div class="st-lab">Add a friend</div><div class="st-grp"><div class="st-r"><input class="st-in" id="fradd" type="text" maxlength="20" placeholder="Minecraft nickname" style="margin:0;flex:1;width:auto"><button type="button" class="st-b" id="frgo">Send request</button></div><div class="st-msg" id="frmsg"></div></div>' +
+          grp("Requests for you", j.incoming, "in") + grp("Friends", j.friends, "friend") + grp("Sent requests", j.outgoing, "out") +
+          (j.friends.length || j.incoming.length || j.outgoing.length ? "" : '<p class="st-note" style="margin:14px 6px">Type a friend’s Minecraft nickname above. When they accept, you can see when they are online.</p>');
+        var msg = body.querySelector("#frmsg");
+        body.querySelector("#frgo").onclick = function () {
+          var n = body.querySelector("#fradd").value.trim(), b = this; if (!n) return; b.disabled = true; msg.style.color = "#ffb3b9"; msg.textContent = "";
+          call("POST", "/api/app/friends/request", { nick: n }, tok).then(function (r2) {
+            b.disabled = false;
+            if (r2.ok) { load(); return; }
+            msg.textContent = r2.j.error === "no_player" ? "No player with this nickname has an MVP card." : r2.j.error === "self" ? "That is you." : r2.j.error === "limit" ? "Your friends list is full." : r2.j.error === "too_many" ? "Too many tries. Wait a little." : "Could not send. Try again later.";
+          }).catch(function () { b.disabled = false; msg.textContent = "Cannot reach the server."; });
+        };
+        Array.prototype.forEach.call(body.querySelectorAll("[data-a]"), function (el) {
+          el.onclick = function () {
+            var a = el.getAttribute("data-a"), n = el.getAttribute("data-n"), path = a === "remove" ? "/api/app/friends/remove" : "/api/app/friends/respond", bd = { nick: n };
+            if (a === "accept") bd.accept = true; if (a === "decline") bd.accept = false;
+            if (a === "remove" && !window.confirm("Remove " + n + "?")) return;
+            el.disabled = true; call("POST", path, bd, tok).then(function () { load(); }).catch(function () { el.disabled = false; });
+          };
+        });
+      }).catch(function () { body.innerHTML = '<div class="st-note" style="padding:14px">Cannot reach the server.</div>'; });
+    }
+    load();
+  }
+  // ---------- Settings (v2) ----------
+  function openSettings(p, tok) {
+    stCss();
     var dlg = document.getElementById("wcsdlg");
     if (!dlg) { dlg = document.createElement("dialog"); dlg.id = "wcsdlg"; dlg.className = "wc-dlg wc-sdlg"; document.body.appendChild(dlg);
       dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); }); }
@@ -554,6 +606,7 @@ button{font:inherit}
         '<div class="st-msg" id="stmm"></div>' +
       '</div>' +
       '<div class="st-lab">Notifications</div><div class="st-grp"><div class="st-r">' + ICO2(ICN.bell) + '<div class="st-t"><b>MVP news by e-mail</b><span>' + (p.email ? "You can turn this off any time. Every e-mail has an unsubscribe link." : "Add an e-mail first.") + '</span></div><input type="checkbox" class="st-sw" id="stnl" aria-label="Send me MVP news by e-mail"' + (p.newsletter ? " checked" : "") + (p.email ? "" : " disabled") + '></div><div class="st-msg" id="stnm"></div></div>' +
+      '<div class="st-lab">Profile</div><div class="st-grp"><div class="st-r">' + ICO2(ICN.card) + '<div class="st-t"><b>Public profile</b><span>' + (p.nick ? "Off: only you and your friends see your card and badges. On: anyone with the link." : "Link your Minecraft account first.") + '</span></div><input type="checkbox" class="st-sw" id="stpp" aria-label="Public profile"' + (p.profile_public ? " checked" : "") + (p.nick ? "" : " disabled") + '></div>' + (p.nick ? '<div class="st-r">' + ICO2(ICN.dev) + '<div class="st-t"><b>My profile page</b><span>See how others see you</span></div><a class="st-b" href="../u/?n=' + encodeURIComponent(p.nick) + '" style="text-decoration:none">Open</a></div>' : '') + '<div class="st-msg" id="stpm"></div></div>' +
       '<div class="st-lab">Security</div><div class="st-grp">' +
         '<div class="st-r">' + ICO2(ICN.dev) + '<div class="st-t"><b>Other devices</b><span>Sign out everywhere except here</span></div><button type="button" class="st-b" id="stall">Sign out</button></div>' +
         '<div class="st-r">' + ICO2(ICN.out) + '<div class="st-t"><b>This device</b><span>Sign out of this browser</span></div><button type="button" class="st-b" id="stout">Sign out</button></div><div class="st-msg" id="stsm"></div>' +
@@ -599,6 +652,15 @@ button{font:inherit}
       call("POST", "/api/app/newsletter", { on: cb.checked }, tok).then(function (r) {
         cb.disabled = false;
         if (r.ok) { p.newsletter = cb.checked; putCache(p); m.textContent = cb.checked ? "You will get MVP news by e-mail." : "You are unsubscribed."; }
+        else { cb.checked = !cb.checked; m.textContent = "Could not save. Try again later."; }
+      }).catch(function () { cb.disabled = false; cb.checked = !cb.checked; m.textContent = "Cannot reach the server."; });
+    };
+    // public profile
+    q("stpp").onchange = function () {
+      var cb = this, m = q("stpm"); cb.disabled = true;
+      call("POST", "/api/app/profile-public", { on: cb.checked }, tok).then(function (r) {
+        cb.disabled = false;
+        if (r.ok) { p.profile_public = cb.checked; putCache(p); m.textContent = cb.checked ? "Your profile is public." : "Your profile is private again."; }
         else { cb.checked = !cb.checked; m.textContent = "Could not save. Try again later."; }
       }).catch(function () { cb.disabled = false; cb.checked = !cb.checked; m.textContent = "Cannot reach the server."; });
     };
@@ -831,6 +893,9 @@ button{font:inherit}
         if (hb && ob) {
           var sb = document.createElement("button"); sb.type = "button"; sb.className = "wc-inb"; sb.id = "wcset"; sb.setAttribute("aria-label", "Settings"); sb.title = "Settings";
           sb.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#6fd0ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg>';
+          var fb = document.createElement("button"); fb.type = "button"; fb.className = "wc-inb"; fb.id = "wcfr"; fb.setAttribute("aria-label", "Friends"); fb.title = "Friends";
+          fb.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#6fd0ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 3-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="17.5" cy="9" r="2.5"/><path d="M17.5 14c2.6 0 4 1.8 4 4.5"/></svg>' + (p.friend_requests ? '<span class="wc-ibadge">' + p.friend_requests + '</span>' : "");
+          hb.insertBefore(fb, ob); fb.addEventListener("click", function () { var bb = fb.querySelector(".wc-ibadge"); if (bb) bb.remove(); openFriends(p, tok); });
           hb.insertBefore(sb, ob); sb.addEventListener("click", function () { openSettings(p, tok); });
         }
         if (p.email) accountBox(p, tok, document.querySelector(".wc-install"));
