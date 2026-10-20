@@ -586,8 +586,9 @@ button{font:inherit}
       if (busy) return; busy = true;
       call("GET", "/api/app/messages?nick=" + encodeURIComponent(nick) + "&after=" + last, null, tok).then(function (r) {
         busy = false; if (!r.ok) return;
-        var stick = box.scrollHeight - box.scrollTop - box.clientHeight < 80 || !last;
-        (r.j.items || []).forEach(function (m) { add(m); });
+        var stick = box.scrollHeight - box.scrollTop - box.clientHeight < 80 || !last, first = !last, fresh = 0;
+        (r.j.items || []).forEach(function (m) { if (!m.mine && m.id && !seen[m.id]) fresh++; add(m); });
+        if (fresh && !first) chime();
         if ((r.j.items || []).length && stick) box.scrollTop = box.scrollHeight;
       }).catch(function () { busy = false; });
     }
@@ -898,6 +899,7 @@ button{font:inherit}
       });
     } catch (e) {}
   }
+  ["click", "keydown", "touchstart"].forEach(function (ev) { document.addEventListener(ev, function () { try { if (AC && AC.state === "suspended") AC.resume(); } catch (e) {} }, true); });
   document.addEventListener("click", function () { try { if (window.Notification && Notification.permission === "default") Notification.requestPermission(); } catch (e) {} try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === "suspended") AC.resume(); } catch (e) {} }, { once: true });
   function startPulse(tok) {
     if (window.__pulseOn) return; window.__pulseOn = true;
