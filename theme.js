@@ -61,3 +61,48 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", go); else go();
   setInterval(function () { if (!document.hidden) go(); }, 60000);
 })();
+
+/* Live alerts on every page except My card (that page has its own): a small popup in the corner + a quiet chime when something new arrives. */
+(function () {
+  if (/\/card\/?$/.test(location.pathname)) return;
+  var API = "https://mvp-news-api.mvp-shop.workers.dev", KEY = "mvp_card_token", last = null, busy = false, AC = null;
+  function tok() { try { return localStorage.getItem(KEY) || ""; } catch (e) { return ""; } }
+  function chime() {
+    try {
+      AC = AC || new (window.AudioContext || window.webkitAudioContext)();
+      if (AC.state === "suspended") AC.resume();
+      [660, 880].forEach(function (f, i) {
+        var t = AC.currentTime + i * 0.12, os = AC.createOscillator(), g = AC.createGain();
+        os.type = "sine"; os.frequency.value = f;
+        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.18, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.35);
+        os.connect(g); g.connect(AC.destination); os.start(t); os.stop(t + 0.4);
+      });
+    } catch (e) {}
+  }
+  ["click", "keydown", "touchstart"].forEach(function (ev) { document.addEventListener(ev, function () { try { if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === "suspended") AC.resume(); } catch (e) {} }, true); });
+  function toast(title, text, href, nick) {
+    if (!document.getElementById("mtcss")) { var st = document.createElement("style"); st.id = "mtcss"; st.textContent = ".mt{position:fixed;right:18px;bottom:18px;z-index:2147483000;max-width:min(340px,calc(100vw - 36px));display:flex;gap:12px;align-items:center;padding:12px 16px;border-radius:16px;background:#0e2236;color:#fff;border:1px solid rgba(111,208,255,.35);box-shadow:0 14px 40px rgba(0,0,0,.5);cursor:pointer;font:500 .9rem Inter,system-ui,sans-serif}.mt b{display:block;font-weight:700}.mt span{display:block;color:#b9cddd;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:230px}.mt img{width:36px;height:36px;border-radius:8px;image-rendering:pixelated;flex:none}"; document.head.appendChild(st); }
+    var old = document.getElementById("mvptoast"); if (old) old.remove();
+    var t = document.createElement("div"); t.id = "mvptoast"; t.className = "mt";
+    if (nick) { var im = document.createElement("img"); im.alt = ""; im.src = API + "/api/skin/" + encodeURIComponent(nick); im.onerror = function () { im.remove(); }; t.appendChild(im); }
+    var d = document.createElement("div"), b = document.createElement("b"), s = document.createElement("span"); b.textContent = title; s.textContent = text; d.appendChild(b); d.appendChild(s); t.appendChild(d);
+    t.onclick = function () { location.href = href; };
+    document.body.appendChild(t); setTimeout(function () { if (t.parentNode) t.remove(); }, 7000);
+    chime();
+    try { if (window.Notification && Notification.permission === "granted" && !document.hasFocus()) { var nt = new Notification(title, { body: text, icon: "/icon-192.png", tag: "mvp-live" }); nt.onclick = function () { window.focus(); nt.close(); }; } } catch (e) {}
+  }
+  function tick() {
+    var k = tok(); if (!k || busy) return; busy = true;
+    fetch(API + "/api/app/pulse", { headers: { Authorization: "Bearer " + k } }).then(function (r) { return r.ok ? r.json() : null; }).then(function (n) {
+      busy = false; if (!n) return;
+      var o = last; last = n; if (!o) return;
+      var mid = function (x) { return Number(String(x.msgs).split(".")[1]) || 0; };
+      if (n.latest && mid(n) > mid(o)) toast(n.latest.from + " sent you a message", n.latest.body, "/card/", n.latest.from);
+      else if (Number(n.requests) > Number(o.requests)) toast("New friend request", "Open My card to answer it.", "/card/#inbox");
+      else if (Number(n.inbox) > Number(o.inbox)) toast("New notification", "You have a new message in your Inbox.", "/card/#inbox");
+    }).catch(function () { busy = false; });
+  }
+  setInterval(tick, 8000);
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) tick(); });
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", tick); else tick();
+})();
