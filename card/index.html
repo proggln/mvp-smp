@@ -798,7 +798,7 @@ button{font:inherit}
       if (V2) {
         var hb = document.querySelector(".wc-hbtns"), ob = document.getElementById("wcout");
         if (hb && ob) {
-          var sb = document.createElement("button"); sb.type = "button"; sb.className = "wc-sbtn"; sb.id = "wcset"; sb.setAttribute("aria-label", "Settings"); sb.title = "Settings";
+          var sb = document.createElement("button"); sb.type = "button"; sb.className = "wc-inb"; sb.id = "wcset"; sb.setAttribute("aria-label", "Settings"); sb.title = "Settings";
           sb.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>';
           hb.insertBefore(sb, ob); sb.addEventListener("click", function () { openSettings(p, tok); });
         }
