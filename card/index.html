@@ -433,6 +433,38 @@ button{font:inherit}
   var V2 = true;
   var CB = 'style="width:20px;height:20px;min-width:20px;flex:none;margin:0;padding:0;accent-color:#0081cc"';
 
+  // Google sign-in: put the public Web client ID here (same one as in the worker). Empty = no Google button.
+  var GOOGLE_CLIENT_ID = "";
+  function googleSignIn(cred, name, box) {
+    var msg = document.getElementById("wcm");
+    call("POST", "/api/web/google", { credential: cred, name: name || undefined }).then(function (r) {
+      if (r.ok && r.j.token) { setTok(r.j.token); cardView(); return; }
+      if (r.ok && r.j.status === "need_name") {
+        root.innerHTML = '<div class="card2 mg"><h1>Create your MVP account</h1><div class="upd">Google confirmed ' + esc(r.j.email || "your e-mail") + '. Choose your Minecraft nickname to finish.</div>' +
+          '<input id="wcgn" type="text" autocomplete="off" maxlength="16" placeholder="Your Minecraft nickname" style="' + INPUT + 'min-width:240px"><div style="margin-top:12px"><button class="mgb" id="wcgo" type="button">Create account</button> <button class="mgb ghost" id="wcgb" type="button">Back</button></div><div class="mgmsg" id="wcm"></div></div>';
+        document.getElementById("wcgb").addEventListener("click", loginView);
+        document.getElementById("wcgo").addEventListener("click", function () {
+          var nk = document.getElementById("wcgn").value.trim(), m2 = document.getElementById("wcm");
+          if (!/^[A-Za-z0-9_.]{2,16}$/.test(nk)) { m2.textContent = "Nickname: 2 to 16 letters, numbers, _ or ."; return; }
+          googleSignIn(cred, nk);
+        });
+        return;
+      }
+      if (msg) msg.textContent = r.j && r.j.error === "bad_name" ? "Nickname: 2 to 16 letters, numbers, _ or ." : "Google sign-in failed. Try again.";
+    }).catch(function () { if (msg) msg.textContent = "Cannot reach the server."; });
+  }
+  function googleButton(host) {
+    if (!GOOGLE_CLIENT_ID) return;
+    var holder = document.createElement("div"); holder.id = "wcgbtn"; holder.style.cssText = "margin-top:14px;min-height:44px"; host.appendChild(holder);
+    function init() {
+      try {
+        google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, ux_mode: "popup", callback: function (resp) { if (resp && resp.credential) googleSignIn(resp.credential); } });
+        google.accounts.id.renderButton(holder, { type: "standard", theme: "outline", size: "large", text: "signin_with", shape: "pill", logo_alignment: "left" });
+      } catch (e) {}
+    }
+    if (window.google && window.google.accounts) { init(); return; }
+    var s = document.createElement("script"); s.src = "https://accounts.google.com/gsi/client"; s.async = true; s.defer = true; s.onload = init; document.head.appendChild(s);
+  }
   function loginView() {
     stop();
     root.innerHTML = '<div class="card2 mg"><h1>My card</h1>' +
@@ -441,6 +473,7 @@ button{font:inherit}
       '<div class="mgmsg" id="wcm"></div><div class="upd" style="margin-top:12px;font-size:.9rem">Don\u2019t have an MVP account yet? <a href="#" id="wccreate">Create one</a></div></div>';
     document.getElementById("wccreate").addEventListener("click", function (e) { e.preventDefault(); emailView(true); });
     document.getElementById("wcapp").addEventListener("click", function () { startLogin("app"); });
+    googleButton(root.querySelector(".mg"));
     if (V2) {
       var eb = document.createElement("button"); eb.className = "mgb"; eb.type = "button"; eb.id = "wcmail"; eb.textContent = "Log in with e-mail"; eb.style.marginRight = "8px";
       var first = document.getElementById("wcapp"); first.parentNode.insertBefore(eb, first);
