@@ -11,7 +11,7 @@
   var css = L+'{background:#fff;filter:invert(1) hue-rotate(180deg)}' +
     L+' img,'+L+' video,'+L+' canvas,'+L+' picture,'+L+' #mvpPromo,'+L+' iframe,'+L+' .wc-ic,'+L+' [style*="background-image"]{filter:invert(1) hue-rotate(180deg)}' +
     L+' .link-discord,'+L+' .copy,'+L+' .buy,'+L+' .mgb:not(.ghost),'+L+' .cm-go,'+L+' .st-av,'+L+' .tile,'+L+' .wc,'+L+' .st-b.red,'+L+' .wc-bdg,'+L+' .wc-mi{filter:invert(1) hue-rotate(180deg)}' +
-    L+' .logo{filter:invert(1) hue-rotate(180deg);box-sizing:content-box;padding:5px 8px;margin:-5px -8px;border-radius:10px;background-color:#06182a;background-origin:content-box}' +
+    L+' .logo{filter:invert(1) hue-rotate(180deg) drop-shadow(0 1px 3px rgba(3,8,15,.55))}' +
     L+' .wc img,'+L+' .wc-ic img,'+L+' .st-av img,'+L+' .tile img,'+L+' .wc-bdg img,'+L+' .wc-mi img{filter:none}' +
     L+' .mvp-tt{filter:none}' +
     '.mvp-tt{flex:none;width:38px;height:38px;margin:0 2px 0 4px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.07);color:#cfe6f7;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0;transition:background .2s,transform .2s}' +

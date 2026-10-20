@@ -66,8 +66,10 @@
       function btn(label, fn, cls, icon, title) { var b = document.createElement("button"); b.type = "button"; if (cls) b.className = cls; if (icon) b.innerHTML = icon + (label ? "<span>" + label + "</span>" : ""); else b.textContent = label; if (title) { b.title = title; b.setAttribute("aria-label", title); } b.onclick = fn; act.appendChild(b); return b; }
       var lb = btn(String(c.likes || ""), function () {
         if (!data.can_comment) { window.alert(data.why === "signin" ? "Log in to like comments." : "Link your Minecraft account and add an e-mail to like comments."); return; }
-        lb.disabled = true;
-        call("POST", "/api/app/comments/like", { id: c.id }).then(function (r) { lb.disabled = false; if (r.ok) { c.liked = r.j.liked; c.likes = r.j.likes; lb.className = "cm-lk" + (c.liked ? " on" : ""); lb.innerHTML = IC.heart + (c.likes ? "<span>" + c.likes + "</span>" : ""); } }).catch(function () { lb.disabled = false; });
+        var was = !!c.liked, wn = c.likes || 0;
+        function paint(l, n) { c.liked = l; c.likes = n; lb.className = "cm-lk" + (l ? " on" : ""); lb.innerHTML = IC.heart + (n ? "<span>" + n + "</span>" : ""); }
+        paint(!was, Math.max(0, wn + (was ? -1 : 1)));
+        call("POST", "/api/app/comments/like", { id: c.id }).then(function (r) { if (r.ok) paint(r.j.liked, r.j.likes); else paint(was, wn); }).catch(function () { paint(was, wn); });
       }, "cm-lk" + (c.liked ? " on" : ""), IC.heart, "Like");
       if (!isReply) btn("Reply", function () { if (rbox.firstChild) { rbox.innerHTML = ""; return; } rbox.appendChild(compose(c.id, draw)); }, "cm-rp", IC.reply);
       if (c.mine) btn("Delete", function () { if (!window.confirm("Delete this comment?")) return; call("POST", "/api/app/comments/delete", { id: c.id }).then(function (r) { if (r.ok) { data.items = data.items.filter(function (x) { return x.id !== c.id && x.parent_id !== c.id; }); draw(); } }); });
