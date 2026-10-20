@@ -653,7 +653,7 @@ button{font:inherit}
     if (!(p.nick || p.display_name)) { dlg.querySelector("#frsub").textContent = ""; body.innerHTML = '<div class="st-grp"><div class="st-r"><div class="st-t"><b>Link your Minecraft account first</b><span>Friends use your Minecraft nickname. Close this window and use Get link command on your card.</span></div></div></div>'; return; }
     function row(f, kind) {
       var dot = kind === "friend" ? '<span class="wc-sdot' + (f.online ? " on" : "") + '" style="flex:none"></span>' : "";
-      var sub = kind === "friend" ? (f.online ? "Online now" : "Last seen " + ago(f.last_online)) : kind === "in" ? "Wants to be your friend" : kind === "sug" ? (f.mutual ? f.mutual + " mutual friend" + (f.mutual === 1 ? "" : "s") : "MVP player") : kind === "blk" ? "Blocked" : "Request sent";
+      var rk = f.rank ? f.rank + " \u00B7 " : ""; var sub = kind === "friend" ? rk + (f.online ? "Online now" : "Last seen " + ago(f.last_online)) : kind === "in" ? rk + "Wants to be your friend" : kind === "sug" ? (f.rank || "Member") + (f.mutual ? " \u00B7 " + f.mutual + " mutual friend" + (f.mutual === 1 ? "" : "s") : "") : kind === "blk" ? "Blocked" : "Request sent";
       var btns = kind === "in" ? '<button type="button" class="st-b" data-a="accept" data-n="' + esc(f.nick) + '">Accept</button><button type="button" class="st-b" data-a="decline" data-n="' + esc(f.nick) + '">Decline</button><button type="button" class="st-b red" data-a="block" data-n="' + esc(f.nick) + '">Block</button>' : kind === "out" ? '<button type="button" class="st-b" data-a="remove" data-n="' + esc(f.nick) + '">Cancel</button>' : kind === "sug" ? '<button type="button" class="st-b" data-a="request" data-n="' + esc(f.nick) + '">Add</button>' : kind === "blk" ? '<button type="button" class="st-b" data-a="unblock" data-n="' + esc(f.nick) + '">Unblock</button>' : '<button type="button" class="st-b" data-a="msg" data-n="' + esc(f.nick) + '">Message' + (f.unread ? " (" + f.unread + ")" : "") + '</button><button type="button" class="st-b" data-a="remove" data-n="' + esc(f.nick) + '">Remove</button>';
       return '<div class="st-r">' + head(f.nick, 36) + dot + '<div class="st-t"><b><a href="../u/?n=' + encodeURIComponent(f.nick) + '" style="color:#fff;text-decoration:none">' + esc(f.nick) + '</a></b><span>' + esc(sub) + '</span></div>' + btns + '</div>';
     }
@@ -938,12 +938,7 @@ button{font:inherit}
         try { d = new Date(m.created_at).toLocaleString([], { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }); } catch (e) {}
         w.innerHTML = '<div class="wc-imh"><span class="wc-from">' + (m.sender === "server" ? "Game server" : "MVP team" + VER_SVG) + '</span><time>' + esc(d) + '</time></div>' +
           '<b class="wc-imt">' + esc(m.title) + '</b>' + (m.image ? '<img src="' + esc(m.image) + '" alt="" loading="lazy">' : '') + '<p>' + rb.html + '</p>' +
-          rb.vids.map(function (id) { return '<div class="wc-vid"><iframe src="https://www.youtube-nocookie.com/embed/' + id + '" title="Video" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>'; }).join("") +
-          '<button type="button" class="wc-ihide">Delete</button>';
-        w.querySelector(".wc-ihide").onclick = function () {
-          w.remove(); call("POST", "/api/app/inbox/read", { id: m.id, hide: true }, tok).catch(function () {});
-          if (!box.children.length) box.innerHTML = '<div class="wc-iempty">' + icSvg("inbox", 48, "#6fd0ff") + '<p>No messages.</p></div>';
-        };
+          rb.vids.map(function (id) { return '<div class="wc-vid"><iframe src="https://www.youtube-nocookie.com/embed/' + id + '" title="Video" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>'; }).join("");
         box.appendChild(w);
       });
       if (r.j.unread) {
