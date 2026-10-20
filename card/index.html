@@ -331,6 +331,7 @@ button{font:inherit}
 .wc-mt{min-width:0}.wc-mt b{display:block;color:var(--mc);font-size:.98rem}.wc-mt span{display:block;font-size:.9rem;color:#dbe8f3}.wc-mt small{display:block;font-size:.78rem;color:var(--muted);margin-top:2px}
 .wc-skel{background:linear-gradient(90deg,rgba(255,255,255,.05),rgba(255,255,255,.12),rgba(255,255,255,.05));background-size:200% 100%;animation:wcsk 1.2s linear infinite;min-height:90px}.wc.wc-skel{box-shadow:none}
 @keyframes wcsk{from{background-position:200% 0}to{background-position:-200% 0}}
+.wc-bd{margin:14px 0 0;padding:14px 16px;border-radius:18px;border:1px solid rgba(255,255,255,.12);background:rgba(6,16,28,.6)}.wc-bdh{font:700 .72rem/1 Montserrat,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}.wc-bdl{display:flex;flex-wrap:wrap;gap:8px}.wc-badge{width:40px;height:40px;border-radius:12px;border:1px solid color-mix(in srgb,var(--mc,#6fd0ff) 55%,transparent);background:color-mix(in srgb,var(--mc,#6fd0ff) 16%,rgba(255,255,255,.04));display:grid;place-items:center;cursor:pointer;padding:0;transition:transform .12s}.wc-badge:hover,.wc-badge:focus-visible{transform:translateY(-2px);outline:0;box-shadow:0 0 0 2px var(--mc,#6fd0ff)}.wc-bdn{color:var(--muted);font-size:.9rem}.wc-tip{position:fixed;z-index:9999;max-width:260px;padding:12px 14px;border-radius:14px;background:#0b1a2a;border:1px solid rgba(255,255,255,.18);box-shadow:0 14px 40px rgba(0,0,0,.55);color:#fff;pointer-events:none;opacity:0;transition:opacity .12s}.wc-tip.on{opacity:1}.wc-tip b{display:block;font-size:.95rem}.wc-tip span{display:block;color:var(--muted);font-size:.84rem;margin-top:3px}.wc-tip small{display:block;color:var(--muted);font-size:.75rem;margin-top:6px}
 .wc-mbtn{display:flex;align-items:center;gap:12px;width:100%;margin:14px 0 0;padding:14px 16px;border-radius:18px;border:1px solid rgba(255,255,255,.12);background:rgba(6,16,28,.6);color:#fff;font:inherit;text-align:left;cursor:pointer;transition:transform .15s,border-color .15s}
 .wc-mbtn:hover{transform:translateY(-1px);border-color:rgba(111,208,255,.5)}.wc-mbtn:focus-visible{outline:2px solid #6fd0ff;outline-offset:2px}
 .wc-mbi{flex:none;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(111,208,255,.12)}
@@ -689,8 +690,30 @@ button{font:inherit}
   function icSvg(k,size,color){var v=LIC[k]||LIC.medal,o='<svg viewBox="0 0 24 24" width="'+size+'" height="'+size+'" fill="none" stroke="'+(color||"currentColor")+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">';v.p.forEach(function(d){o+='<path d="'+d+'"/>'});(v.c||[]).forEach(function(c){o+='<circle cx="'+c[0]+'" cy="'+c[1]+'" r="'+c[2]+'"/>'});return o+'</svg>'}
   function medalsBtn(list) {
     list = list || [];
-    var prev = list.slice(0, 6).map(function (m) { return pxSvg(m.icon, 20); }).join("");
-    return '<button class="wc-mbtn" id="wcmed" type="button"><span class="wc-mbi">' + icSvg("medal", 24, "#6fd0ff") + '</span><span class="wc-mbt"><b>Medals' + (list.length ? ' (' + list.length + ')' : '') + '</b><span class="wc-mbp">' + (prev || "See your medals") + '</span></span><svg class="wc-mbc" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>';
+    var h = list.map(function (m, i) {
+      var col = /^#[0-9a-fA-F]{6}$/.test(m.color || "") ? m.color : "#6fd0ff";
+      return '<button type="button" class="wc-badge" data-bi="' + i + '" style="--mc:' + col + '" aria-label="' + esc(m.name) + '">' + pxSvg(m.icon, 24) + '</button>';
+    }).join("");
+    return '<div class="wc-bd"><div class="wc-bdh">Badges' + (list.length ? ' - ' + list.length : '') + '</div><div class="wc-bdl">' + (h || '<span class="wc-bdn">No badges yet. Join events and play to collect them.</span>') + '</div></div>';
+  }
+  function badgeTips(list) {
+    var tip = document.getElementById("wctip");
+    if (!tip) { tip = document.createElement("div"); tip.id = "wctip"; tip.className = "wc-tip"; tip.setAttribute("role", "tooltip"); document.body.appendChild(tip); }
+    var hide = function () { tip.classList.remove("on"); };
+    var show = function (el) {
+      var m = (list || [])[Number(el.getAttribute("data-bi"))]; if (!m) return;
+      var d = ""; try { d = m.awarded_at ? new Date(m.awarded_at).toLocaleDateString([], { year: "numeric", month: "short", day: "numeric" }) : ""; } catch (e) {}
+      tip.innerHTML = "<b>" + esc(m.name) + "</b>" + (m.description ? "<span>" + esc(m.description) + "</span>" : "") + (d ? "<small>Earned " + esc(d) + "</small>" : "");
+      var r = el.getBoundingClientRect(); tip.style.left = "0px"; tip.style.top = "0px"; tip.classList.add("on");
+      var w = tip.offsetWidth, h2 = tip.offsetHeight, x = Math.max(8, Math.min(window.innerWidth - w - 8, r.left + r.width / 2 - w / 2)), y = r.top - h2 - 10; if (y < 8) y = r.bottom + 10;
+      tip.style.left = x + "px"; tip.style.top = y + "px"; window.__tipAt = Date.now();
+    };
+    Array.prototype.forEach.call(document.querySelectorAll(".wc-badge"), function (el) {
+      el.addEventListener("mouseenter", function () { show(el); }); el.addEventListener("mouseleave", hide);
+      el.addEventListener("focus", function () { show(el); }); el.addEventListener("blur", hide);
+      el.addEventListener("click", function (e) { e.stopPropagation(); show(el); });
+    });
+    if (!window.__tipDoc) { window.__tipDoc = true; document.addEventListener("click", function () { var t = document.getElementById("wctip"); if (t) t.classList.remove("on"); }); window.addEventListener("scroll", function () { if (Date.now() - (window.__tipAt || 0) < 500) return; var t = document.getElementById("wctip"); if (t) t.classList.remove("on"); }, true); }
   }
   function fmtWhen(ms) { try { return new Date(ms).toLocaleString([], { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" }); } catch (e) { return ""; } }
   function askDelete(tok, p) {
@@ -784,7 +807,7 @@ button{font:inherit}
         '<div class="wc-stat"><div class="wc-ic"><img src="sword.png" alt=""></div><div class="wc-sv">' + esc(p.kills) + '</div><div class="wc-sl">Kills</div></div>' +
         '</div>' + medalsBtn(p.medals) + '<div class="wc-news"><h2>Latest news <a href="../news/" style="font-size:.85rem;font-weight:600;margin-left:8px">All news</a></h2><div id="wcnews"></div></div></div></div>' +
         (V2 ? '' : '<div class="wc-foot"><button class="wc-dellink" id="wcdel" type="button">Delete account</button></div>');
-      document.getElementById("wcmed").addEventListener("click", function () { openMedals(p.medals); });
+      badgeTips(p.medals);
       document.getElementById("wcinb").addEventListener("click", function () { openInbox(tok, p); });
       if (location.hash === "#inbox" && !window.__inboxOpened) { window.__inboxOpened = true; openInbox(tok, p); }
       // a browser that already has notifications on is tied to this card, so personal messages reach it
