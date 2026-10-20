@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://playmvp.org/</loc><lastmod>2026-10-18</lastmod></url>
-  <url><loc>https://playmvp.org/store/</loc><lastmod>2026-10-18</lastmod></url>
-  <url><loc>https://playmvp.org/wiki/</loc><lastmod>2026-10-18</lastmod></url>
-  <url><loc>https://playmvp.org/rules/</loc><lastmod>2026-10-18</lastmod></url>
-  <url><loc>https://playmvp.org/odds/</loc><lastmod>2026-10-19</lastmod></url>
-  <url><loc>https://playmvp.org/support/</loc><lastmod>2026-10-18</lastmod></url>
-  <url><loc>https://playmvp.org/news/</loc></url>
+  <url><loc>https://playmvp.org/</loc><lastmod>2026-10-20</lastmod><priority>1.0</priority></url>
+  <url><loc>https://playmvp.org/news/</loc><lastmod>2026-10-20</lastmod><priority>0.8</priority></url>
+  <url><loc>https://playmvp.org/store/</loc><lastmod>2026-10-20</lastmod><priority>0.8</priority></url>
+  <url><loc>https://playmvp.org/wiki/</loc><lastmod>2026-10-20</lastmod><priority>0.7</priority></url>
+  <url><loc>https://playmvp.org/rules/</loc><lastmod>2026-10-20</lastmod><priority>0.4</priority></url>
+  <url><loc>https://playmvp.org/odds/</loc><lastmod>2026-10-20</lastmod><priority>0.4</priority></url>
+  <url><loc>https://playmvp.org/support/</loc><lastmod>2026-10-20</lastmod><priority>0.4</priority></url>
+  <url><loc>https://playmvp.org/app/</loc><lastmod>2026-10-20</lastmod><priority>0.4</priority></url>
+  <url><loc>https://playmvp.org/privacy/</loc><lastmod>2026-10-20</lastmod><priority>0.4</priority></url>
+  <url><loc>https://playmvp.org/terms/</loc><lastmod>2026-10-20</lastmod><priority>0.4</priority></url>
+  <url><loc>https://playmvp.org/refunds/</loc><lastmod>2026-10-20</lastmod><priority>0.4</priority></url>
+  <url><loc>https://playmvp.org/seller/</loc><lastmod>2026-10-20</lastmod><priority>0.4</priority></url>
 </urlset>

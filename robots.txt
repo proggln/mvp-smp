@@ -3,5 +3,7 @@ Allow: /
 Disallow: /test/
 Disallow: /v2/
 Disallow: /pack/
+Disallow: /card/
+Disallow: /manage/
 
 Sitemap: https://playmvp.org/sitemap.xml
