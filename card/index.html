@@ -417,6 +417,8 @@ button{font:inherit}
     return fetch(API + path, o).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, status: r.status, j: j }; }); });
   }
   function stop() { if (poll) { clearInterval(poll); poll = null; } }
+  // v2 test mode: open /card/?v2=1 once, the browser remembers it. Not visible to normal visitors yet.
+  var V2 = false; try { if (/[?&]v2=1/.test(location.search)) localStorage.setItem("mvp_v2", "1"); if (/[?&]v2=0/.test(location.search)) localStorage.removeItem("mvp_v2"); V2 = localStorage.getItem("mvp_v2") === "1"; } catch (e) {}
 
   function loginView() {
     stop();
@@ -426,6 +428,70 @@ button{font:inherit}
       '<div class="mgmsg" id="wcm"></div><div class="upd" style="margin-top:12px;font-size:.85rem">Already have the MVP app? Use <b>Log in via MVP app</b> to open the same account here. No game access yet? Create a card here, choose your nickname and wait for registration. Keep this browser: the card is saved in it.</div></div>';
     document.getElementById("wcapp").addEventListener("click", function () { startLogin("app"); });
     document.getElementById("wcnew").addEventListener("click", createCard);
+    if (V2) {
+      var eb = document.createElement("button"); eb.className = "mgb"; eb.type = "button"; eb.id = "wcmail"; eb.textContent = "Sign in with e-mail"; eb.style.marginRight = "8px";
+      var first = document.getElementById("wcapp"); first.parentNode.insertBefore(eb, first);
+      eb.addEventListener("click", emailView);
+    }
+  }
+  var INPUT = "padding:11px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:transparent;color:inherit;margin:10px 8px 0 0;";
+  function emailView() {
+    stop();
+    root.innerHTML = '<div class="card2 mg"><h1>Sign in with e-mail</h1><div class="upd">Type your e-mail. We send you a 6-digit code. No password needed. New here? An account is created for you.</div>' +
+      '<input id="wcem" type="email" autocomplete="email" maxlength="254" placeholder="you@example.com" style="' + INPUT + 'min-width:240px">' +
+      '<button class="mgb" id="wcsend" type="button">Send code</button> <button class="mgb ghost" id="wcback" type="button">Back</button><div class="mgmsg" id="wcm"></div></div>';
+    document.getElementById("wcback").addEventListener("click", loginView);
+    document.getElementById("wcsend").addEventListener("click", function () {
+      var em = document.getElementById("wcem").value.trim().toLowerCase(), msg = document.getElementById("wcm"), b = this;
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)) { msg.textContent = "Type a valid e-mail."; return; }
+      b.disabled = true; msg.textContent = "";
+      call("POST", "/api/web/email-start", { email: em }).then(function (r) {
+        if (r.ok) return codeEmailView(em);
+        b.disabled = false;
+        msg.textContent = r.status === 429 ? "Too many tries. Wait a little." : r.status === 503 ? "E-mail sign in is not ready yet." : "Could not send the code. Try again later.";
+      }).catch(function () { b.disabled = false; msg.textContent = "Cannot reach the server."; });
+    });
+  }
+  function codeEmailView(em) {
+    root.innerHTML = '<div class="card2 mg"><h1>Check your e-mail</h1><div class="upd">We sent a 6-digit code to <b>' + esc(em) + '</b>. It works for 10 minutes. Look in Spam too.</div>' +
+      '<input id="wccode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" style="' + INPUT + 'width:140px;letter-spacing:4px;font-size:1.1rem">' +
+      '<button class="mgb" id="wcok" type="button">Sign in</button> <button class="mgb ghost" id="wcback" type="button">Back</button><div class="mgmsg" id="wcm"></div></div>';
+    document.getElementById("wcback").addEventListener("click", emailView);
+    document.getElementById("wcok").addEventListener("click", function () {
+      var code = document.getElementById("wccode").value.trim(), msg = document.getElementById("wcm"), b = this;
+      if (!/^\d{6}$/.test(code)) { msg.textContent = "The code has 6 digits."; return; }
+      b.disabled = true; msg.textContent = "";
+      call("POST", "/api/web/email-verify", { email: em, code: code }).then(function (r) {
+        if (r.ok && r.j.token) { setTok(r.j.token); cardView(); return; }
+        b.disabled = false; msg.textContent = "Wrong or expired code.";
+      }).catch(function () { b.disabled = false; msg.textContent = "Cannot reach the server."; });
+    });
+  }
+  // e-mail account box: shows the e-mail, links / unlinks the Minecraft account
+  function accountBox(p, tok, before) {
+    var box = document.createElement("div"); box.className = "wc-install"; box.style.cssText = "margin:14px 0;padding:14px;border-radius:14px;background:rgba(255,255,255,.06)";
+    var h = '<b>Account</b><br>E-mail: ' + esc(p.email || "not added") + '<br>';
+    if (p.nick) h += 'Minecraft: <b>' + esc(p.nick) + '</b> <button class="mgb ghost" id="wcunl" type="button" style="margin-left:6px">Unlink</button><div class="upd" style="margin-top:6px;font-size:.85rem">Changed your nickname? Unlink, then link again in the game.</div>';
+    else h += 'Minecraft: <b>not linked</b><br>To see your stats, link your game account: <button class="mgb" id="wclink" type="button" style="margin-top:8px">Get link command</button>';
+    h += '<div id="wcam" style="margin-top:8px"></div>';
+    box.innerHTML = h;
+    before.parentNode.insertBefore(box, before);
+    var m = box.querySelector("#wcam"), lb = box.querySelector("#wclink"), ub = box.querySelector("#wcunl");
+    if (lb) lb.addEventListener("click", function () {
+      lb.disabled = true;
+      call("POST", "/api/app/link-code", {}, tok).then(function (r) {
+        lb.disabled = false;
+        if (!r.ok || !r.j.code) { m.textContent = "Could not make a code. Try again later."; return; }
+        m.innerHTML = 'Join the server, log in there, and type: <div class="mgcmd">/link ' + esc(r.j.code) + '</div>The code works for 10 minutes.';
+      }).catch(function () { lb.disabled = false; m.textContent = "Cannot reach the server."; });
+    });
+    if (ub) ub.addEventListener("click", function () {
+      if (!window.confirm("Unlink " + p.nick + " from this account? Your card and coins stay.")) return;
+      ub.disabled = true;
+      call("POST", "/api/app/unlink", {}, tok).then(function (r) {
+        if (r.ok) { p.nick = ""; p.linked = false; putCache(p); renderCard(p, tok, true); } else { ub.disabled = false; m.textContent = "Could not unlink. Try again later."; }
+      }).catch(function () { ub.disabled = false; m.textContent = "Cannot reach the server."; });
+    });
   }
   function createCard() {
     var btn = document.getElementById("wcnew"), msg = document.getElementById("wcm");
@@ -608,7 +674,8 @@ button{font:inherit}
         call("POST", "/api/web/logout", null, tok).catch(function () {}); setTok(""); putCache(null); loginView();
       });
       var c = document.getElementById("wccard");
-      if (!p.nick) {
+      if (V2 && p.email) accountBox(p, tok, document.querySelector(".wc-install"));
+      if (!p.nick && !(V2 && p.email)) {
         var rb = document.createElement("div"); rb.className = "wc-install"; rb.style.cssText = "margin:14px 0;padding:14px;border-radius:14px;background:rgba(255,255,255,.06)";
         var ins0 = document.querySelector(".wc-install");
         function regDone(nk) { rb.innerHTML = '<b>Waiting for registration</b><br>Requested nickname: ' + esc(nk) + '. Wait some time, an admin will confirm it.'; }
