@@ -26,17 +26,17 @@ h1{margin:10px 0 0;font:800 1.7rem var(--font-head);letter-spacing:-.01em;text-a
 .ring .tr{stroke:rgba(255,255,255,.1)}
 .ring .pr{stroke:url(#g1);stroke-linecap:round;transition:stroke-dashoffset 1s linear}
 .coin{position:absolute;inset:26px;display:flex;align-items:center;justify-content:center}
-.coin img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 8px 18px rgba(255,170,30,.45))}
+.coin img{width:96px;height:96px;image-rendering:pixelated;image-rendering:crisp-edges;filter:drop-shadow(0 0 16px rgba(60,170,255,.55))}
 .ready .coin img{animation:fl 2.6s ease-in-out infinite}
 @keyframes fl{50%{transform:translateY(-6px) rotate(-3deg)}}
-.wait .coin img{filter:grayscale(.85) brightness(.8)}
+.wait .coin img{opacity:.8;filter:drop-shadow(0 0 10px rgba(60,170,255,.3))}
 .amt{font:800 2.3rem var(--font-head);margin-top:12px;line-height:1}
 .amt small{font:700 .9rem var(--font-head);opacity:.7;margin-left:6px}
 .sub{margin:8px 0 0;text-align:center;opacity:.85;min-height:1.4em}
 .track{position:relative;display:flex;gap:6px;margin:22px 0 18px}
 .day{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:5px;padding:9px 0 8px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid transparent;font:700 .72rem var(--font-head)}
 .day i{font-style:normal;opacity:.55;font-size:.62rem;letter-spacing:.06em}
-.day svg,.day img{width:20px;height:20px;object-fit:contain}
+.day svg{width:22px;height:22px}.day img{width:32px;height:32px;image-rendering:pixelated;image-rendering:crisp-edges}
 .day.done{background:rgba(34,166,242,.22);border-color:rgba(34,166,242,.35)}
 .day.today{background:linear-gradient(180deg,rgba(255,207,58,.25),rgba(255,157,28,.12));border-color:var(--gold);box-shadow:0 0 18px rgba(255,190,50,.35)}
 .btn{position:relative;overflow:hidden;display:flex;width:100%;align-items:center;justify-content:center;gap:8px;padding:16px;border-radius:999px;border:0;cursor:pointer;color:#fff;font:800 1.05rem var(--font-head);background:linear-gradient(180deg,var(--bl2),var(--bl));box-shadow:0 10px 28px rgba(0,129,204,.45);text-decoration:none;transition:transform .15s}
@@ -64,7 +64,7 @@ h1{margin:10px 0 0;font:800 1.7rem var(--font-head);letter-spacing:-.01em;text-a
   <div class="hero wait" id="hero">
     <div class="ring">
       <svg class="r" viewBox="0 0 100 100"><circle class="tr" cx="50" cy="50" r="46" fill="none" stroke-width="5"/><circle class="pr" id="pr" cx="50" cy="50" r="46" fill="none" stroke-width="5" stroke-dasharray="289" stroke-dashoffset="289"/></svg>
-      <div class="coin"><img src="../card/coin.png" alt="" width="124" height="124"></div>
+      <div class="coin"><img src="../card/coin.png" alt="" width="96" height="96"></div>
     </div>
     <div class="amt" id="amt"></div>
     <p class="sub" id="s">Loading...</p>
