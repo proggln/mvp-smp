@@ -25,13 +25,7 @@
   var DROP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6 6.2 6 10.5a6 6 0 0 1-12 0C6 9.2 12 3 12 3z"/></svg>';
   function build() {
     var st = document.createElement("style"); st.textContent = css; document.head.appendChild(st);
-    var menu = document.querySelector(".nav .menu") || document.querySelector(".nav");
-    if (!menu) return;
-    var b = document.createElement("button"); b.type = "button"; b.className = "mvp-tt";
-    function paint() { var d = get() === "light"; b.innerHTML = d ? DROP : SUN; b.setAttribute("aria-label", d ? "Switch to the blue theme" : "Switch to the light theme"); b.title = d ? "Blue theme" : "Light theme"; }
-    b.addEventListener("click", function () { var n = get() === "light" ? "blue" : "light"; try { localStorage.setItem(KEY, n); } catch (e) {} apply(n); paint(); });
-    paint();
-    var dc = menu.querySelector(".link-discord"); if (dc) menu.insertBefore(b, dc); else menu.appendChild(b);
   }
+  window.mvpTheme = { get: get, set: function (t) { try { localStorage.setItem(KEY, t === "light" ? "light" : "blue"); } catch (e) {} apply(t === "light" ? "light" : "blue"); } };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", build); else build();
 })();

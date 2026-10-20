@@ -705,7 +705,7 @@ button{font:inherit}
     if (!dlg) { dlg = document.createElement("dialog"); dlg.id = "wcsdlg"; dlg.className = "wc-dlg wc-sdlg"; document.body.appendChild(dlg);
       dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); }); }
     var ICO2 = function (d, red) { return '<span class="st-ic' + (red ? ' red' : '') + '"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + d + '"/></svg></span>'; };
-    var ICN = { mail: "M3 6h18v12H3z M3 7l9 6 9-6", cube: "M12 3l8 4.5v9L12 21l-8-4.5v-9z M4 7.5l8 4.5 8-4.5 M12 12v9", bell: "M6 16V11a6 6 0 0112 0v5l2 2H4z M10 21h4", dev: "M3 5h13v10H3z M8 19h5 M18 9h3v10h-3z", out: "M9 4H5v16h4 M16 8l4 4-4 4 M20 12H9", dl: "M12 4v11 M7 11l5 5 5-5 M5 20h14", trash: "M4 7h16 M9 7V4h6v3 M6 7l1 13h10l1-13", card: "M3 6h18v12H3z M3 10h18 M7 15h4" };
+    var ICN = { mail: "M3 6h18v12H3z M3 7l9 6 9-6", cube: "M12 3l8 4.5v9L12 21l-8-4.5v-9z M4 7.5l8 4.5 8-4.5 M12 12v9", bell: "M6 16V11a6 6 0 0112 0v5l2 2H4z M10 21h4", dev: "M3 5h13v10H3z M8 19h5 M18 9h3v10h-3z", out: "M9 4H5v16h4 M16 8l4 4-4 4 M20 12H9", dl: "M12 4v11 M7 11l5 5 5-5 M5 20h14", trash: "M4 7h16 M9 7V4h6v3 M6 7l1 13h10l1-13", card: "M3 6h18v12H3z M3 10h18 M7 15h4", sun: "M12 8a4 4 0 100 8 4 4 0 000-8z M12 2v2 M12 20v2 M4.9 4.9l1.4 1.4 M17.7 17.7l1.4 1.4 M2 12h2 M20 12h2 M4.9 19.1l1.4-1.4 M17.7 6.3l1.4-1.4" };
     var ini = (p.nick || p.display_name || p.email || "M").charAt(0).toUpperCase();
     dlg.innerHTML = '<div class="st-top"><div class="st-av">' + (p.nick ? head(p.nick, 52) : esc(ini)) + '</div><div class="st-who"><h2>Settings</h2><div>' + esc(p.email || p.nick || "MVP player") + '</div></div><button type="button" class="wc-dx" aria-label="Close">\u00D7</button></div><div class="st-body">' +
       '<div class="st-lab">Account</div><div class="st-grp">' +
@@ -715,6 +715,7 @@ button{font:inherit}
         '<div class="st-msg" id="stmm"></div>' +
       '</div>' +
       '<div class="st-lab">Notifications</div><div class="st-grp"><div class="st-r">' + ICO2(ICN.bell) + '<div class="st-t"><b>MVP news by e-mail</b><span>' + (p.email ? "You can turn this off any time. Every e-mail has an unsubscribe link." : "Add an e-mail first.") + '</span></div><input type="checkbox" class="st-sw" id="stnl" aria-label="Send me MVP news by e-mail"' + (p.newsletter ? " checked" : "") + (p.email ? "" : " disabled") + '></div><div class="st-msg" id="stnm"></div></div>' +
+      '<div class="st-lab">Appearance</div><div class="st-grp"><div class="st-r">' + ICO2(ICN.sun) + '<div class="st-t"><b>Light theme</b><span>White background instead of blue.</span></div><input type="checkbox" class="st-sw" id="stlt" aria-label="Light theme"' + (window.mvpTheme && mvpTheme.get() === "light" ? " checked" : "") + '></div></div>' +
       '<div class="st-lab">Profile</div><div class="st-grp"><div class="st-r">' + ICO2(ICN.card) + '<div class="st-t"><b>Public profile</b><span>' + (p.nick ? "Off: only you and your friends see your card and badges. On: anyone with the link." : "Link your Minecraft account first.") + '</span></div><input type="checkbox" class="st-sw" id="stpp" aria-label="Public profile"' + (p.profile_public ? " checked" : "") + (p.nick ? "" : " disabled") + '></div>' + (p.nick ? '<div class="st-r">' + ICO2(ICN.cube) + '<div class="st-t"><b>Show me in suggestions</b><span>Others may see you in People you may know when you have friends in common.</span></div><input type="checkbox" class="st-sw" id="stsg" aria-label="Show me in suggestions"' + (p.hide_suggest ? "" : " checked") + '></div><div class="st-r">' + ICO2(ICN.dev) + '<div class="st-t"><b>My profile page</b><span>See how others see you</span></div><a class="st-b" href="../u/?n=' + encodeURIComponent(p.nick) + '" style="text-decoration:none">Open</a></div>' : '') + '<div class="st-msg" id="stpm"></div></div>' +
       '<div class="st-lab">Security</div><div class="st-grp">' +
         '<div class="st-r">' + ICO2(ICN.dev) + '<div class="st-t"><b>Other devices</b><span>Sign out everywhere except here</span></div><button type="button" class="st-b" id="stall">Sign out</button></div>' +
@@ -764,6 +765,7 @@ button{font:inherit}
         else { cb.checked = !cb.checked; m.textContent = "Could not save. Try again later."; }
       }).catch(function () { cb.disabled = false; cb.checked = !cb.checked; m.textContent = "Cannot reach the server."; });
     };
+    q("stlt").onchange = function () { if (window.mvpTheme) mvpTheme.set(this.checked ? "light" : "blue"); };
     // public profile
     q("stpp").onchange = function () {
       var cb = this, m = q("stpm"); cb.disabled = true;
