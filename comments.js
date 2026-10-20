@@ -67,7 +67,7 @@
       var act = el.querySelector(".cm-a"), rbox = el.querySelector(".cm-r");
       function btn(label, fn, cls, icon, title) { var b = document.createElement("button"); b.type = "button"; if (cls) b.className = cls; if (icon) b.innerHTML = icon + (label ? "<span>" + label + "</span>" : ""); else b.textContent = label; if (title) { b.title = title; b.setAttribute("aria-label", title); } b.onclick = fn; act.appendChild(b); return b; }
       var lb = btn(String(c.likes || ""), function () {
-        if (!data.can_comment) { window.alert(data.why === "signin" ? "Log in to like comments." : "Link your Minecraft account and add an e-mail to like comments."); return; }
+        if (!(data.can_like !== undefined ? data.can_like : data.can_comment)) { window.alert(data.why === "signin" ? "Log in to like comments." : "Link your Minecraft account and add an e-mail to like comments."); return; }
         var was = !!c.liked, wn = c.likes || 0;
         function paint(l, n) { c.liked = l; c.likes = n; lb.className = "cm-lk" + (l ? " on" : ""); lb.innerHTML = IC.heart + (n ? "<span>" + n + "</span>" : ""); }
         paint(!was, Math.max(0, wn + (was ? -1 : 1)));
@@ -81,7 +81,7 @@
       }
       var fl = btn("", function (e) {
         if (c.mine) { window.alert("You can not report your own comment."); return; }
-        if (!data.can_comment) { window.alert(data.why === "signin" ? "Log in to report comments." : "Link your Minecraft account and add an e-mail to report comments."); return; }
+        if (!(data.can_like !== undefined ? data.can_like : data.can_comment)) { window.alert(data.why === "signin" ? "Log in to report comments." : "Link your Minecraft account and add an e-mail to report comments."); return; }
         var b = fl; b.disabled = true;
         call("POST", "/api/app/comments/report", { id: c.id }).then(function (r) { b.title = r.ok ? "Reported" : "Try later"; b.setAttribute("aria-label", b.title); if (!r.ok) b.disabled = false; }).catch(function () { b.disabled = false; });
       }, "cm-fl", IC.flag, "Report");
