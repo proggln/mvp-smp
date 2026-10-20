@@ -399,6 +399,7 @@ button{font:inherit}
 (function () {
   var API = "https://mvp-news-api.mvp-shop.workers.dev", KEY = "mvp_card_token";
   var root = document.getElementById("cardroot");
+  var VTICK = '<svg class="wc-ver" viewBox="0 0 24 24" width="15" height="15" style="vertical-align:-2px;margin-left:5px" aria-label="Verified" role="img"><path d="M12.00 2.00 L14.23 3.69 L17.00 3.34 L18.08 5.92 L20.66 7.00 L20.31 9.77 L22.00 12.00 L20.31 14.23 L20.66 17.00 L18.08 18.08 L17.00 20.66 L14.23 20.31 L12.00 22.00 L9.77 20.31 L7.00 20.66 L5.92 18.08 L3.34 17.00 L3.69 14.23 L2.00 12.00 L3.69 9.77 L3.34 7.00 L5.92 5.92 L7.00 3.34 L9.77 3.69 Z" fill="#2ea2ea"/><path d="M8 12.3 L10.8 15 L16.2 9.4" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   function head(n, s) { return '<span class="mch" style="width:' + s + 'px;height:' + s + 'px"><img alt="" loading="lazy" src="' + API + '/api/skin/' + encodeURIComponent(n) + '" onerror="this.style.display=\'none\';this.parentNode.className+=\' bad\'"></span>'; }
   function cardGrad(t) { var c = t.colors; return "linear-gradient(135deg," + c[0] + " 0%," + c[1] + " 55%," + c[2] + " 100%)"; }
   function flowVars(el, t) { el.classList.toggle("wc-flow", !!t.anim); if (t.anim) { el.style.setProperty("--c0", t.colors[0]); el.style.setProperty("--c1", t.colors[1]); el.style.setProperty("--c2", t.colors[2]); } }
@@ -498,7 +499,7 @@ button{font:inherit}
     }
     var t = d.theme || { colors: ["#0094e6", "#0070b8", "#0a4d86"] };
     var on = d.online ? '<span class="wc-sdot on" style="display:inline-block;margin-right:8px"></span>Online now' : (d.relation === "friend" || d.relation === "self" ? '<span class="wc-sdot" style="display:inline-block;margin-right:8px"></span>Last seen ' + esc(ago(d.last_online)) : "");
-    root.innerHTML = '<div class="wc-head"><div><h1>' + esc(d.nick) + '</h1><div class="upd" style="margin:6px 0 0">' + (on || "MVP player") + '</div></div></div>' +
+    root.innerHTML = '<div class="wc-head"><div><h1>' + esc(d.nick) + (d.verified ? VTICK : "") + '</h1><div class="upd" style="margin:6px 0 0">' + (on || "MVP player") + '</div></div></div>' +
       '<div class="wc-grid"><div><div class="wc-stage"><div class="wc' + (t.anim ? " wc-flow" : "") + '" id="wccard" style="' + (t.anim ? "--c0:" + t.colors[0] + ";--c1:" + t.colors[1] + ";--c2:" + t.colors[2] + ";" : "") + 'background:' + cardGrad(t) + ';box-shadow:0 26px 50px ' + hexA(t.colors[1], .45) + '">' +
       '<div class="wc-top"><div class="wc-brand"><img src="../icon-180.png" alt="" width="38" height="38">MVP</div><span class="wc-badge">' + esc(d.rank) + '</span></div>' +
       '<div class="wc-bot"><div style="display:flex;align-items:center;gap:12px">' + head(d.nick, 48) + '<div><div class="wc-lbl">PLAYER</div><div class="wc-val">' + esc(d.nick.toUpperCase()) + '</div></div></div><div style="text-align:right"><div class="wc-lbl">SINCE</div><div class="wc-val">' + esc(d.since) + '</div></div></div></div></div>' +
