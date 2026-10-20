@@ -439,7 +439,7 @@ button{font:inherit}
     stop();
     root.innerHTML = '<div class="card2 mg"><h1>Sign in with e-mail</h1><div class="upd">Type your e-mail. We send you a 6-digit code. No password needed. New here? An account is created for you.</div>' +
       '<input id="wcem" type="email" autocomplete="email" maxlength="254" placeholder="you@example.com" style="' + INPUT + 'min-width:240px">' +
-      '<label style="display:flex;gap:10px;align-items:center;margin-top:14px;cursor:pointer;font-size:.92rem"><input type="checkbox" id="wcnl0"> Send me MVP news by e-mail (optional, you can unsubscribe any time)</label>' +
+      '<label style="display:flex;gap:10px;align-items:center;margin-top:14px;cursor:pointer;font-size:.92rem"><input type="checkbox" id="wcnl0" style="width:20px;height:20px;min-width:20px;flex:none;margin:0;padding:0;accent-color:#0081cc"> Send me MVP news by e-mail (optional, you can unsubscribe any time)</label>' +
       '<div style="margin-top:12px"><button class="mgb" id="wcsend" type="button">Send code</button> <button class="mgb ghost" id="wcback" type="button">Back</button></div><div class="mgmsg" id="wcm"></div></div>';
     document.getElementById("wcback").addEventListener("click", loginView);
     document.getElementById("wcsend").addEventListener("click", function () {
@@ -474,7 +474,7 @@ button{font:inherit}
     var h = '<b>Account</b><br>E-mail: ' + esc(p.email || "not added") + '<br>';
     if (p.nick) h += 'Minecraft: <b>' + esc(p.nick) + '</b> <button class="mgb ghost" id="wcunl" type="button" style="margin-left:6px">Unlink</button><div class="upd" style="margin-top:6px;font-size:.85rem">Changed your nickname? Unlink, then link again in the game.</div>';
     else h += 'Minecraft: <b>not linked</b><br>To see your stats, link your game account: <button class="mgb" id="wclink" type="button" style="margin-top:8px">Get link command</button>';
-    h += '<label style="display:flex;gap:10px;align-items:center;margin-top:12px;cursor:pointer"><input type="checkbox" id="wcnl"' + (p.newsletter ? " checked" : "") + '> Send me MVP news by e-mail (you can unsubscribe any time)</label>';
+    h += '<label style="display:flex;gap:10px;align-items:center;margin-top:12px;cursor:pointer"><input type="checkbox" id="wcnl" style="width:20px;height:20px;min-width:20px;flex:none;margin:0;padding:0;accent-color:#0081cc"' + (p.newsletter ? " checked" : "") + '> Send me MVP news by e-mail (you can unsubscribe any time)</label>';
     h += '<div id="wcam" style="margin-top:8px"></div>';
     box.innerHTML = h;
     before.parentNode.insertBefore(box, before);
