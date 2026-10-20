@@ -453,13 +453,13 @@ button{font:inherit}
       if (msg) msg.textContent = r.j && r.j.error === "bad_name" ? "Nickname: 2 to 16 letters, numbers, _ or ." : "Google sign-in failed. Try again.";
     }).catch(function () { if (msg) msg.textContent = "Cannot reach the server."; });
   }
-  function googleButton(host) {
+  function googleButton(host, text) {
     if (!GOOGLE_CLIENT_ID) return;
     var holder = document.createElement("div"); holder.id = "wcgbtn"; holder.style.cssText = "margin-top:14px;width:260px;height:44px;color-scheme:light"; host.appendChild(holder);
     function init() {
       try {
         google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, ux_mode: "popup", callback: function (resp) { if (resp && resp.credential) googleSignIn(resp.credential); } });
-        google.accounts.id.renderButton(holder, { type: "standard", theme: "outline", size: "large", text: "signin_with", shape: "pill", logo_alignment: "left", width: 260 });
+        google.accounts.id.renderButton(holder, { type: "standard", theme: "outline", size: "large", text: text || "signin_with", shape: "pill", logo_alignment: "left", width: 260 });
       } catch (e) {}
     }
     if (window.google && window.google.accounts) { init(); return; }
@@ -493,6 +493,7 @@ button{font:inherit}
       '<div style="margin-top:12px"><button class="mgb" id="wcsend" type="button">Send code</button> <button class="mgb ghost" id="wcback" type="button">Back</button></div><div class="mgmsg" id="wcm">' + (pre.msg ? esc(pre.msg) : "") + '</div>' +
       '<div class="upd" style="margin-top:12px;font-size:.9rem">' + (create ? 'Already have an account? <a href="#" id="wcswitch">Log in</a>' : 'Don\u2019t have an MVP account yet? <a href="#" id="wcswitch">Create one</a>') + '</div></div>';
     document.getElementById("wcback").addEventListener("click", loginView);
+    if (!pre.email) googleButton(root.querySelector(".mg"), create ? "signup_with" : "signin_with");
     document.getElementById("wcswitch").addEventListener("click", function (e) { e.preventDefault(); emailView(!create); });
     document.getElementById("wcsend").addEventListener("click", function () {
       var em = document.getElementById("wcem").value.trim().toLowerCase(), msg = document.getElementById("wcm"), b = this, nk = "";
