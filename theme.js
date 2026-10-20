@@ -12,7 +12,12 @@
     L+' img,'+L+' video,'+L+' canvas,'+L+' picture,'+L+' #mvpPromo,'+L+' iframe,'+L+' .wc-ic,'+L+' [style*="background-image"]{filter:invert(1) hue-rotate(180deg)}' +
     L+' .mvp-tt{filter:none}' +
     '.mvp-tt{flex:none;width:38px;height:38px;margin:0 2px 0 4px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.07);color:#cfe6f7;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0;transition:background .2s,transform .2s}' +
-    '.mvp-tt:hover{background:rgba(255,255,255,.16);transform:scale(1.06)}.mvp-tt svg{width:18px;height:18px}';
+    '.mvp-tt:hover{background:rgba(255,255,255,.16);transform:scale(1.06)}.mvp-tt svg{width:18px;height:18px}' +
+    /* small phones: everything in the menu bar must fit, the Discord button included */
+    '@media (max-width:640px){.nav .link-discord .dt{display:none}}' +
+    '@media (max-width:520px){.nav .brand-text{display:none}.mvp-tt{width:32px;height:32px;margin:0 2px}.mvp-tt svg{width:16px;height:16px}.nav .logo{width:36px;height:20px}}' +
+    '@media (max-width:440px){.nav{padding-left:8px!important}.nav .menu{gap:0!important}.nav .link{padding:9px 6px!important;font-size:.8rem!important}.nav .link-discord{padding:8px 9px!important}.nav .dc{width:20px;height:15px}}' +
+    '@media (max-width:370px){.nav .link{padding:9px 4px!important;font-size:.74rem!important}.mvp-tt{width:28px;height:28px;margin:0 1px}.nav .logo{width:30px;height:17px}}';
   var MOON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
   var SUN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
   var DROP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6 6.2 6 10.5a6 6 0 0 1-12 0C6 9.2 12 3 12 3z"/></svg>';

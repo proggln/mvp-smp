@@ -278,7 +278,7 @@ button{font:inherit}
     <a href="./" class="link active" aria-current="page">Store</a>
     <a href="../card/" class="link">Profile</a>
     <a href="../wiki/" class="link">Wiki</a>
-    <a href="https://discord.gg/CWTBxgBdr" aria-label="Discord" class="link link-discord" data-discord target="_blank" rel="noopener noreferrer">
+    <a href="https://playmvp.org/discord" aria-label="Discord" class="link link-discord" data-discord target="_blank" rel="noopener noreferrer">
       <i class="dc" aria-hidden="true"></i><span class="dt">Discord</span>
     </a>
   </nav>
@@ -317,7 +317,7 @@ const IMAGES = {
 
 const CONFIG = {
   serverIP: "mc.playmvp.org",                    // example IP: replace with the real server address
-  discordUrl: "https://discord.gg/CWTBxgBdr",     // Discord invite
+  discordUrl: "https://playmvp.org/discord",     // Discord invite
   currency: "€",
   // Store backend (Cloudflare Worker): empty = the Buy buttons stay "Coming soon".
   api: (function () { var D = "https://mvp-shop.mvp-shop.workers.dev"; try { var a = new URLSearchParams(location.search).get("api") || ""; return /^https:\/\/[a-z0-9.-]+\.workers\.dev$/i.test(a) ? a : D; } catch (e) { return D; } })(),
