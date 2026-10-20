@@ -355,9 +355,12 @@ button{font:inherit}
 .wc-inb:hover{transform:translateY(-1px);border-color:rgba(111,208,255,.5)}.wc-inb:focus-visible{outline:2px solid #6fd0ff;outline-offset:2px}
 .wc-ibadge{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:#e8424f;color:#fff;font:800 .72rem/20px inherit;text-align:center;box-shadow:0 0 0 2px #06111d}
 .wc-idlg{width:min(640px,calc(100vw - 32px))}
-.wc-im{display:flex;flex-direction:column;padding:14px 4px 14px 18px;margin:0;border:0;border-bottom:1px solid rgba(255,255,255,.08);border-radius:0;background:none;position:relative}.wc-im:last-child{border-bottom:0}.wc-im.unread::before{content:"";position:absolute;left:3px;top:21px;width:8px;height:8px;border-radius:50%;background:#2ea2ea}.wc-im.unread{border-color:rgba(255,255,255,.08);background:none}
-.wc-imh{order:3;display:flex;gap:8px;align-items:center;font-size:.76rem;color:var(--muted);margin-top:6px}.wc-from{font-weight:600;color:var(--muted);text-transform:none;letter-spacing:0;display:inline-flex;align-items:center;gap:4px}.wc-imh time::before{content:"\00B7";margin-right:8px}.wc-ver{flex:none}
-.wc-imt{order:1;display:block;font-size:1rem;font-weight:700;margin:0}.wc-im p{order:2;margin:4px 0 0;white-space:pre-wrap;color:#b9cddd;font-size:.92rem;overflow-wrap:anywhere}.wc-im img{order:2;display:block;width:100%;border-radius:12px;margin:8px 0 0}
+.wc-im{display:flex;gap:12px;padding:12px;margin:0 0 8px;border:1px solid rgba(255,255,255,.07);border-radius:16px;background:rgba(255,255,255,.03);position:relative}.wc-im.unread{border-color:rgba(46,162,234,.45);background:rgba(46,162,234,.08)}
+.wc-ii{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:rgba(111,208,255,.12);color:#6fd0ff}.wc-ii.k-like{background:rgba(255,99,120,.14);color:#ff7a8c}.wc-ii.k-ok{background:rgba(80,220,140,.14);color:#58e09a}.wc-ii.k-srv{background:rgba(255,190,80,.14);color:#ffc05a}
+.wc-ib{flex:1;min-width:0;display:flex;flex-direction:column}.wc-ibt{display:flex;justify-content:space-between;gap:10px;align-items:baseline}.wc-ibt time{flex:none;font-size:.74rem;color:var(--muted)}
+.wc-imt{display:block;font-size:.98rem;font-weight:700;margin:0}.wc-im p{margin:3px 0 0;white-space:pre-wrap;color:#b9cddd;font-size:.9rem;overflow-wrap:anywhere}.wc-im img{display:block;width:100%;border-radius:12px;margin:8px 0 0}
+.wc-ifrom{margin-top:6px;font-size:.74rem;color:var(--muted);display:inline-flex;align-items:center;gap:4px}.wc-ver{flex:none}
+.wc-iact{display:flex;gap:8px;margin-top:10px}.wc-ia{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;border-radius:10px;padding:7px 16px;font:600 .85rem inherit;cursor:pointer}.wc-ia.ok{background:#2ea2ea;border-color:#2ea2ea}.wc-ia:disabled{opacity:.5}.wc-idone{font-size:.85rem;color:#58e09a;font-weight:600}
 .wc-im .wc-vid{margin-top:10px}.wc-ihide{margin-top:10px;border:0;background:none;color:#6f8597;font:500 .8rem inherit;text-decoration:underline;cursor:pointer;padding:0}.wc-ihide:hover{color:#ffb3b9}
 .wc-im a{color:#6fd0ff;text-decoration:underline}.wc-iempty{text-align:center;color:var(--muted);padding:20px 10px}.wc-iempty svg{opacity:.8}
 </style>
@@ -1013,15 +1016,42 @@ button{font:inherit}
       var items = r.j.items || [];
       if (!items.length) { box.innerHTML = '<div class="wc-iempty">' + icSvg("inbox", 48, "#6fd0ff") + '<p>No messages yet. Messages from the server and the team will appear here.</p></div>'; return; }
       box.textContent = "";
+      var pend = {};
+      var build = function () {
+      box.textContent = "";
       items.forEach(function (m) {
         var w = document.createElement("article"); w.className = "wc-im" + (m.read ? "" : " unread");
-        var rb = rich(m.body), d = "";
-        try { d = new Date(m.created_at).toLocaleString([], { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }); } catch (e) {}
-        w.innerHTML = '<div class="wc-imh"><span class="wc-from">' + (m.sender === "server" ? "Game server" : "MVP team" + VER_SVG) + '</span><time>' + esc(d) + '</time></div>' +
-          '<b class="wc-imt">' + esc(m.title) + '</b>' + (m.image ? '<img src="' + esc(m.image) + '" alt="" loading="lazy">' : '') + '<p>' + rb.html + '</p>' +
-          rb.vids.map(function (id) { return '<div class="wc-vid"><iframe src="https://www.youtube-nocookie.com/embed/' + id + '" title="Video" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>'; }).join("");
+        var rb = rich(m.body), d = "", t = String(m.title || ""), kind = /friend request accepted/i.test(t) ? "ok" : /friend request/i.test(t) ? "fr" : /like/i.test(t) ? "like" : m.sender === "server" ? "srv" : "team";
+        try { d = new Date(m.created_at).toLocaleString([], { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }); } catch (e) {}
+        var P = { fr: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 3-6 6.5-6s6.5 2.4 6.5 6"/><path d="M19 8v6M16 11h6"/>', ok: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 3-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 11l2 2 4-4"/>', like: '<path d="M12 21s-7.5-4.6-9.5-9.2C1.2 8.6 3 5 6.4 5c2 0 3.6 1.1 4.6 2.7C12 6.1 13.600 5 15.600 5 19 5 20.800 8.600 19.500 11.800 17.500 16.400 12 21 12 21z"/>', srv: '<rect x="3" y="4" width="18" height="6" rx="1.500"/><rect x="3" y="14" width="18" height="6" rx="1.500"/><path d="M7 7h.01M7 17h.01"/>', team: '<path d="M4 5h16v11H8l-4 4z"/>' }[kind];
+        var who = m.sender === "server" ? "Game server" : "MVP team" + VER_SVG, nick = "", mt = kind === "fr" ? /^(\S+) wants to be your friend/.exec(String(m.body || "")) : null;
+        if (mt) nick = mt[1];
+        w.innerHTML = '<div class="wc-ii k-' + kind + '"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + P + '</svg></div>' +
+          '<div class="wc-ib"><div class="wc-ibt"><b class="wc-imt">' + esc(m.title) + '</b><time>' + esc(d) + '</time></div>' +
+          (m.image ? '<img src="' + esc(m.image) + '" alt="" loading="lazy">' : '') + '<p>' + rb.html + '</p>' +
+          rb.vids.map(function (id) { return '<div class="wc-vid"><iframe src="https://www.youtube-nocookie.com/embed/' + id + '" title="Video" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>'; }).join("") +
+          '<div class="wc-ifrom">' + who + '</div>' +
+          (nick && pend[nick.toLowerCase()] ? '<div class="wc-iact"><button type="button" class="wc-ia ok" data-a="accept">Accept</button><button type="button" class="wc-ia" data-a="decline">Decline</button></div>' : '') + '</div>';
+        Array.prototype.forEach.call(w.querySelectorAll("[data-a]"), function (el) {
+          el.onclick = function () {
+            var act = el.getAttribute("data-a"), row = el.parentNode; Array.prototype.forEach.call(row.children, function (x) { x.disabled = true; });
+            call("POST", "/api/app/friends/respond", { nick: nick, accept: act === "accept" }, tok).then(function (r2) {
+              row.innerHTML = '<span class="wc-idone">' + (r2.ok ? (act === "accept" ? "You are now friends" : "Declined") : "Already answered") + '</span>';
+              delete pend[nick.toLowerCase()];
+            }).catch(function () { Array.prototype.forEach.call(row.children, function (x) { x.disabled = false; }); });
+          };
+        });
         box.appendChild(w);
       });
+      };
+      build();
+      if (items.some(function (m) { return /friend request/i.test(m.title || "") && !/accepted/i.test(m.title || ""); })) {
+        call("GET", "/api/app/friends", null, tok).then(function (fr) {
+          if (!fr.ok) return;
+          (fr.j.incoming || []).forEach(function (f) { pend[String(f.nick).toLowerCase()] = 1; });
+          build();
+        }).catch(function () {});
+      }
       if (r.j.unread) {
         call("POST", "/api/app/inbox/read", { all: true }, tok).then(function () {
           p.inbox_unread = 0; putCache(p);
