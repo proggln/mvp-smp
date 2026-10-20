@@ -419,6 +419,7 @@ button{font:inherit}
   function stop() { if (poll) { clearInterval(poll); poll = null; } }
   // v2 test mode: open /card/?v2=1 once, the browser remembers it. Not visible to normal visitors yet.
   var V2 = true;
+  var CB = 'style="width:20px;height:20px;min-width:20px;flex:none;margin:0;padding:0;accent-color:#0081cc"';
 
   function loginView() {
     stop();
