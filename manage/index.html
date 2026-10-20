@@ -5,11 +5,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Manage subscription | MVP</title>
-<meta name="description" content="Cancel or manage your MVP rank subscription.">
+<meta name="description" content="Cancel or manage your MVP rank subscription with Tebex.">
 <script src="../theme.js"></script>
 <meta name="theme-color" content="#03080f">
 <meta property="og:title" content="Terms of Service | MVP">
-<meta property="og:description" content="Cancel or manage your MVP rank subscription.">
+<meta property="og:description" content="Cancel or manage your MVP rank subscription with Tebex.">
 <link rel="canonical" href="https://playmvp.org/manage/">
 <meta property="og:url" content="https://playmvp.org/manage/">
 <meta property="og:site_name" content="MVP">
@@ -322,106 +322,13 @@ button{font:inherit}
 </header>
 
 <main class="doc"><div class="card2 mg"><h1>Manage subscription</h1>
-<div class="upd">Cancel your rank subscription in a few clicks. Your rank stays active until the end of the month you already paid for.</div>
-<div id="mgroot"></div></div></main>
+<div class="upd">Last updated: 20 October 2026</div>
+<p>Rank subscriptions (VIP, MVP and MVP+) are paid through <b>Tebex</b>, so you manage them there.</p>
+<p><b>Cancel or change your payment method:</b> open the <a data-k="portal" href="#">Tebex payment portal</a> and sign in with the e-mail you used at checkout. Cancelling stops the next payment, and your rank stays active until the end of the month you already paid for.</p>
+<p><b>Cannot find it?</b> Write to <a data-k="email" href="#">[contact email]</a> with your Minecraft nickname and we will cancel it for you. See also the <a href="../refunds/">Refund Policy</a> and <a href="../support/">Support</a>.</p></div></main>
 <nav class="legal-links" aria-label="Legal"><a href="../privacy/">Privacy Policy</a><a href="../terms/">Terms of Service</a><a href="../refunds/">Refund Policy</a><a href="../seller/">Seller information</a><a href="../manage/">Manage subscription</a><a href="../support/">Support</a></nav>
 <script src="../legal.js"></script>
-<script>
-(function () {
-  var D = "https://mvp-shop.mvp-shop.workers.dev", SERVER = "mc.playmvp.org";
-  var API = (function () { try { var a = new URLSearchParams(location.search).get("api") || ""; return /^https:\/\/[a-z0-9.-]+\.workers\.dev$/i.test(a) ? a : D; } catch (e) { return D; } })();
-  var root = document.getElementById("mgroot"), poll = null, token = "", nick = "";
-  function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
-  function api(path, body) {
-    var o = body ? { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) } : {};
-    return fetch(API + path, o).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, status: r.status, j: j }; }); });
-  }
-  function fmt(ms) { try { return new Date(ms).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" }); } catch (e) { return ""; } }
-  function steps(n) { return '<div class="mgsteps" aria-hidden="true"><i class="on"></i><i class="' + (n >= 2 ? "on" : "") + '"></i><i class="' + (n >= 3 ? "on" : "") + '"></i></div>'; }
-  function money(c) { return "\u20ac" + (c / 100).toFixed(2); }
-  function confirmBox(title, text, yesLabel, noLabel, danger, onYes) {
-    var prev = document.activeElement;
-    var m = document.createElement("div"); m.className = "mgmodal";
-    m.innerHTML = '<div class="mgdlg" role="dialog" aria-modal="true" aria-labelledby="mgdt"><h3 id="mgdt">' + esc(title) + '</h3><p>' + esc(text) + '</p><button type="button" class="mgb ' + (danger ? "danger" : "") + '" id="mgy">' + esc(yesLabel) + '</button><button type="button" class="mgb ghost" id="mgno">' + esc(noLabel) + '</button></div>';
-    document.body.appendChild(m);
-    function close() { document.removeEventListener("keydown", key); m.remove(); if (prev && prev.focus) prev.focus(); }
-    function key(e) { if (e.key === "Escape") close(); }
-    document.addEventListener("keydown", key);
-    m.addEventListener("click", function (e) { if (e.target === m) close(); });
-    m.querySelector("#mgno").addEventListener("click", close);
-    m.querySelector("#mgy").addEventListener("click", function () { close(); onYes(); });
-    m.querySelector("#mgno").focus();
-  }
-  function stepNick() {
-    if (poll) clearInterval(poll); poll = null;
-    var saved = ""; try { saved = localStorage.getItem("mvpsmp.nick") || ""; } catch (e) {}
-    root.innerHTML = steps(1) + '<label for="mgn">Your Minecraft nickname</label><input id="mgn" maxlength="16" autocomplete="off" spellcheck="false" placeholder="Steve" value="' + esc(saved) + '"><button class="mgb" type="button" id="mgg">Continue</button><div class="mgmsg" id="mgm"></div>';
-    var inp = document.getElementById("mgn"), btn = document.getElementById("mgg"), msg = document.getElementById("mgm");
-    function go() {
-      var n = inp.value.trim();
-      if (!/^[A-Za-z0-9_]{3,16}$/.test(n)) { msg.textContent = "Enter a valid Minecraft nickname (3-16 letters, digits or _)."; return; }
-      btn.disabled = true; msg.textContent = "";
-      api("/api/verify/start", { nick: n }).then(function (r) {
-        if (!r.ok) { msg.textContent = r.j.error === "too_many" ? "Too many attempts. Wait a few minutes." : "Something went wrong. Try again."; btn.disabled = false; return; }
-        nick = n; try { localStorage.setItem("mvpsmp.nick", n); } catch (e) {}
-        stepVerify(r.j.code);
-      }).catch(function () { msg.textContent = "Cannot reach the store. Try again later."; btn.disabled = false; });
-    }
-    btn.addEventListener("click", go); inp.addEventListener("keydown", function (e) { if (e.key === "Enter") go(); });
-  }
-  function stepVerify(code) {
-    root.innerHTML = steps(2) + '<p>Join the server as <b>' + esc(nick) + '</b> and type this command in the game chat:</p><div class="mgcode">' + esc(code) + '</div><div class="mgcmd">/verify ' + esc(code) + '</div><p style="color:var(--muted)">Server: <b>' + esc(SERVER) + '</b>. This page continues by itself.</p><div class="mgmsg ok" id="mgm">Waiting for confirmation...</div><button class="mgb ghost" type="button" id="mgb">Back</button>';
-    document.getElementById("mgb").addEventListener("click", stepNick);
-    var msg = document.getElementById("mgm");
-    if (poll) clearInterval(poll);
-    poll = setInterval(function () {
-      api("/api/verify/status?code=" + encodeURIComponent(code)).then(function (r) {
-        if (r.status === 410 || r.status === 404) { clearInterval(poll); poll = null; msg.className = "mgmsg"; msg.textContent = "The code expired. Go back and request a new one."; return; }
-        if (r.j.verified && r.j.token) { clearInterval(poll); poll = null; token = r.j.token; stepList(); }
-      }).catch(function () {});
-    }, 2500);
-  }
-  function stepList(note, isErr) {
-    root.innerHTML = steps(3) + '<div class="mgmsg ok" id="mgm">Loading your subscriptions...</div>';
-    api("/api/subs/list", { token: token }).then(function (r) {
-      var msg = document.getElementById("mgm");
-      if (r.status === 401) { stepNick(); return; }
-      if (!r.ok) { msg.className = "mgmsg"; msg.textContent = r.j.error === "payments_disabled" ? "Subscriptions are not open yet." : "Something went wrong. Try again later."; return; }
-      var subs = r.j.subs || [];
-      var names = {}; subs.forEach(function (s) { names[s.name] = (names[s.name] || 0) + 1; });
-      var h = steps(3) + '<div class="mgwho"><span>Signed in as <b>' + esc(nick) + '</b></span><button type="button" id="mgchg">Not you?</button></div>';
-      if (note) h += '<div class="mgnote' + (isErr ? " err" : "") + '" role="status">' + esc(note) + '</div>';
-      if (!subs.length) h += '<div class="sub"><div class="sub-h"><b>No subscriptions</b></div><p style="margin:0;color:#cfe3f1">You have no active rank subscriptions on this nickname.</p></div>';
-      subs.forEach(function (s) {
-        var off = !!s.canceling, tag = names[s.name] > 1 ? '<em>ref ' + esc(String(s.id).slice(-4)) + '</em>' : "";
-        h += '<div class="sub' + (off ? " off" : "") + '" data-id="' + esc(s.id) + '" data-name="' + esc(s.name) + '" data-end="' + esc(fmt(s.periodEnd)) + '">' +
-          '<div class="sub-h"><span><b>' + esc(s.name) + '</b>' + tag + '</span><span class="badge ' + (off ? "stop" : "ok") + '">' + (off ? "Cancelled" : "Active") + '</span></div>' +
-          '<dl><div><dt>Price</dt><dd>' + money(s.cents) + ' / month</dd></div><div><dt>' + (off ? "Rank active until" : "Next payment") + '</dt><dd>' + esc(fmt(s.periodEnd)) + '</dd></div></dl>' +
-          (off ? '<button class="mgb" type="button" data-act="undo">Keep subscription</button>' : '<button class="mgb outline" type="button" data-act="ask">Cancel subscription</button>') + '</div>';
-      });
-      root.innerHTML = h;
-      document.getElementById("mgchg").addEventListener("click", function () { token = ""; stepNick(); });
-      root.querySelectorAll("button[data-act]").forEach(function (b) { b.addEventListener("click", function () { onAct(b); }); });
-    }).catch(function () { var m = document.getElementById("mgm"); m.className = "mgmsg"; m.textContent = "Cannot reach the store. Try again later."; });
-  }
-  function doChange(box, id, undo) {
-    box.querySelectorAll("button").forEach(function (x) { x.disabled = true; });
-    var name = box.getAttribute("data-name");
-    api("/api/subs/cancel", { token: token, id: id, undo: undo }).then(function (r) {
-      if (r.status === 401) { stepNick(); return; }
-      if (!r.ok) { stepList("Could not change the subscription. Try again in a minute.", true); return; }
-      var end = r.j && r.j.periodEnd ? fmt(r.j.periodEnd) : box.getAttribute("data-end");
-      stepList(undo ? name + " will renew as usual. Next payment: " + end + "." : name + " is cancelled. You will not be charged again, and your rank stays active until " + end + ".");
-    }).catch(function () { stepList("Cannot reach the store. Try again later.", true); });
-  }
-  function onAct(b) {
-    var box = b.closest(".sub"), id = box.getAttribute("data-id"), act = b.getAttribute("data-act"), name = box.getAttribute("data-name"), end = box.getAttribute("data-end");
-    if (act === "undo") { doChange(box, id, true); return; }
-    confirmBox("Cancel " + name + "?", "You will not be charged again. Your rank stays active until " + end + ", and you can change your mind until then.", "Yes, cancel subscription", "Keep it", true, function () { doChange(box, id, false); });
-  }
-  stepNick();
-})();
-</script>
+
 <script src="../banners.js" defer></script>
 </body>
 </html>
