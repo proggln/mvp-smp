@@ -881,6 +881,21 @@ button{font:inherit}
     document.body.appendChild(t); setTimeout(function () { if (t.parentNode) t.remove(); }, 7000);
     try { if (window.Notification && Notification.permission === "granted" && !document.hasFocus()) new Notification(from + " sent you a message", { body: body, icon: "../icon-192.png" }); } catch (e) {}
   }
+  // soft two-note chime (generated, no audio file)
+  var AC = null;
+  function chime() {
+    try {
+      AC = AC || new (window.AudioContext || window.webkitAudioContext)();
+      if (AC.state === "suspended") AC.resume();
+      [660, 880].forEach(function (f, i) {
+        var t = AC.currentTime + i * 0.12, os = AC.createOscillator(), g = AC.createGain();
+        os.type = "sine"; os.frequency.value = f;
+        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.05, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.35);
+        os.connect(g); g.connect(AC.destination); os.start(t); os.stop(t + 0.4);
+      });
+    } catch (e) {}
+  }
+  document.addEventListener("click", function () { try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === "suspended") AC.resume(); } catch (e) {} }, { once: true });
   function startPulse(tok) {
     if (window.__pulseOn) return; window.__pulseOn = true;
     var last = null, busy = false;
@@ -891,6 +906,8 @@ button{font:inherit}
         busy = false; if (!r.ok) return;
         var n = r.j, o = last; last = n; if (!o) return;
         var p = getCache(); if (!p) return;
+        if (ch(o, n, "inbox") && !(Number(n.inbox) < Number(o.inbox))) chime();
+        else if (ch(o, n, "msgs") && n.latest && Number(String(n.msgs).split(".")[1]) > Number(String(o.msgs).split(".")[1])) chime();
         if (ch(o, n, "inbox")) { var idlg = document.getElementById("wcidlg"); if (idlg && idlg.open) openInbox(tok, p); }
         if (ch(o, n, "msgs") && n.latest && Number(String(n.msgs).split(".")[1]) > Number(String(o.msgs).split(".")[1])) {
           var dk0 = document.getElementById("mvpdock"), chatOpen = dk0 && dk0.querySelector("#dkmsgs") && dk0.querySelector(".dk-h a") && dk0.querySelector(".dk-h a").textContent === n.latest.from;
