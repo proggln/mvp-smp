@@ -577,8 +577,8 @@ button{font:inherit}
   function chatView(host, tok, nick, onBack) {
     dkCss(); if (host._t) clearInterval(host._t);
     host.innerHTML = '<div class="dk-h">' + (onBack ? '<button type="button" class="dk-b" id="dkback" aria-label="Back">' + DK_BACK + '</button>' : "") + head(nick, 32) + '<a href="../u/?n=' + encodeURIComponent(nick) + '">' + esc(nick) + '</a></div><div class="dk-m" id="dkmsgs"></div><div class="dk-err" id="dkerr"></div><div class="dk-f"><textarea id="dkin" rows="1" maxlength="300" placeholder="Message ' + esc(nick) + '"></textarea><button type="button" class="dk-send" id="dksend" aria-label="Send" disabled>' + DK_SEND + '</button></div>';
-    var box = host.querySelector("#dkmsgs"), ta = host.querySelector("#dkin"), go = host.querySelector("#dksend"), err = host.querySelector("#dkerr"), last = 0, busy = false;
-    function add(m, pend) { var d = document.createElement("div"); d.className = "dk-i " + (m.mine ? "me" : "them") + (pend ? " pend" : ""); d.textContent = m.body; if (m.at) d.title = new Date(m.at).toLocaleString(); box.appendChild(d); if (m.id && m.id > last) last = m.id; return d; }
+    var box = host.querySelector("#dkmsgs"), ta = host.querySelector("#dkin"), go = host.querySelector("#dksend"), err = host.querySelector("#dkerr"), last = 0, busy = false, seen = {};
+    function add(m, pend) { if (m.id) { if (seen[m.id]) return document.createElement("div"); seen[m.id] = 1; } var d = document.createElement("div"); d.className = "dk-i " + (m.mine ? "me" : "them") + (pend ? " pend" : ""); d.textContent = m.body; if (m.at) d.title = new Date(m.at).toLocaleString(); box.appendChild(d); if (m.id && m.id > last) last = m.id; return d; }
     function pull() {
       if (busy) return; busy = true;
       call("GET", "/api/app/messages?nick=" + encodeURIComponent(nick) + "&after=" + last, null, tok).then(function (r) {
