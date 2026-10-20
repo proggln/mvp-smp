@@ -471,7 +471,7 @@ button{font:inherit}
     var odk = document.getElementById("mvpdock"); if (odk) { if (odk._t) clearInterval(odk._t); odk.remove(); }
     var otc = document.getElementById("mvptoast"); if (otc) otc.remove();
     root.innerHTML = '<div class="card2 mg"><h1>My card</h1>' +
-      '<div class="upd">Your personal MVP card with your rank, coins and stats. No password needed.</div>' +
+      '<div class="upd">Your rank, coins and stats. No password needed.</div>' +
       '<button class="mgb" id="wcapp" type="button">Log in via MVP app</button>' +
       '<div class="mgmsg" id="wcm"></div><div class="upd" style="margin-top:12px;font-size:.9rem">Don\u2019t have an MVP account yet? <a href="#" id="wccreate">Create one</a></div></div>';
     document.getElementById("wccreate").addEventListener("click", function (e) { e.preventDefault(); emailView(true); });
