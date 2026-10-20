@@ -91,12 +91,12 @@ button{font:inherit}
 .copy::before{content:"";position:absolute;top:0;bottom:0;left:-60%;width:40%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);transition:left .7s}
 .copy:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(0,129,204,.65),inset 0 1px 0 rgba(255,255,255,.4),inset 0 -3px 0 rgba(0,60,110,.45)}
 .copy:hover::before{left:130%}
-.auth{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px 16px;margin-top:18px;color:#b9cddd;font-size:.95rem}
+.auth{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px 16px;margin-top:12px;color:#b9cddd;font-size:.82rem}
 .auth[hidden]{display:none}
-.auth-b{display:inline-flex;gap:10px}
-.auth-b a{display:inline-flex;align-items:center;justify-content:center;padding:11px 22px;border-radius:999px;font-weight:700;font-size:.95rem;text-decoration:none;transition:transform .18s,background .2s,border-color .2s}
+.auth-b{display:inline-flex;gap:8px}
+.auth-b a{display:inline-flex;align-items:center;justify-content:center;padding:7px 16px;border-radius:999px;font-weight:700;font-size:.82rem;text-decoration:none;transition:transform .18s,background .2s,border-color .2s}
 .auth-in{color:#fff;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.06)}.auth-in:hover{background:rgba(255,255,255,.14);transform:translateY(-1px)}
-.auth-up{color:#fff;background:linear-gradient(180deg,#22a6f2,#0081cc);box-shadow:0 6px 18px rgba(0,129,204,.4)}.auth-up:hover{background:linear-gradient(180deg,#45b6f7,#0a8ee0);transform:translateY(-1px)}
+.auth-up{color:#fff;background:linear-gradient(180deg,#22a6f2,#0081cc);box-shadow:0 4px 12px rgba(0,129,204,.35)}.auth-up:hover{background:linear-gradient(180deg,#45b6f7,#0a8ee0);transform:translateY(-1px)}
 .copy:active{transform:translateY(1px) scale(.98)}
 .copy svg{position:relative;width:20px;height:20px;flex:none}
 .copy span{position:relative;min-width:5.3em;text-align:left}
@@ -192,7 +192,7 @@ button{font:inherit}
       </div>
     </div>
     <div class="auth" id="auth" hidden>
-      <span class="auth-t">New here? Make your free MVP card.</span>
+      <span class="auth-t">New here? Make your free MVP account!</span>
       <span class="auth-b"><a class="auth-in" href="card/">Log in</a><a class="auth-up" href="card/#signup">Sign up</a></span>
     </div>
     <div class="auth" id="authin" hidden>
