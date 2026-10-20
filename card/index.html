@@ -8,11 +8,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="MVP">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>My card | MVP</title>
+<title>My profile | MVP</title>
 <meta name="description" content="Your personal MVP card: rank, coins and stats.">
 <script src="../theme.js"></script>
 <meta name="theme-color" content="#03080f">
-<meta property="og:title" content="My card | MVP">
+<meta property="og:title" content="My profile | MVP">
 <meta property="og:description" content="Your personal MVP card: rank, coins and stats.">
 <link rel="canonical" href="https://playmvp.org/card/">
 <meta property="og:url" content="https://playmvp.org/card/">
@@ -470,7 +470,7 @@ button{font:inherit}
     stop();
     var odk = document.getElementById("mvpdock"); if (odk) { if (odk._t) clearInterval(odk._t); odk.remove(); }
     var otc = document.getElementById("mvptoast"); if (otc) otc.remove();
-    root.innerHTML = '<div class="card2 mg"><h1>My card</h1>' +
+    root.innerHTML = '<div class="card2 mg"><h1>My profile</h1>' +
       '<div class="upd">Your rank, coins and stats. No password needed.</div>' +
       '<button class="mgb" id="wcapp" type="button">Log in via MVP app</button>' +
       '<div class="mgmsg" id="wcm"></div><div class="upd" style="margin-top:12px;font-size:.9rem">Don\u2019t have an MVP account yet? <a href="#" id="wccreate">Create one</a></div></div>';
@@ -984,7 +984,7 @@ button{font:inherit}
   function getCache() { try { return JSON.parse(localStorage.getItem(CACHE) || "null"); } catch (e) { return null; } }
   function putCache(p) { try { if (p) localStorage.setItem(CACHE, JSON.stringify(p)); else localStorage.removeItem(CACHE); } catch (e) {} }
   function skeleton() {
-    root.innerHTML = '<div class="wc-head"><div><h1>My card</h1><div class="upd" style="margin:6px 0 0">Loading your card...</div></div></div>' +
+    root.innerHTML = '<div class="wc-head"><div><h1>My profile</h1><div class="upd" style="margin:6px 0 0">Loading your profile...</div></div></div>' +
       '<div class="wc-grid"><div><div class="wc-stage"><div class="wc wc-skel"></div></div></div><div><div class="wc-stats"><div class="wc-stat wc-skel"></div><div class="wc-stat wc-skel"></div><div class="wc-stat wc-skel"></div></div></div></div>';
   }
   // the page keeps itself up to date: every few seconds one small question to the server, and only the part that changed is reloaded
@@ -1058,11 +1058,11 @@ button{font:inherit}
     if (cached) renderCard(cached, tok, false); else skeleton();
     call("GET", "/api/app/me", null, tok).then(function (r) {
       if (r.status === 401) { setTok(""); putCache(null); loginView(); return; }
-      if (!r.ok) { if (!cached) root.innerHTML = '<div class="card2 mg"><h1>My card</h1><div class="mgmsg">Cannot load your card. Try again later.</div></div>'; return; }
+      if (!r.ok) { if (!cached) root.innerHTML = '<div class="card2 mg"><h1>My profile</h1><div class="mgmsg">Cannot load your profile. Try again later.</div></div>'; return; }
       setTok(tok); putCache(r.j);
       if (JSON.stringify(r.j) !== shown) renderCard(r.j, tok, !!cached);
       startPulse(tok);
-    }).catch(function () { if (!cached) root.innerHTML = '<div class="card2 mg"><h1>My card</h1><div class="mgmsg">Cannot reach the server. Try again later.</div></div>'; });
+    }).catch(function () { if (!cached) root.innerHTML = '<div class="card2 mg"><h1>My profile</h1><div class="mgmsg">Cannot reach the server. Try again later.</div></div>'; });
   }
   // medal icons: small pixel pictures drawn here (no emoji)
   var MPX={pal:{"Y":"#ffcf3a","y":"#c98a00","R":"#e8424f","B":"#2ea2ea","O":"#ff8a1f","k":"#3a1d08","G":"#3fae4a","g":"#2a7a33","W":"#f2f6fa","w":"#b9c6d3","I":"#bfe9ff","C":"#5ee3f0","c":"#d6fbff","T":"#8a5a2b","P":"#9aa7b4","D":"#1f6fa8"},ic:{"medal":["..RR....BB..","..RRR..BBB..","...RRR.BB...","....RRBB....",".....yy.....","...yYYYYy...","..yYYyyYYy..","..YYyYYyYY..","..YYyYYyYY..","..yYYyyYYy..","...yYYYYy...",".....yy....."],"star":[".....YY.....",".....YY.....","....YYYY....","....YYYY....","YYYYYYYYYYYY",".YYYYYYYYYY.","..YYYYYYYY..","...YYYYYY...","...YYYYYY...","..YYY..YYY..","..YY....YY..",".YY......YY."],"trophy":[".YYYYYYYYYY.","YYYYYYYYYYYY","Y.YYYYYYyY.Y","Y.YYYYYYyY.Y",".YYYYYYYyYY.","...YYYYyY...","....YYyY....",".....yY.....",".....yY.....","....yYYY....","...TTTTTT...","...TTTTTT..."],"pumpkin":[".....gg.....",".....g......","..OOOOOOOO..",".OOOOOOOOOO.","OOkkOOOOkkOO","OOkkOOOOkkOO","OOOOOkkOOOOO","OOOOOOOOOOOO","OOkOkkkkOkOO","OOOkkkkkkOOO",".OOOOOOOOOO.","..OOOOOOOO.."],"ghost":["....WWWW....","..WWWWWWWW..",".WWWWWWWWWW.",".WWkkWWkkWW.",".WWkkWWkkWW.",".WWWWWWWWWW.",".WWWWkkWWWW.",".WWWWkkWWWW.",".WWWWWWWWWW.",".WWWWWWWWWW.",".WWW.WW.WWW.",".WW...W..WW."],"tree":[".....YY.....",".....GG.....","....GGGG....","...GGRGGG...","....GGGG....","...GGGGBG...","..GGRGGGGG..","...GGGGGG...","..GGGGGGYG..",".GGGGRGGGGG.",".....TT.....",".....TT....."],"snow":[".....I......","...I.I.I....","....III.....",".I...I...I..","..I..I..I...","IIIIIIIIIII.","..I..I..I...",".I...I...I..","....III.....","...I.I.I....",".....I......","............"],"fire":[".....R......","....RR......","....RRR..R..","...RRRR.RR..","..RRORRRRR..","..RROORRRR..",".RROOOORRRR.",".RROOYOORRR.",".RROYYYORRR.",".RROYYYYORR.","..RROYYORR..","...RRRRRR..."],"sword":["..........WW",".........WwW","........WwW.",".......WwW..","......WwW...","..Y..WwW....","...YWwW.....","....YW......","...TTY......","..TT..Y.....",".TT.........","TT.........."],"diamond":["............","............","...CCCCCC...","..CcCCCCcC..",".CcCCCCCCcC.","CCCCCCCCCCCC",".CCCCCCCCCC.","..CCCCCCCC..","...CCCCCC...","....CCCC....",".....CC.....","............"],"crown":["............","............","Y....Y....Y.","YY..YYY..YY.","YYY.YYY.YYY.","YYYYYYYYYYY.","YYRYYBYYRYY.","YYYYYYYYYYY.","yyyyyyyyyyy.","............","............","............"],"heart":["............",".RRR....RRR.","RRRRR..RRRRR","RRWRRRRRRRRR","RRRRRRRRRRRR","RRRRRRRRRRRR",".RRRRRRRRRR.","..RRRRRRRR..","...RRRRRR...","....RRRR....",".....RR.....","............"],"flag":[".P..........",".PBBBBBB....",".PBBBBBBB...",".PBBWWBBBB..",".PBBWWBBBBB.",".PBBBBBBBB..",".PBBBBBBB...",".P..........",".P..........",".P..........",".P..........","PPP........."]}};
@@ -1198,7 +1198,7 @@ button{font:inherit}
       var keep = again ? { pnbox: document.getElementById("pnbox"), evbox: document.getElementById("evbox"), wcnews: document.getElementById("wcnews") } : null;
       var delBanner = p.delete_at ? '<div class="wc-delbar"><div><b>Your account will be deleted on ' + esc(fmtWhen(p.delete_at)) + '.</b><span>Your card, medals and stats will be removed. Changed your mind?</span></div><button class="mgb" id="wcundel" type="button">Cancel deletion</button></div>' : "";
       root.innerHTML = delBanner + '<div id="pnbox"></div><div id="evbox"></div>' +
-        '<div class="wc-head"><div><h1>My card</h1><div class="upd" style="margin:6px 0 0">Welcome back, ' + esc(p.nick || p.display_name || "player") + '</div></div><div class="wc-hbtns"><button class="wc-inb" id="wcinb" type="button" aria-label="Inbox' + (p.inbox_unread ? ', ' + p.inbox_unread + ' unread' : '') + '" title="Inbox">' + icSvg("inbox", 22, "#6fd0ff") + (p.inbox_unread ? '<span class="wc-ibadge">' + (p.inbox_unread > 99 ? "99+" : p.inbox_unread) + '</span>' : '') + '</button><button class="mgb ghost" id="wcout" type="button">Sign out</button></div></div>' +
+        '<div class="wc-head"><div><h1>My profile</h1><div class="upd" style="margin:6px 0 0">Welcome back, ' + esc(p.nick || p.display_name || "player") + '</div></div><div class="wc-hbtns"><button class="wc-inb" id="wcinb" type="button" aria-label="Inbox' + (p.inbox_unread ? ', ' + p.inbox_unread + ' unread' : '') + '" title="Inbox">' + icSvg("inbox", 22, "#6fd0ff") + (p.inbox_unread ? '<span class="wc-ibadge">' + (p.inbox_unread > 99 ? "99+" : p.inbox_unread) + '</span>' : '') + '</button><button class="mgb ghost" id="wcout" type="button">Sign out</button></div></div>' +
         '<div class="wc-grid"><div><div class="wc-stage"><div class="wc" id="wccard">' +
         '<div class="wc-top"><div class="wc-brand"><img src="../icon-180.png" alt="" width="38" height="38">MVP</div><span class="wc-badge">' + esc(p.rank) + '</span></div>' +
         '<div class="wc-num">' + esc(pad(p.card_no)) + '</div>' +

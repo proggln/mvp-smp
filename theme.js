@@ -98,7 +98,7 @@
       var o = last; last = n; if (!o) return;
       var mid = function (x) { return Number(String(x.msgs).split(".")[1]) || 0; };
       if (n.latest && mid(n) > mid(o)) toast(n.latest.from + " sent you a message", n.latest.body, "/card/", n.latest.from);
-      else if (Number(n.requests) > Number(o.requests)) toast("New friend request", "Open My card to answer it.", "/card/#inbox");
+      else if (Number(n.requests) > Number(o.requests)) toast("New friend request", "Open My profile to answer it.", "/card/#inbox");
       else if (Number(n.inbox) > Number(o.inbox)) toast("New notification", "You have a new message in your Inbox.", "/card/#inbox");
     }).catch(function () { busy = false; });
   }
