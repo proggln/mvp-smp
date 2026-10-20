@@ -82,8 +82,9 @@
       var fl = btn("", function (e) {
         if (c.mine) { window.alert("You can not report your own comment."); return; }
         if (!(data.can_like !== undefined ? data.can_like : data.can_comment)) { window.alert(data.why === "signin" ? "Log in to report comments." : "Link your Minecraft account and add an e-mail to report comments."); return; }
+        if (!window.confirm("Report this comment by " + c.nick + " to the moderators?")) return;
         var b = fl; b.disabled = true;
-        call("POST", "/api/app/comments/report", { id: c.id }).then(function (r) { b.title = r.ok ? "Reported" : "Try later"; b.setAttribute("aria-label", b.title); if (!r.ok) b.disabled = false; }).catch(function () { b.disabled = false; });
+        call("POST", "/api/app/comments/report", { id: c.id }).then(function (r) { b.title = r.ok ? "Reported" : "Try later"; b.setAttribute("aria-label", b.title); if (r.ok) { b.textContent = "Reported, thank you"; b.style.color = "#9fe3b5"; } else b.disabled = false; }).catch(function () { b.disabled = false; });
       }, "cm-fl", IC.flag, "Report");
       return el;
     }
