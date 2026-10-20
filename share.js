@@ -61,7 +61,7 @@
     document.body.appendChild(m);
     m.querySelector('[data-a="copy"]').focus();
   }
-  window.mvpShareUrl = function (n) { return API + "/n/" + n.id; };
+  window.mvpShareUrl = function (n) { return "https://playmvp.org/n/" + n.id; };
   window.mvpShareBtn = function (n) {
     style();
     var b = document.createElement("button"); b.type = "button"; b.className = "wc-share"; b.setAttribute("aria-label", "Share"); b.innerHTML = IC + "<span>Share</span>";
