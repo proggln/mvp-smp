@@ -30,3 +30,33 @@
   window.mvpTheme = { get: get, set: function (t) { try { localStorage.setItem(KEY, t === "light" ? "light" : "blue"); } catch (e) {} apply(t === "light" ? "light" : "blue"); } };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", build); else build();
 })();
+
+/* Red dot on the News link when there is news the visitor has not opened yet. */
+(function () {
+  var API = "https://mvp-news-api.mvp-shop.workers.dev", SEEN = "mvp_news_seen", CACHE = "mvp_news_top";
+  function ls(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) {} return null; }
+  function link() { var a = document.querySelectorAll("a.link"); for (var i = 0; i < a.length; i++) { var h = (a[i].getAttribute("href") || "").replace(/\/+$/, ""); if (/(^|\/)news$/.test(h)) return a[i]; } return null; }
+  function paint(top) {
+    var a = link(); if (!a) return;
+    var onNews = /\/news(\/|$)/.test(location.pathname);
+    if (onNews) { ls(SEEN, String(top)); return; }
+    var seen = Number(ls(SEEN) || 0);
+    if (!seen) { ls(SEEN, String(top)); return; }   // first visit ever: nothing to flag
+    if (top > seen && !a.querySelector(".nw-dot")) {
+      if (!document.getElementById("nwdotcss")) { var st = document.createElement("style"); st.id = "nwdotcss"; st.textContent = ".nw-dot{position:absolute;top:-2px;right:-9px;width:9px;height:9px;border-radius:50%;background:#ff3b4a;box-shadow:0 0 0 2px rgba(3,8,15,.9)}"; document.head.appendChild(st); }
+      if (getComputedStyle(a).position === "static") a.style.position = "relative";
+      var d = document.createElement("span"); d.className = "nw-dot"; d.setAttribute("aria-label", "New news"); a.appendChild(d);
+    }
+  }
+  function go() {
+    var c = null; try { c = JSON.parse(sessionStorage.getItem(CACHE) || "null"); } catch (e) {}
+    if (c && Date.now() - c.t < 300000) { paint(c.top); return; }
+    fetch(API + "/api/news").then(function (r) { return r.ok ? r.json() : []; }).then(function (l) {
+      var top = 0; (l || []).forEach(function (n) { if (n && n.id > top) top = n.id; });
+      if (!top) return;
+      try { sessionStorage.setItem(CACHE, JSON.stringify({ t: Date.now(), top: top })); } catch (e) {}
+      paint(top);
+    }).catch(function () {});
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", go); else go();
+})();
