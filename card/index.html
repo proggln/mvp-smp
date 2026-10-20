@@ -570,18 +570,39 @@ button{font:inherit}
       ".dk-h{display:flex;align-items:center;gap:10px;padding:12px 12px 10px;border-bottom:1px solid rgba(255,255,255,.08)}.dk-h a{color:#fff;font-weight:700;text-decoration:none;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dk-b{border:0;background:rgba(255,255,255,.08);color:#fff;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;cursor:pointer;flex:none}.dk-b:hover{background:rgba(255,255,255,.16)}" +
       ".dk-m{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:6px}.dk-i{max-width:82%;padding:8px 12px;border-radius:16px;font-size:.92rem;line-height:1.4;overflow-wrap:anywhere;white-space:pre-wrap}.dk-i.me{align-self:flex-end;background:#0081cc;color:#fff;border-bottom-right-radius:5px}.dk-i.them{align-self:flex-start;background:rgba(255,255,255,.1);border-bottom-left-radius:5px}.dk-i.pend{opacity:.6}" +
       ".dk-f{display:flex;gap:8px;align-items:flex-end;padding:10px 12px 12px;border-top:1px solid rgba(255,255,255,.08)}.dk-f textarea{flex:1;min-height:40px;max-height:110px;resize:none;box-sizing:border-box;padding:10px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.05);color:inherit;font:inherit;font-size:.92rem;outline:0;margin:0}.dk-f textarea:focus{border-color:rgba(111,208,255,.6)}.dk-send{flex:none;width:40px;height:40px;border:0;border-radius:50%;background:linear-gradient(180deg,#22a6f2,#0081cc);color:#fff;display:grid;place-items:center;cursor:pointer}.dk-send:disabled{opacity:.45;cursor:default}" +
+      ".dk-i.img{padding:4px}.dk-i img{display:block;max-width:100%;max-height:260px;border-radius:12px;cursor:zoom-in;background:rgba(255,255,255,.06);min-width:60px;min-height:60px}.dk-i .dk-t2{padding:4px 8px}.dk-x{border:0;background:rgba(0,0,0,.25);color:#fff;width:20px;height:20px;border-radius:50%;margin-left:8px;font:700 12px/20px inherit;cursor:pointer;vertical-align:middle;opacity:.6;padding:0}.dk-x:hover{opacity:1}.dk-x.arm{background:#e8424f;opacity:1;width:auto;padding:0 8px;border-radius:10px}.dk-i.img .dk-x{position:absolute;top:8px;right:8px}.dk-i.img{position:relative}.dk-ph{flex:none;width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:#9db6c9;display:grid;place-items:center;cursor:pointer}.dk-ph:hover{background:rgba(255,255,255,.16);color:#fff}.dk-zoom{position:fixed;inset:0;z-index:2147483100;background:rgba(0,0,0,.88);display:grid;place-items:center;cursor:zoom-out}.dk-zoom img{max-width:94vw;max-height:94vh;border-radius:10px}" +
       "#wcchat{padding:0;width:min(420px,calc(100vw - 24px));height:min(600px,calc(100vh - 40px))}#wcchat .dk-box{display:flex;flex-direction:column;height:100%}";
     document.head.appendChild(st);
   }
   var DK_BACK = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>';
+  var DK_PHOTO = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.800"/><path d="M21 16l-5-5-8 9"/></svg>';
   var DK_SEND = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>';
   var DK_ERR = { not_friends: "You can only message friends.", slow_down: "You are sending too fast.", too_many: "Too many messages. Wait a little.", not_allowed: "Please keep it friendly.", no_links: "Links are not allowed.", banned: "You can not send messages right now.", email_first: "Add an e-mail to your account first.", link_first: "Link your Minecraft account first." };
   function dkAgo(ms) { if (!ms) return "a long time ago"; var s = Math.max(1, Math.floor((Date.now() - ms) / 1000)); if (s < 3600) return Math.max(1, Math.floor(s / 60)) + " min ago"; if (s < 86400) return Math.floor(s / 3600) + " h ago"; return Math.floor(s / 86400) + " d ago"; }
   function chatView(host, tok, nick, onBack) {
     dkCss(); if (host._t) clearInterval(host._t);
-    host.innerHTML = '<div class="dk-h">' + (onBack ? '<button type="button" class="dk-b" id="dkback" aria-label="Back">' + DK_BACK + '</button>' : "") + head(nick, 32) + '<a href="../u/?n=' + encodeURIComponent(nick) + '">' + esc(nick) + '</a></div><div class="dk-m" id="dkmsgs"></div><div class="dk-err" id="dkerr"></div><div class="dk-f"><textarea id="dkin" rows="1" maxlength="300" placeholder="Message ' + esc(nick) + '"></textarea><button type="button" class="dk-send" id="dksend" aria-label="Send" disabled>' + DK_SEND + '</button></div>';
+    host.innerHTML = '<div class="dk-h">' + (onBack ? '<button type="button" class="dk-b" id="dkback" aria-label="Back">' + DK_BACK + '</button>' : "") + head(nick, 32) + '<a href="../u/?n=' + encodeURIComponent(nick) + '">' + esc(nick) + '</a></div><div class="dk-m" id="dkmsgs"></div><div class="dk-err" id="dkerr"></div><div class="dk-f"><button type="button" class="dk-ph" id="dkph" aria-label="Send a photo">' + DK_PHOTO + '</button><input type="file" id="dkfile" accept="image/*" hidden><textarea id="dkin" rows="1" maxlength="300" placeholder="Message ' + esc(nick) + '"></textarea><button type="button" class="dk-send" id="dksend" aria-label="Send" disabled>' + DK_SEND + '</button></div>';
     var box = host.querySelector("#dkmsgs"), ta = host.querySelector("#dkin"), go = host.querySelector("#dksend"), err = host.querySelector("#dkerr"), last = 0, busy = false, seen = {};
-    function add(m, pend) { if (m.id) { if (seen[m.id]) return document.createElement("div"); seen[m.id] = 1; } var d = document.createElement("div"); d.className = "dk-i " + (m.mine ? "me" : "them") + (pend ? " pend" : ""); d.textContent = m.body; if (m.at) d.title = new Date(m.at).toLocaleString(); box.appendChild(d); if (m.id && m.id > last) last = m.id; return d; }
+    function add(m, pend, localSrc) {
+      if (m.id) { if (seen[m.id]) return document.createElement("div"); seen[m.id] = 1; }
+      var d = document.createElement("div"); d.className = "dk-i " + (m.mine ? "me" : "them") + (pend ? " pend" : "") + (m.img || localSrc ? " img" : ""); if (m.id) d.setAttribute("data-id", m.id);
+      if (m.img || localSrc) {
+        var im = document.createElement("img"); im.alt = "Photo";
+        if (localSrc) im.src = localSrc; else fetch(API + "/api/app/chat-image?id=" + m.img, { headers: { Authorization: "Bearer " + tok } }).then(function (r) { return r.ok ? r.blob() : null; }).then(function (bl) { if (bl) im.src = URL.createObjectURL(bl); }).catch(function () {});
+        im.onclick = function () { if (!im.src) return; var z = document.createElement("div"); z.className = "dk-zoom"; var i2 = document.createElement("img"); i2.src = im.src; z.appendChild(i2); z.onclick = function () { z.remove(); }; document.body.appendChild(z); };
+        d.appendChild(im);
+        if (m.body) { var cap = document.createElement("div"); cap.className = "dk-t2"; cap.textContent = m.body; d.appendChild(cap); }
+      } else d.appendChild(document.createTextNode(m.body));
+      if (m.mine && m.id) {
+        var x = document.createElement("button"); x.type = "button"; x.className = "dk-x"; x.setAttribute("aria-label", "Delete message"); x.textContent = "\u00D7";
+        x.onclick = function () {
+          if (!x.classList.contains("arm")) { x.classList.add("arm"); x.textContent = "Delete?"; setTimeout(function () { x.classList.remove("arm"); x.textContent = "\u00D7"; }, 3000); return; }
+          x.disabled = true; call("POST", "/api/app/messages/delete", { id: m.id }, tok).then(function (r) { if (r.ok) d.remove(); else x.disabled = false; }).catch(function () { x.disabled = false; });
+        };
+        d.appendChild(x);
+      }
+      if (m.at) d.title = new Date(m.at).toLocaleString(); box.appendChild(d); if (m.id && m.id > last) last = m.id; return d;
+    }
     function pull() {
       if (busy) return; busy = true;
       call("GET", "/api/app/messages?nick=" + encodeURIComponent(nick) + "&after=" + last, null, tok).then(function (r) {
@@ -589,6 +610,7 @@ button{font:inherit}
         var stick = box.scrollHeight - box.scrollTop - box.clientHeight < 80 || !last, first = !last, fresh = 0;
         (r.j.items || []).forEach(function (m) { if (!m.mine && m.id && !seen[m.id]) fresh++; add(m); });
         if (fresh && !first) chime();
+        (r.j.deleted || []).forEach(function (id) { var e = box.querySelector('[data-id="' + id + '"]'); if (e) e.remove(); });
         if ((r.j.items || []).length && stick) box.scrollTop = box.scrollHeight;
       }).catch(function () { busy = false; });
     }
@@ -604,6 +626,31 @@ button{font:inherit}
       }).catch(function () { pe.remove(); err.textContent = "Cannot reach the server."; ta.value = t; go.disabled = false; });
     }
     go.onclick = send;
+    var fin = host.querySelector("#dkfile");
+    host.querySelector("#dkph").onclick = function () { fin.click(); };
+    fin.onchange = function () {
+      var f = fin.files && fin.files[0]; fin.value = ""; if (!f) return;
+      if (!/^image\//.test(f.type)) { err.textContent = "Choose a picture."; return; }
+      err.textContent = "";
+      var rd = new FileReader();
+      rd.onload = function () {
+        var im = new Image();
+        im.onload = function () {
+          var mx = 1200, k = Math.min(1, mx / Math.max(im.width, im.height)), cv = document.createElement("canvas"); cv.width = Math.round(im.width * k); cv.height = Math.round(im.height * k);
+          var cx = cv.getContext("2d"); cx.fillStyle = "#fff"; cx.fillRect(0, 0, cv.width, cv.height); cx.drawImage(im, 0, 0, cv.width, cv.height);
+          var q = 0.8, url = cv.toDataURL("image/jpeg", q); while (url.length > 400000 && q > 0.3) { q -= 0.1; url = cv.toDataURL("image/jpeg", q); }
+          if (url.length > 400000) { err.textContent = "Picture is too big."; return; }
+          var pe = add({ mine: true, body: "" }, true, url); box.scrollTop = box.scrollHeight;
+          call("POST", "/api/app/messages/send", { nick: nick, image: url }, tok).then(function (r) {
+            pe.remove();
+            if (r.ok) { var it = r.j.item; it.img = it.img || 0; var d2 = add(it, false, url); box.scrollTop = box.scrollHeight; } else err.textContent = DK_ERR[r.j && r.j.error] || "Could not send the photo.";
+          }).catch(function () { pe.remove(); err.textContent = "Cannot reach the server."; });
+        };
+        im.onerror = function () { err.textContent = "Could not read this picture."; };
+        im.src = rd.result;
+      };
+      rd.readAsDataURL(f);
+    };
     ta.addEventListener("keydown", function (e) { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } });
     if (onBack) host.querySelector("#dkback").onclick = function () { clearInterval(host._t); onBack(); };
     ta.focus();
