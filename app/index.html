@@ -36,7 +36,8 @@ small{color:var(--mut)}
 <img class="lg" src="../icon-192.png" alt="MVP app icon">
 <h1>MVP app for Android</h1>
 <p>Your player card, coins, kills, playtime and server news with notifications.</p>
-<a class="btn" href="https://github.com/proggln/mvp-app/releases/latest/download/mvp-app.apk" download>Download APK (48 MB)</a>
+<a class="btn" id="dl" href="https://github.com/proggln/mvp-releases/releases/latest/download/mvp-app.apk" download>Download APK</a>
+<p style="margin:10px 0 0"><small id="ver" style="color:#9db6c9"></small></p>
 <h2>How to install</h2>
 <ol>
 <li>Open this page on your Android phone and tap Download.</li>
@@ -47,5 +48,13 @@ small{color:var(--mut)}
 <p style="margin-top:14px"><small>iPhone: the app is Android-only for now. You can use your card on the website: <a style="color:#6fd0ff" href="../card/">Card</a>.</small></p>
 </div>
 </main>
+<script>
+fetch("https://api.github.com/repos/proggln/mvp-releases/releases/latest").then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+  if (!j) return; var a = (j.assets || [])[0], m = /build (\d+)/.exec(j.name || "");
+  var t = (m ? "Version v" + m[1] + ".0" : "") + (a ? (m ? " | " : "") + Math.round(a.size / 1048576) + " MB" : "");
+  document.getElementById("ver").textContent = t;
+  if (a && a.browser_download_url) document.getElementById("dl").setAttribute("href", a.browser_download_url);
+}).catch(function () {});
+</script>
 </body>
 </html>
