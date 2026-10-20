@@ -467,6 +467,8 @@ button{font:inherit}
   }
   function loginView() {
     stop();
+    var odk = document.getElementById("mvpdock"); if (odk) { if (odk._t) clearInterval(odk._t); odk.remove(); }
+    var otc = document.getElementById("mvptoast"); if (otc) otc.remove();
     root.innerHTML = '<div class="card2 mg"><h1>My card</h1>' +
       '<div class="upd">Your personal MVP card with your rank, coins and stats. No password needed.</div>' +
       '<button class="mgb" id="wcapp" type="button">Log in via MVP app</button>' +
@@ -1014,6 +1016,7 @@ button{font:inherit}
     var last = null, busy = false;
     function ch(o, n, k) { return String(o[k]) !== String(n[k]); }
     function tick() {
+      if (getTok() !== tok) { clearInterval(iv); window.__pulseOn = false; return; }
       if (busy) return; busy = true;
       call("GET", "/api/app/pulse", null, tok).then(function (r) {
         busy = false; if (!r.ok) return;
@@ -1041,7 +1044,7 @@ button{font:inherit}
         }
       }).catch(function () { busy = false; });
     }
-    setInterval(tick, 6000);
+    var iv = setInterval(tick, 6000);
     document.addEventListener("visibilitychange", function () { if (!document.hidden) tick(); });
     tick();
   }
