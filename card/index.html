@@ -439,20 +439,21 @@ button{font:inherit}
     stop();
     root.innerHTML = '<div class="card2 mg"><h1>Sign in with e-mail</h1><div class="upd">Type your e-mail. We send you a 6-digit code. No password needed. New here? An account is created for you.</div>' +
       '<input id="wcem" type="email" autocomplete="email" maxlength="254" placeholder="you@example.com" style="' + INPUT + 'min-width:240px">' +
-      '<button class="mgb" id="wcsend" type="button">Send code</button> <button class="mgb ghost" id="wcback" type="button">Back</button><div class="mgmsg" id="wcm"></div></div>';
+      '<label style="display:flex;gap:10px;align-items:center;margin-top:14px;cursor:pointer;font-size:.92rem"><input type="checkbox" id="wcnl0"> Send me MVP news by e-mail (optional, you can unsubscribe any time)</label>' +
+      '<div style="margin-top:12px"><button class="mgb" id="wcsend" type="button">Send code</button> <button class="mgb ghost" id="wcback" type="button">Back</button></div><div class="mgmsg" id="wcm"></div></div>';
     document.getElementById("wcback").addEventListener("click", loginView);
     document.getElementById("wcsend").addEventListener("click", function () {
       var em = document.getElementById("wcem").value.trim().toLowerCase(), msg = document.getElementById("wcm"), b = this;
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)) { msg.textContent = "Type a valid e-mail."; return; }
       b.disabled = true; msg.textContent = "";
       call("POST", "/api/web/email-start", { email: em }).then(function (r) {
-        if (r.ok) return codeEmailView(em);
+        if (r.ok) return codeEmailView(em, document.getElementById("wcnl0").checked);
         b.disabled = false;
         msg.textContent = r.status === 429 ? "Too many tries. Wait a little." : r.status === 503 ? "E-mail sign in is not ready yet." : "Could not send the code. Try again later.";
       }).catch(function () { b.disabled = false; msg.textContent = "Cannot reach the server."; });
     });
   }
-  function codeEmailView(em) {
+  function codeEmailView(em, news) {
     root.innerHTML = '<div class="card2 mg"><h1>Check your e-mail</h1><div class="upd">We sent a 6-digit code to <b>' + esc(em) + '</b>. It works for 10 minutes. Look in Spam too.</div>' +
       '<input id="wccode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" style="' + INPUT + 'width:140px;letter-spacing:4px;font-size:1.1rem">' +
       '<button class="mgb" id="wcok" type="button">Sign in</button> <button class="mgb ghost" id="wcback" type="button">Back</button><div class="mgmsg" id="wcm"></div></div>';
@@ -461,7 +462,7 @@ button{font:inherit}
       var code = document.getElementById("wccode").value.trim(), msg = document.getElementById("wcm"), b = this;
       if (!/^\d{6}$/.test(code)) { msg.textContent = "The code has 6 digits."; return; }
       b.disabled = true; msg.textContent = "";
-      call("POST", "/api/web/email-verify", { email: em, code: code }).then(function (r) {
+      call("POST", "/api/web/email-verify", { email: em, code: code, newsletter: !!news }).then(function (r) {
         if (r.ok && r.j.token) { setTok(r.j.token); cardView(); return; }
         b.disabled = false; msg.textContent = "Wrong or expired code.";
       }).catch(function () { b.disabled = false; msg.textContent = "Cannot reach the server."; });
