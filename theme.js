@@ -91,8 +91,12 @@
     chime();
     try { if (window.Notification && Notification.permission === "granted" && !document.hasFocus()) { var nt = new Notification(title, { body: text, icon: "/icon-192.png", tag: "mvp-live" }); nt.onclick = function () { window.focus(); nt.close(); }; } } catch (e) {}
   }
+  var lastT = 0;
   function tick() {
-    var k = tok(); if (!k || busy) return; busy = true;
+    var k = tok(); if (!k || busy) return;
+    // a hidden tab checks only once a minute (saves the daily request limit)
+    if (document.hidden && Date.now() - lastT < 60000) return;
+    lastT = Date.now(); busy = true;
     fetch(API + "/api/app/pulse", { headers: { Authorization: "Bearer " + k } }).then(function (r) { return r.ok ? r.json() : null; }).then(function (n) {
       busy = false; if (!n) return;
       var o = last; last = n; if (!o) return;
@@ -102,7 +106,7 @@
       else if (Number(n.inbox) > Number(o.inbox)) toast("New notification", "You have a new message in your Inbox.", "/card/#inbox");
     }).catch(function () { busy = false; });
   }
-  setInterval(tick, 8000);
+  setInterval(tick, 20000);
   document.addEventListener("visibilitychange", function () { if (!document.hidden) tick(); });
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", tick); else tick();
 })();

@@ -1057,11 +1057,13 @@ button{font:inherit}
   document.addEventListener("click", function () { try { if (window.Notification && Notification.permission === "default") Notification.requestPermission(); } catch (e) {} try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === "suspended") AC.resume(); } catch (e) {} }, { once: true });
   function startPulse(tok) {
     if (window.__pulseOn) return; window.__pulseOn = true;
-    var last = null, busy = false;
+    var last = null, busy = false, lastT = 0;
     function ch(o, n, k) { return String(o[k]) !== String(n[k]); }
     function tick() {
       if (getTok() !== tok) { clearInterval(iv); window.__pulseOn = false; return; }
-      if (busy) return; busy = true;
+      if (busy) return;
+      if (document.hidden && Date.now() - lastT < 60000) return; // hidden tab: once a minute
+      lastT = Date.now(); busy = true;
       call("GET", "/api/app/pulse", null, tok).then(function (r) {
         busy = false; if (!r.ok) return;
         var n = r.j, o = last; last = n; if (!o) return;
@@ -1088,7 +1090,7 @@ button{font:inherit}
         }
       }).catch(function () { busy = false; });
     }
-    var iv = setInterval(tick, 6000);
+    var iv = setInterval(tick, 20000);
     document.addEventListener("visibilitychange", function () { if (!document.hidden) tick(); });
     tick();
   }

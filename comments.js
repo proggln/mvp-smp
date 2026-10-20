@@ -120,7 +120,7 @@
       call("GET", (prof ? "/api/comments?profile=" + encodeURIComponent(prof) : "/api/comments?news=" + nid)).then(function (r) {
         if (r.ok && sig(r.j) !== sig(data)) { data = r.j; draw(); }
       }).catch(function () {});
-    }, 12000);
+    }, 30000);
     tb.onclick = function () { body.hidden = !body.hidden; };
     return wrap;
   };
