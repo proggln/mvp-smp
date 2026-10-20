@@ -25,7 +25,8 @@
   }
   function ago(ms) { var s = Math.max(1, Math.floor((Date.now() - ms) / 1000)); if (s < 60) return "just now"; if (s < 3600) return Math.floor(s / 60) + " min ago"; if (s < 86400) return Math.floor(s / 3600) + " h ago"; if (s < 2592000) return Math.floor(s / 86400) + " d ago"; return new Date(ms).toLocaleDateString(); }
   var ERR = { not_allowed: "Please keep it friendly. This text is not allowed.", no_links: "Links are not allowed in comments.", slow_down: "You are posting too fast. Wait a little.", duplicate: "You already wrote this.", banned: "You can not comment right now.", link_first: "Link your Minecraft account to comment.", email_first: "Add an e-mail to your account to comment.", too_many: "Too many tries. Wait a little.", bad_text: "Write 1 to 500 characters." };
-  window.mvpComments = function (nid) {
+  window.mvpComments = function (nid, opts) {
+    var prof = opts && opts.profile ? String(opts.profile) : "";
     if (!document.getElementById("cm-css")) { var st = document.createElement("style"); st.id = "cm-css"; st.textContent = css; document.head.appendChild(st); }
     var wrap = document.createElement("div"); wrap.className = "cm";
     var tb = document.createElement("button"); tb.type = "button"; tb.className = "cm-t";
@@ -51,7 +52,7 @@
       bar.appendChild(cnt); bar.appendChild(go); row.appendChild(ta); row.appendChild(bar);
       go.onclick = function () {
         var t = ta.value.trim(); if (!t) return; go.disabled = true; m.textContent = "";
-        call("POST", "/api/app/comments", { news: nid, body: t, parent: parent || undefined }).then(function (r) {
+        call("POST", "/api/app/comments", (prof ? { profile: prof, body: t, parent: parent || undefined } : { news: nid, body: t, parent: parent || undefined })).then(function (r) {
           go.disabled = !ta.value.trim();
           if (!r.ok) { m.textContent = ERR[r.j && r.j.error] || "Could not post. Try again later."; return; }
           data.items.push(r.j.item); ta.value = ""; go.disabled = true; onDone();
@@ -96,7 +97,7 @@
     }
     function load() {
       body.innerHTML = '<div class="cm-e">Loading...</div>';
-      call("GET", "/api/comments?news=" + nid).then(function (r) {
+      call("GET", (prof ? "/api/comments?profile=" + encodeURIComponent(prof) : "/api/comments?news=" + nid)).then(function (r) {
         if (!r.ok) { body.innerHTML = '<div class="cm-e">Could not load comments.</div>'; return; }
         data = r.j; loaded = true; draw();
       }).catch(function () { body.innerHTML = '<div class="cm-e">Cannot reach the server.</div>'; });

@@ -551,6 +551,92 @@ button{font:inherit}
     }
   }
 
+  /* ---- friends dock (wide screens) and chat ---- */
+  function dkCss() {
+    if (document.getElementById("mvpdkcss")) return;
+    var st = document.createElement("style"); st.id = "mvpdkcss";
+    st.textContent = ".dk{position:fixed;top:96px;left:calc(50% + 430px);width:min(300px,calc(50vw - 450px));height:min(560px,calc(100vh - 128px));display:none;flex-direction:column;border-radius:22px;border:1px solid rgba(255,255,255,.1);background:rgba(8,20,34,.72);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);overflow:hidden;z-index:5;box-shadow:0 20px 50px rgba(0,0,0,.35)}@media(min-width:1380px){.dk{display:flex}}" +
+      ".dk-t{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 10px;font:700 .75rem Montserrat,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#9db6c9}.dk-t span{letter-spacing:0;text-transform:none;font-weight:600}" +
+      ".dk-l{flex:1;overflow:auto;padding:4px 8px 10px}.dk-r{display:flex;align-items:center;gap:11px;width:100%;box-sizing:border-box;padding:9px 10px;border:0;border-radius:14px;background:transparent;color:#fff;text-align:left;cursor:pointer;font:inherit}.dk-r:hover{background:rgba(255,255,255,.07)}" +
+      ".dk-w{flex:1;min-width:0}.dk-w b{display:block;font-size:.92rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dk-w small{display:flex;align-items:center;gap:6px;color:#9db6c9;font-size:.78rem;margin-top:1px}.dk-u{min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#0081cc;color:#fff;font:700 .72rem/20px Montserrat,sans-serif;text-align:center}" +
+      ".dk-e{padding:6px 18px 12px;color:#9db6c9;font-size:.85rem}.dk-err{padding:0 16px 8px;color:#ffb3b9;font-size:.8rem;min-height:0}.dk-err:empty{display:none}" +
+      ".dk-h{display:flex;align-items:center;gap:10px;padding:12px 12px 10px;border-bottom:1px solid rgba(255,255,255,.08)}.dk-h a{color:#fff;font-weight:700;text-decoration:none;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dk-b{border:0;background:rgba(255,255,255,.08);color:#fff;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;cursor:pointer;flex:none}.dk-b:hover{background:rgba(255,255,255,.16)}" +
+      ".dk-m{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:6px}.dk-i{max-width:82%;padding:8px 12px;border-radius:16px;font-size:.92rem;line-height:1.4;overflow-wrap:anywhere;white-space:pre-wrap}.dk-i.me{align-self:flex-end;background:#0081cc;color:#fff;border-bottom-right-radius:5px}.dk-i.them{align-self:flex-start;background:rgba(255,255,255,.1);border-bottom-left-radius:5px}.dk-i.pend{opacity:.6}" +
+      ".dk-f{display:flex;gap:8px;align-items:flex-end;padding:10px 12px 12px;border-top:1px solid rgba(255,255,255,.08)}.dk-f textarea{flex:1;min-height:40px;max-height:110px;resize:none;box-sizing:border-box;padding:10px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.05);color:inherit;font:inherit;font-size:.92rem;outline:0;margin:0}.dk-f textarea:focus{border-color:rgba(111,208,255,.6)}.dk-send{flex:none;width:40px;height:40px;border:0;border-radius:50%;background:linear-gradient(180deg,#22a6f2,#0081cc);color:#fff;display:grid;place-items:center;cursor:pointer}.dk-send:disabled{opacity:.45;cursor:default}" +
+      "#wcchat{padding:0;width:min(420px,calc(100vw - 24px));height:min(600px,calc(100vh - 40px))}#wcchat .dk-box{display:flex;flex-direction:column;height:100%}";
+    document.head.appendChild(st);
+  }
+  var DK_BACK = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>';
+  var DK_SEND = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>';
+  var DK_ERR = { not_friends: "You can only message friends.", slow_down: "You are sending too fast.", too_many: "Too many messages. Wait a little.", not_allowed: "Please keep it friendly.", no_links: "Links are not allowed.", banned: "You can not send messages right now.", email_first: "Add an e-mail to your account first.", link_first: "Link your Minecraft account first." };
+  function dkAgo(ms) { if (!ms) return "a long time ago"; var s = Math.max(1, Math.floor((Date.now() - ms) / 1000)); if (s < 3600) return Math.max(1, Math.floor(s / 60)) + " min ago"; if (s < 86400) return Math.floor(s / 3600) + " h ago"; return Math.floor(s / 86400) + " d ago"; }
+  function chatView(host, tok, nick, onBack) {
+    dkCss(); if (host._t) clearInterval(host._t);
+    host.innerHTML = '<div class="dk-h">' + (onBack ? '<button type="button" class="dk-b" id="dkback" aria-label="Back">' + DK_BACK + '</button>' : "") + head(nick, 32) + '<a href="../u/?n=' + encodeURIComponent(nick) + '">' + esc(nick) + '</a></div><div class="dk-m" id="dkmsgs"></div><div class="dk-err" id="dkerr"></div><div class="dk-f"><textarea id="dkin" rows="1" maxlength="300" placeholder="Message ' + esc(nick) + '"></textarea><button type="button" class="dk-send" id="dksend" aria-label="Send" disabled>' + DK_SEND + '</button></div>';
+    var box = host.querySelector("#dkmsgs"), ta = host.querySelector("#dkin"), go = host.querySelector("#dksend"), err = host.querySelector("#dkerr"), last = 0, busy = false;
+    function add(m, pend) { var d = document.createElement("div"); d.className = "dk-i " + (m.mine ? "me" : "them") + (pend ? " pend" : ""); d.textContent = m.body; if (m.at) d.title = new Date(m.at).toLocaleString(); box.appendChild(d); if (m.id && m.id > last) last = m.id; return d; }
+    function pull() {
+      if (busy) return; busy = true;
+      call("GET", "/api/app/messages?nick=" + encodeURIComponent(nick) + "&after=" + last, null, tok).then(function (r) {
+        busy = false; if (!r.ok) return;
+        var stick = box.scrollHeight - box.scrollTop - box.clientHeight < 80 || !last;
+        (r.j.items || []).forEach(function (m) { add(m); });
+        if ((r.j.items || []).length && stick) box.scrollTop = box.scrollHeight;
+      }).catch(function () { busy = false; });
+    }
+    pull(); setTimeout(function () { box.scrollTop = box.scrollHeight; }, 400);
+    host._t = setInterval(function () { if (!document.body.contains(host)) { clearInterval(host._t); return; } if (document.hidden || !host.offsetWidth) return; pull(); }, 4000);
+    ta.addEventListener("input", function () { go.disabled = !ta.value.trim(); ta.style.height = "auto"; ta.style.height = Math.min(ta.scrollHeight, 110) + "px"; });
+    function send() {
+      var t = ta.value.trim(); if (!t || go.disabled) return; err.textContent = ""; go.disabled = true;
+      var pe = add({ mine: true, body: t }, true); box.scrollTop = box.scrollHeight; ta.value = ""; ta.style.height = "auto";
+      call("POST", "/api/app/messages/send", { nick: nick, body: t }, tok).then(function (r) {
+        pe.remove();
+        if (r.ok) { add(r.j.item); box.scrollTop = box.scrollHeight; } else { err.textContent = DK_ERR[r.j && r.j.error] || "Could not send. Try again."; ta.value = t; go.disabled = false; }
+      }).catch(function () { pe.remove(); err.textContent = "Cannot reach the server."; ta.value = t; go.disabled = false; });
+    }
+    go.onclick = send;
+    ta.addEventListener("keydown", function (e) { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } });
+    if (onBack) host.querySelector("#dkback").onclick = function () { clearInterval(host._t); onBack(); };
+    ta.focus();
+  }
+  function dockList(host, tok) {
+    dkCss(); if (host._t) clearInterval(host._t);
+    host.innerHTML = '<div class="dk-t">Friends <span id="dkc"></span></div><div class="dk-l" id="dkl"><div class="dk-e">Loading...</div></div>';
+    var list = host.querySelector("#dkl");
+    function load() {
+      call("GET", "/api/app/friends", null, tok).then(function (r) {
+        if (!r.ok) { list.innerHTML = '<div class="dk-e">Could not load friends.</div>'; return; }
+        var f = r.j.friends || [], on = f.filter(function (x) { return x.online; }).length;
+        host.querySelector("#dkc").textContent = f.length ? on + " online" : "";
+        if (!f.length) { list.innerHTML = '<div class="dk-e">No friends yet. Use the Friends button at the top to add some.</div>'; return; }
+        list.innerHTML = "";
+        f.forEach(function (x) {
+          var b = document.createElement("button"); b.type = "button"; b.className = "dk-r";
+          b.innerHTML = head(x.nick, 36) + '<div class="dk-w"><b>' + esc(x.nick) + '</b><small><span class="wc-sdot' + (x.online ? " on" : "") + '" style="flex:none"></span>' + (x.online ? "Online now" : "Last seen " + esc(dkAgo(x.last_online))) + '</small></div>' + (x.unread ? '<span class="dk-u">' + x.unread + '</span>' : "");
+          b.onclick = function () { chatView(host, tok, x.nick, function () { dockList(host, tok); }); };
+          list.appendChild(b);
+        });
+      }).catch(function () { list.innerHTML = '<div class="dk-e">Cannot reach the server.</div>'; });
+    }
+    load();
+    host._t = setInterval(function () { if (!document.body.contains(host)) { clearInterval(host._t); return; } if (document.hidden || !host.offsetWidth) return; load(); }, 20000);
+  }
+  function openChat(nick, tok) {
+    dkCss();
+    var dlg = document.getElementById("wcchat");
+    if (!dlg) { dlg = document.createElement("dialog"); dlg.id = "wcchat"; dlg.className = "wc-dlg"; document.body.appendChild(dlg); dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); }); dlg.addEventListener("close", function () { var h = dlg.querySelector(".dk-box"); if (h && h._t) clearInterval(h._t); dlg.innerHTML = ""; }); }
+    dlg.innerHTML = '<div class="dk-box"></div>';
+    var host = dlg.querySelector(".dk-box");
+    chatView(host, tok, nick, function () { dlg.close(); });
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", "");
+  }
+  function mountDock(p, tok) {
+    if (!p.nick || !p.email || document.getElementById("mvpdock")) return;
+    dkCss();
+    var a = document.createElement("aside"); a.id = "mvpdock"; a.className = "dk"; a.setAttribute("aria-label", "Friends"); document.body.appendChild(a);
+    dockList(a, tok);
+  }
   function openFriends(p, tok) {
     stCss();
     var dlg = document.getElementById("wcfdlg");
@@ -565,7 +651,7 @@ button{font:inherit}
     function row(f, kind) {
       var dot = kind === "friend" ? '<span class="wc-sdot' + (f.online ? " on" : "") + '" style="flex:none"></span>' : "";
       var sub = kind === "friend" ? (f.online ? "Online now" : "Last seen " + ago(f.last_online)) : kind === "in" ? "Wants to be your friend" : kind === "sug" ? f.mutual + " mutual friend" + (f.mutual === 1 ? "" : "s") : kind === "blk" ? "Blocked" : "Request sent";
-      var btns = kind === "in" ? '<button type="button" class="st-b" data-a="accept" data-n="' + esc(f.nick) + '">Accept</button><button type="button" class="st-b" data-a="decline" data-n="' + esc(f.nick) + '">Decline</button><button type="button" class="st-b red" data-a="block" data-n="' + esc(f.nick) + '">Block</button>' : kind === "out" ? '<button type="button" class="st-b" data-a="remove" data-n="' + esc(f.nick) + '">Cancel</button>' : kind === "sug" ? '<button type="button" class="st-b" data-a="request" data-n="' + esc(f.nick) + '">Add</button>' : kind === "blk" ? '<button type="button" class="st-b" data-a="unblock" data-n="' + esc(f.nick) + '">Unblock</button>' : '<button type="button" class="st-b" data-a="remove" data-n="' + esc(f.nick) + '">Remove</button>';
+      var btns = kind === "in" ? '<button type="button" class="st-b" data-a="accept" data-n="' + esc(f.nick) + '">Accept</button><button type="button" class="st-b" data-a="decline" data-n="' + esc(f.nick) + '">Decline</button><button type="button" class="st-b red" data-a="block" data-n="' + esc(f.nick) + '">Block</button>' : kind === "out" ? '<button type="button" class="st-b" data-a="remove" data-n="' + esc(f.nick) + '">Cancel</button>' : kind === "sug" ? '<button type="button" class="st-b" data-a="request" data-n="' + esc(f.nick) + '">Add</button>' : kind === "blk" ? '<button type="button" class="st-b" data-a="unblock" data-n="' + esc(f.nick) + '">Unblock</button>' : '<button type="button" class="st-b" data-a="msg" data-n="' + esc(f.nick) + '">Message' + (f.unread ? " (" + f.unread + ")" : "") + '</button><button type="button" class="st-b" data-a="remove" data-n="' + esc(f.nick) + '">Remove</button>';
       return '<div class="st-r">' + head(f.nick, 36) + dot + '<div class="st-t"><b><a href="../u/?n=' + encodeURIComponent(f.nick) + '" style="color:#fff;text-decoration:none">' + esc(f.nick) + '</a></b><span>' + esc(sub) + '</span></div>' + btns + '</div>';
     }
     function grp(title, list, kind) { return list.length ? '<div class="st-lab">' + title + '</div><div class="st-grp">' + list.map(function (f) { return row(f, kind); }).join("") + '</div>' : ""; }
@@ -588,7 +674,9 @@ button{font:inherit}
         };
         Array.prototype.forEach.call(body.querySelectorAll("[data-a]"), function (el) {
           el.onclick = function () {
-            var a = el.getAttribute("data-a"), n = el.getAttribute("data-n"), path = a === "remove" ? "/api/app/friends/remove" : a === "request" ? "/api/app/friends/request" : a === "block" ? "/api/app/friends/block" : a === "unblock" ? "/api/app/friends/unblock" : "/api/app/friends/respond", bd = { nick: n };
+            var a = el.getAttribute("data-a"), n = el.getAttribute("data-n");
+            if (a === "msg") { dlg.close(); openChat(n, tok); return; }
+            var path = a === "remove" ? "/api/app/friends/remove" : a === "request" ? "/api/app/friends/request" : a === "block" ? "/api/app/friends/block" : a === "unblock" ? "/api/app/friends/unblock" : "/api/app/friends/respond", bd = { nick: n };
             if (a === "accept") bd.accept = true; if (a === "decline") bd.accept = false;
             if (a === "remove" && !window.confirm("Remove " + n + "?")) return;
             if (a === "block" && !window.confirm("Block " + n + "? They will not be able to send you requests, and will not be told.")) return;
@@ -928,6 +1016,7 @@ button{font:inherit}
           }
           hb.insertBefore(fb, ob); fb.addEventListener("click", function () { var bb = fb.querySelector(".wc-ibadge"); if (bb) bb.remove(); openFriends(p, tok); });
           hb.insertBefore(sb, ob); sb.addEventListener("click", function () { openSettings(p, tok); });
+          mountDock(p, tok);
         }
         if (p.email) accountBox(p, tok, document.querySelector(".wc-install"));
       }
