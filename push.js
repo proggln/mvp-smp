@@ -35,12 +35,7 @@
       d.querySelector("b").textContent = title; d.querySelector("span").textContent = sub;
       if (label) { var b = document.createElement("button"); b.type = "button"; b.textContent = label; if (off) b.className = "off"; b.onclick = function () { b.disabled = true; fn(b); }; d.appendChild(b); }
     }
-    function on() {
-      draw("Notifications are on", "You will get server news on this device.", "Turn off", true, function () {
-        var t = ls(LS); ls(LS, null);
-        (t ? post("/api/web/push-unsubscribe", t) : Promise.resolve()).then(idle, idle);
-      });
-    }
+    function on() { if (d.parentNode) d.parentNode.removeChild(d); }
     function enable() {
       Notification.requestPermission().then(function (p) {
         if (p !== "granted") { draw("Notifications are blocked", "Allow notifications for this site in your browser settings, then try again.", "Try again", false, enable); return; }
