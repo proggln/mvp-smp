@@ -39,7 +39,7 @@
       if (!d.can_comment) {
         var why = d.why;
         box.className = "cm-n";
-        box.innerHTML = why === "signin" ? '<a href="../card/">Log in</a> to comment.' : why === "link" ? 'Link your Minecraft account to comment. Open <a href="../card/">My card</a> and use Get link command.' : why === "email" ? 'Add an e-mail to your account to comment. Open <a href="../card/">My card</a>.' : "You can not comment right now.";
+        box.innerHTML = why === "self" ? "You can not comment on your own profile." : why === "signin" ? '<a href="../card/">Log in</a> to comment.' : why === "link" ? 'Link your Minecraft account to comment. Open <a href="../card/">My card</a> and use Get link command.' : why === "email" ? 'Add an e-mail to your account to comment. Open <a href="../card/">My card</a>.' : "You can not comment right now.";
         return box;
       }
       var row = document.createElement("div"); row.className = "cm-box";
