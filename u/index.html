@@ -383,7 +383,7 @@ button{font:inherit}
     <a href="../" class="link">Home</a>
     <a href="../news/" class="link">News</a>
     <a href="../store/" class="link">Store</a>
-    <a href="./" class="link active" aria-current="page">Profile</a>
+    <a href="../card/" class="link active" aria-current="page">Profile</a>
     <a href="../wiki/" class="link">Wiki</a>
     <a href="https://playmvp.org/discord" class="link link-discord" data-discord target="_blank" rel="noopener noreferrer">
       <i class="dc" aria-hidden="true"></i><span class="dt">Discord</span></a>
@@ -512,7 +512,8 @@ button{font:inherit}
     document.getElementById("pshare").onclick = function () { var b = this, u = location.origin + "/u/?n=" + encodeURIComponent(d.nick), done = function () { b.textContent = "Copied"; setTimeout(function () { b.textContent = "Copy profile link"; }, 1600); }; try { navigator.clipboard.writeText(u).then(done, done); } catch (e) { done(); } };
   }
   function load() {
-    if (!nick) { root.innerHTML = '<div class="card2 mg"><h1>Profiles</h1><div class="upd">Open a player page from your friends list, or use a link like playmvp.org/u/?n=Nick.</div></div>'; return; }
+    if (!nick) { location.replace("../card/"); return; }
+    if (false) { root.innerHTML = '<div class="card2 mg"><h1>Profiles</h1><div class="upd">Open a player page from your friends list, or use a link like playmvp.org/u/?n=Nick.</div></div>'; return; }
     call("GET", "/api/profile?nick=" + encodeURIComponent(nick), null, tok).then(function (r) {
       if (!r.ok) { root.innerHTML = '<div class="card2 mg"><h1>Profile</h1><div class="mgmsg">Could not load this profile. Try again later.</div></div>'; return; }
       view(r.j);
