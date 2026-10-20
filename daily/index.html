@@ -330,7 +330,6 @@ button{font:inherit}
 .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
 .brand{font:800 .8rem var(--font-head);letter-spacing:.18em;opacity:.7}
 .streak{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.08);font:700 .8rem var(--font-head)}
-.streak svg{width:15px;height:15px}
 h1{margin:10px 0 0;font:800 1.7rem var(--font-head);letter-spacing:-.01em;text-align:center}
 .hero{position:relative;display:flex;flex-direction:column;align-items:center;margin:14px 0 6px}
 .ring{position:relative;width:176px;height:176px}
@@ -338,17 +337,17 @@ h1{margin:10px 0 0;font:800 1.7rem var(--font-head);letter-spacing:-.01em;text-a
 .ring .tr{stroke:rgba(255,255,255,.1)}
 .ring .pr{stroke:url(#g1);stroke-linecap:round;transition:stroke-dashoffset 1s linear}
 .coin{position:absolute;inset:26px;display:flex;align-items:center;justify-content:center}
-.coin svg{width:100%;height:100%;filter:drop-shadow(0 8px 18px rgba(255,170,30,.45))}
-.ready .coin svg{animation:fl 2.6s ease-in-out infinite}
+.coin img{width:112px;height:112px;image-rendering:pixelated;image-rendering:crisp-edges;filter:drop-shadow(0 0 18px rgba(60,170,255,.55))}
+.ready .coin img{animation:fl 2.6s ease-in-out infinite}
 @keyframes fl{50%{transform:translateY(-6px) rotate(-3deg)}}
-.wait .coin svg{filter:grayscale(.85) brightness(.8)}
+.wait .coin img{opacity:.85;filter:drop-shadow(0 0 10px rgba(60,170,255,.3))}
 .amt{font:800 2.3rem var(--font-head);margin-top:12px;line-height:1}
 .amt small{font:700 .9rem var(--font-head);opacity:.7;margin-left:6px}
 .sub{margin:8px 0 0;text-align:center;opacity:.85;min-height:1.4em}
 .track{position:relative;display:flex;gap:6px;margin:22px 0 18px}
 .day{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:5px;padding:9px 0 8px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid transparent;font:700 .72rem var(--font-head)}
 .day i{font-style:normal;opacity:.55;font-size:.62rem;letter-spacing:.06em}
-.day svg{width:18px;height:18px}
+.day svg{width:22px;height:22px}.day img{width:32px;height:32px;image-rendering:pixelated;image-rendering:crisp-edges}
 .day.done{background:rgba(34,166,242,.22);border-color:rgba(34,166,242,.35)}
 .day.today{background:linear-gradient(180deg,rgba(255,207,58,.25),rgba(255,157,28,.12));border-color:var(--gold);box-shadow:0 0 18px rgba(255,190,50,.35)}
 .btn{position:relative;overflow:hidden;display:flex;width:100%;align-items:center;justify-content:center;gap:8px;padding:16px;border-radius:999px;border:0;cursor:pointer;color:#fff;font:800 1.05rem var(--font-head);background:linear-gradient(180deg,var(--bl2),var(--bl));box-shadow:0 10px 28px rgba(0,129,204,.45);text-decoration:none;transition:transform .15s}
@@ -365,17 +364,15 @@ h1{margin:10px 0 0;font:800 1.7rem var(--font-head);letter-spacing:-.01em;text-a
 <svg width="0" height="0" style="position:absolute"><defs>
 <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd75a"/><stop offset="1" stop-color="#ff9d1c"/></linearGradient>
 <linearGradient id="cg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe27a"/><stop offset=".55" stop-color="#ffb62e"/><stop offset="1" stop-color="#e07d00"/></linearGradient>
-<symbol id="coin" viewBox="0 0 64 64"><circle cx="32" cy="32" r="29" fill="url(#cg)"/><circle cx="32" cy="32" r="22.5" fill="none" stroke="rgba(120,60,0,.45)" stroke-width="2.5"/><path d="M20 42V22l12 13 12-13v20" fill="none" stroke="#7a3d00" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity=".75"/><path d="M13 22A22 22 0 0 1 30 10" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="3" stroke-linecap="round"/></symbol>
 <symbol id="ck" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#7fd4ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-<symbol id="fire" viewBox="0 0 24 24"><path d="M12 2c1 4 5 6 5 11a5 5 0 0 1-10 0c0-2 1-3.2 2-4.2.2 1.4.9 2.2 1.8 2.4C10.2 8.2 10.6 4.8 12 2z" fill="#ffb62e"/></symbol>
 </defs></svg>
 <div class="c" id="card">
-  <div class="top"><div class="brand">MVP</div><div class="streak" id="st" style="visibility:hidden"><svg><use href="#fire"/></svg><span id="stn">0</span></div></div>
+  <div class="top"><div class="brand">MVP</div><div class="streak" id="st" style="visibility:hidden">Streak <span id="stn">0</span></div></div>
   <h1>Daily reward</h1>
   <div class="hero wait" id="hero">
     <div class="ring">
       <svg class="r" viewBox="0 0 100 100"><circle class="tr" cx="50" cy="50" r="46" fill="none" stroke-width="5"/><circle class="pr" id="pr" cx="50" cy="50" r="46" fill="none" stroke-width="5" stroke-dasharray="289" stroke-dashoffset="289"/></svg>
-      <div class="coin"><svg><use href="#coin"/></svg></div>
+      <div class="coin"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABmElEQVR4nJWTP0hCURTGfz4SQqQHgoMoRi+xxoYaGgoEaSoacmkJGgK3BseGaHPIPQoaGpLAgpAWCSSH5hAaEhMKJ4PIkAgaTsPx9Z7PCDpwOefee/58597vgEfMsogZFVlbUL2xqcuMiphlEa+/zxuc/IJ2A3IJKDT13LZjSWj4obvi8w0lMMsigT0gA68tbx2VkAWU4GN3MAlmWSQyKzJ3IbJfEul2dLml2xGJ5PU+Muu04/PC3lqE5RuoZQarWwW424DpY20FtB2DrAaDBgO8VcAquoKLEHyAsbAWsf3JgrG6pPZoXPXMiepgFRZL/eCqg8Iu0m5A2gLDDXMs7Ni9lCIJVtUGiI2rj11sfhuMy4puPp8dJ4DWupPMbQPE/KrrV2CkLe3LzuqW+uHgvv2kuvmoD3lZgZHrFtw2B52CfyR5f4HEJDT7D2lwoMZoHArn0MpBb2oYTS+l33hUcxDYsT9EmjhVovwm3U6fRHkPkXAlsamcS+jZTv+BQ5bS+zcqDw1T4F7h2WTJJeDM9dneYRqS/47zN+wM9aAf63J8AAAAAElFTkSuQmCC" alt="" width="112" height="112"></div>
     </div>
     <div class="amt" id="amt"></div>
     <p class="sub" id="s">Loading...</p>
@@ -389,6 +386,7 @@ h1{margin:10px 0 0;font:800 1.7rem var(--font-head);letter-spacing:-.01em;text-a
 <script>
 (function () {
   var API = "https://mvp-news-api.mvp-shop.workers.dev", KEY = "mvp_card_token", CIRC = 289;
+  var COIN = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABmElEQVR4nJWTP0hCURTGfz4SQqQHgoMoRi+xxoYaGgoEaSoacmkJGgK3BseGaHPIPQoaGpLAgpAWCSSH5hAaEhMKJ4PIkAgaTsPx9Z7PCDpwOefee/58597vgEfMsogZFVlbUL2xqcuMiphlEa+/zxuc/IJ2A3IJKDT13LZjSWj4obvi8w0lMMsigT0gA68tbx2VkAWU4GN3MAlmWSQyKzJ3IbJfEul2dLml2xGJ5PU+Muu04/PC3lqE5RuoZQarWwW424DpY20FtB2DrAaDBgO8VcAquoKLEHyAsbAWsf3JgrG6pPZoXPXMiepgFRZL/eCqg8Iu0m5A2gLDDXMs7Ni9lCIJVtUGiI2rj11sfhuMy4puPp8dJ4DWupPMbQPE/KrrV2CkLe3LzuqW+uHgvv2kuvmoD3lZgZHrFtw2B52CfyR5f4HEJDT7D2lwoMZoHArn0MpBb2oYTS+l33hUcxDYsT9EmjhVovwm3U6fRHkPkXAlsamcS+jZTv+BQ5bS+zcqDw1T4F7h2WTJJeDM9dneYRqS/47zN+wM9aAf63J8AAAAAElFTkSuQmCC";
   var host = document.getElementById("dlhost"), sh = host.attachShadow({ mode: "open" }); sh.appendChild(document.getElementById("dltpl").content.cloneNode(true));
   var $ = function (i) { return sh.getElementById(i); };
   var s = $("s"), days = $("days"), go = $("go"), alt = $("alt"), hero = $("hero"), pr = $("pr"), amt = $("amt"), timer = null, total = 86400000;
@@ -403,7 +401,7 @@ h1{margin:10px 0 0;font:800 1.7rem var(--font-head);letter-spacing:-.01em;text-a
     (st.rewards || []).forEach(function (r, i) {
       var c = document.createElement("div"), done = i < st.streak && !(st.ready && i === st.next_streak - 1), today = st.ready && i === st.next_streak - 1;
       c.className = "day" + (done ? " done" : "") + (today ? " today" : "");
-      c.innerHTML = '<i>DAY ' + (i + 1) + '</i><svg><use href="#' + (done ? "ck" : "coin") + '"/></svg><span>' + r + '</span>';
+      c.innerHTML = '<i>DAY ' + (i + 1) + '</i>' + (done ? '<svg><use href="#ck"/></svg>' : '<img src="' + COIN + '" alt="">') + '<span>' + r + '</span>';
       days.appendChild(c);
     });
     if (!st.linked) { need("Link your Minecraft account first. Get the command on your profile and type it in the game.", "Open my profile"); return; }
