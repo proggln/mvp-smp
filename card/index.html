@@ -324,6 +324,7 @@ button{font:inherit}
 .wc-n p{margin:6px 0 0;color:#cfe3f1;white-space:pre-wrap;font-size:.95rem;line-height:1.55}
 .wc-how{margin:14px 0 0;padding-left:20px;color:#cfe3f1;line-height:1.7}
 .wc-styles{margin-top:14px}.wc-slabel{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:#9db6c9;margin-bottom:8px}
+@property --p{syntax:"<length>";inherits:false;initial-value:0px}.wc-flow{background:repeating-linear-gradient(135deg,var(--c0) var(--p),var(--c1) calc(var(--p) + 170px),var(--c2) calc(var(--p) + 340px),var(--c1) calc(var(--p) + 510px),var(--c0) calc(var(--p) + 680px))!important;animation:wcflow 12s linear infinite}@keyframes wcflow{to{--p:680px}}@media(prefers-reduced-motion:reduce){.wc-flow{animation:none}}
 .wc-sw{display:flex;gap:12px;flex-wrap:wrap}.wc-sw button{width:44px;height:44px;border-radius:14px;border:2px solid rgba(255,255,255,.2);cursor:pointer;padding:0;transition:transform .12s}.wc-sw button:active{transform:scale(.92)}.wc-sw button.on{border-color:#fff;box-shadow:0 0 0 3px rgba(111,208,255,.55)}
 .wc-install{margin-top:18px;font-size:.86rem;color:var(--muted)}
 .wc-medals{margin:18px 0 0}.wc-medals h2{margin:0 0 10px}.wc-medals h2 small{font-size:.8rem;font-weight:700;color:var(--muted);margin-left:6px}
@@ -404,6 +405,8 @@ button{font:inherit}
   var API = "https://mvp-news-api.mvp-shop.workers.dev", KEY = "mvp_card_token";
   var root = document.getElementById("cardroot"), poll = null, tilt = null;
   function head(n, s) { return '<span class="mch" style="width:' + s + 'px;height:' + s + 'px"><img alt="" loading="lazy" src="' + API + '/api/skin/' + encodeURIComponent(n) + '" onerror="this.style.display=\'none\';this.parentNode.className+=\' bad\'"></span>'; }
+  function cardGrad(t) { var c = t.colors; return "linear-gradient(135deg," + c[0] + " 0%," + c[1] + " 55%," + c[2] + " 100%)"; }
+  function flowVars(el, t) { el.classList.toggle("wc-flow", !!t.anim); if (t.anim) { el.style.setProperty("--c0", t.colors[0]); el.style.setProperty("--c1", t.colors[1]); el.style.setProperty("--c2", t.colors[2]); } }
   function esc(t) { return String(t == null ? "" : t).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   function getTok() {
     var t = ""; try { t = localStorage.getItem(KEY) || ""; } catch (e) {}
@@ -559,7 +562,7 @@ button{font:inherit}
       ".dk-t{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 10px;font:700 .75rem Montserrat,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#9db6c9}.dk-t span{letter-spacing:0;text-transform:none;font-weight:600}" +
       ".dk-l{flex:1;overflow:auto;padding:4px 8px 10px}.dk-r{display:flex;align-items:center;gap:11px;width:100%;box-sizing:border-box;padding:9px 10px;border:0;border-radius:14px;background:transparent;color:#fff;text-align:left;cursor:pointer;font:inherit}.dk-r:hover{background:rgba(255,255,255,.07)}" +
       ".dk-w{flex:1;min-width:0}.dk-w b{display:block;font-size:.92rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dk-w small{display:flex;align-items:center;gap:6px;color:#9db6c9;font-size:.78rem;margin-top:1px}.dk-u{min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#0081cc;color:#fff;font:700 .72rem/20px Montserrat,sans-serif;text-align:center}" +
-      ".dk-e{padding:6px 18px 12px;color:#9db6c9;font-size:.85rem}.dk-err{padding:0 16px 8px;color:#ffb3b9;font-size:.8rem;min-height:0}.dk-err:empty{display:none}" +
+      ".dk-add{border:0;border-radius:999px;padding:10px 20px;font:700 .88rem inherit;color:#fff;background:linear-gradient(180deg,#22a6f2,#0081cc);cursor:pointer;box-shadow:0 4px 14px rgba(0,129,204,.35)}.dk-add:hover{background:linear-gradient(180deg,#45b6f7,#0a8ee0)}.dk-e{padding:6px 18px 12px;color:#9db6c9;font-size:.85rem}.dk-err{padding:0 16px 8px;color:#ffb3b9;font-size:.8rem;min-height:0}.dk-err:empty{display:none}" +
       ".dk-h{display:flex;align-items:center;gap:10px;padding:12px 12px 10px;border-bottom:1px solid rgba(255,255,255,.08)}.dk-h a{color:#fff;font-weight:700;text-decoration:none;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dk-b{border:0;background:rgba(255,255,255,.08);color:#fff;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;cursor:pointer;flex:none}.dk-b:hover{background:rgba(255,255,255,.16)}" +
       ".dk-m{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:6px}.dk-i{max-width:82%;padding:8px 12px;border-radius:16px;font-size:.92rem;line-height:1.4;overflow-wrap:anywhere;white-space:pre-wrap}.dk-i.me{align-self:flex-end;background:#0081cc;color:#fff;border-bottom-right-radius:5px}.dk-i.them{align-self:flex-start;background:rgba(255,255,255,.1);border-bottom-left-radius:5px}.dk-i.pend{opacity:.6}" +
       ".dk-f{display:flex;gap:8px;align-items:flex-end;padding:10px 12px 12px;border-top:1px solid rgba(255,255,255,.08)}.dk-f textarea{flex:1;min-height:40px;max-height:110px;resize:none;box-sizing:border-box;padding:10px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.05);color:inherit;font:inherit;font-size:.92rem;outline:0;margin:0}.dk-f textarea:focus{border-color:rgba(111,208,255,.6)}.dk-send{flex:none;width:40px;height:40px;border:0;border-radius:50%;background:linear-gradient(180deg,#22a6f2,#0081cc);color:#fff;display:grid;place-items:center;cursor:pointer}.dk-send:disabled{opacity:.45;cursor:default}" +
@@ -600,7 +603,7 @@ button{font:inherit}
     if (onBack) host.querySelector("#dkback").onclick = function () { clearInterval(host._t); onBack(); };
     ta.focus();
   }
-  function dockList(host, tok) {
+  function dockList(host, tok, onAdd) {
     dkCss(); if (host._t) clearInterval(host._t);
     host.innerHTML = '<div class="dk-t">Friends <span id="dkc"></span></div><div class="dk-l" id="dkl"><div class="dk-e">Loading...</div></div>';
     var list = host.querySelector("#dkl");
@@ -609,12 +612,12 @@ button{font:inherit}
         if (!r.ok) { list.innerHTML = '<div class="dk-e">Could not load friends.</div>'; return; }
         var f = r.j.friends || [], on = f.filter(function (x) { return x.online; }).length;
         host.querySelector("#dkc").textContent = f.length ? on + " online" : "";
-        if (!f.length) { list.innerHTML = '<div class="dk-e">No friends yet. Use the Friends button at the top to add some.</div>'; return; }
+        if (!f.length) { list.innerHTML = '<div class="dk-e">No friends yet. Add a friend by Minecraft nickname and chat with them here.</div><div style="padding:0 18px"><button type="button" class="dk-add" id="dkadd">Add friends</button></div>'; var ab = list.querySelector("#dkadd"); if (ab && onAdd) ab.onclick = onAdd; return; }
         list.innerHTML = "";
         f.forEach(function (x) {
           var b = document.createElement("button"); b.type = "button"; b.className = "dk-r";
           b.innerHTML = head(x.nick, 36) + '<div class="dk-w"><b>' + esc(x.nick) + '</b><small><span class="wc-sdot' + (x.online ? " on" : "") + '" style="flex:none"></span>' + (x.online ? "Online now" : "Last seen " + esc(dkAgo(x.last_online))) + '</small></div>' + (x.unread ? '<span class="dk-u">' + x.unread + '</span>' : "");
-          b.onclick = function () { chatView(host, tok, x.nick, function () { dockList(host, tok); }); };
+          b.onclick = function () { chatView(host, tok, x.nick, function () { dockList(host, tok, onAdd); }); };
           list.appendChild(b);
         });
       }).catch(function () { list.innerHTML = '<div class="dk-e">Cannot reach the server.</div>'; });
@@ -635,7 +638,7 @@ button{font:inherit}
     if (!p.nick || !p.email || document.getElementById("mvpdock")) return;
     dkCss();
     var a = document.createElement("aside"); a.id = "mvpdock"; a.className = "dk"; a.setAttribute("aria-label", "Friends"); document.body.appendChild(a);
-    dockList(a, tok);
+    dockList(a, tok, function () { openFriends(p, tok); });
   }
   function openFriends(p, tok) {
     stCss();
@@ -1040,7 +1043,7 @@ button{font:inherit}
         if (ins0) ins0.parentNode.insertBefore(rb, ins0);
       }
       function hexA(h, a) { var n = parseInt(h.slice(1), 16); return "rgba(" + (n >> 16 & 255) + "," + (n >> 8 & 255) + "," + (n & 255) + "," + a + ")"; }
-      function applyTheme(t) { if (!c || !t) return; c.style.background = "linear-gradient(135deg," + t.colors[0] + " 0%," + t.colors[1] + " 55%," + t.colors[2] + " 100%)"; c.style.boxShadow = "0 26px 50px " + hexA(t.colors[1], .45); }
+      function applyTheme(t) { if (!c || !t) return; c.style.background = cardGrad(t); flowVars(c, t); c.style.boxShadow = "0 26px 50px " + hexA(t.colors[1], .45); }
       var themes = (p.themes || []).filter(function (t) { return !t.app_only; }), cur = p.theme || "default";
       applyTheme(themes.filter(function (t) { return t.id === cur; })[0]);
       if (themes.length > 1 && c) {
