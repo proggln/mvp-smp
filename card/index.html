@@ -782,13 +782,13 @@ button{font:inherit}
         '<div class="wc-stat"><div class="wc-ic"><img src="coin.png" alt=""></div><div class="wc-sv">' + esc(p.coins) + '</div><div class="wc-sl">Coins</div></div>' +
         '<div class="wc-stat"><div class="wc-ic"><img src="sword.png" alt=""></div><div class="wc-sv">' + esc(p.kills) + '</div><div class="wc-sl">Kills</div></div>' +
         '</div>' + medalsBtn(p.medals) + '<div class="wc-news"><h2>Latest news <a href="../news/" style="font-size:.85rem;font-weight:600;margin-left:8px">All news</a></h2><div id="wcnews"></div></div></div></div>' +
-        '<div class="wc-foot"><button class="wc-dellink" id="wcdel" type="button">Delete account</button></div>';
+        (V2 ? '' : '<div class="wc-foot"><button class="wc-dellink" id="wcdel" type="button">Delete account</button></div>');
       document.getElementById("wcmed").addEventListener("click", function () { openMedals(p.medals); });
       document.getElementById("wcinb").addEventListener("click", function () { openInbox(tok, p); });
       if (location.hash === "#inbox" && !window.__inboxOpened) { window.__inboxOpened = true; openInbox(tok, p); }
       // a browser that already has notifications on is tied to this card, so personal messages reach it
       if (!window.__pushLinked) { window.__pushLinked = true; try { var wt = localStorage.getItem("mvp_web_push"); if (wt) call("POST", "/api/app/push-token", { token: wt, kind: "web" }, tok).catch(function () {}); } catch (e) {} }
-      document.getElementById("wcdel").addEventListener("click", function () { askDelete(tok, p); });
+      var wd = document.getElementById("wcdel"); if (wd) wd.addEventListener("click", function () { askDelete(tok, p); });
       var ud = document.getElementById("wcundel");
       if (ud) ud.addEventListener("click", function () {
         ud.disabled = true;
