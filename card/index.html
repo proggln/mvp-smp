@@ -1299,7 +1299,7 @@ button{font:inherit}
           mountDock(p, tok);
         }
         if (p.email) accountBox(p, tok, document.querySelector(".wc-install"));
-        if (p.nick || p.email) { var anc = document.querySelector(".wc-install"); if (anc && anc.parentNode) { dailyBox(p, tok, anc); contestBox(p, tok, anc); } }
+        if (p.nick || p.email) { var anc = document.querySelector(".wc-install"); if (anc && anc.parentNode) { contestBox(p, tok, anc); } }
       }
       if (!p.nick && !(V2 && p.email)) {
         var rb = document.createElement("div"); rb.className = "wc-install"; rb.style.cssText = "margin:14px 0;padding:14px;border-radius:14px;background:rgba(255,255,255,.06)";

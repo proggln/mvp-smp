@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Daily reward | MVP</title>
+<meta name="theme-color" content="#03080f">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link href="../fonts/fonts.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(120% 90% at 50% 0%,#0b3a63,#03080f 70%);color:#fff;font:500 1rem/1.4 system-ui,sans-serif}
+.c{width:100%;max-width:420px;padding:24px;border-radius:20px;background:rgba(255,255,255,.07);box-shadow:0 20px 60px rgba(0,0,0,.4)}
+h1{margin:0 0 4px;font-size:1.4rem}
+.s{opacity:.8;margin:6px 0 14px}
+.days{display:flex;gap:5px;margin:14px 0}
+.days div{flex:1;text-align:center;padding:8px 0;border-radius:9px;font-weight:700;font-size:.8rem;background:rgba(255,255,255,.08)}
+.days .d{background:rgba(34,166,242,.35)}.days .t{outline:2px solid #22a6f2}
+.b{display:flex;width:100%;align-items:center;justify-content:center;padding:14px;border-radius:999px;border:0;cursor:pointer;color:#fff;font:700 1rem system-ui;background:linear-gradient(180deg,#22a6f2,#0081cc);box-shadow:0 8px 22px rgba(0,129,204,.35);text-decoration:none}
+.b:disabled{opacity:.5;cursor:default}
+.b.g{background:rgba(255,255,255,.1);box-shadow:none;margin-top:10px}
+.ok{color:#7fe3a0}
+</style>
+</head>
+<body>
+<div class="c">
+<h1>Daily reward</h1>
+<div class="s" id="s">Loading...</div>
+<div class="days" id="days"></div>
+<button class="b" id="go" type="button" disabled>Claim</button>
+<a class="b g" id="alt" href="/card/" style="display:none">Open my profile</a>
+</div>
+<script>
+(function () {
+  var API = "https://mvp-news-api.mvp-shop.workers.dev", KEY = "mvp_card_token";
+  var s = document.getElementById("s"), days = document.getElementById("days"), go = document.getElementById("go"), alt = document.getElementById("alt"), timer = null;
+  function tok() { var t = ""; try { t = localStorage.getItem(KEY) || ""; } catch (e) {} if (!t) { var m = document.cookie.match(new RegExp("(?:^|; )" + KEY + "=([^;]+)")); if (m) t = m[1]; } return t; }
+  function call(m, p) { return fetch(API + p, { method: m, headers: { Authorization: "Bearer " + tok(), "Content-Type": "application/json" }, body: m === "POST" ? "{}" : undefined }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, status: r.status, j: j }; }); }); }
+  function left(ms) { var t = Math.max(0, Math.ceil(ms / 1000)), h = Math.floor(t / 3600), m = Math.floor(t % 3600 / 60); return (h ? h + "h " : "") + m + "m " + (t % 60) + "s"; }
+  function need(msg, label) { s.textContent = msg; go.style.display = "none"; alt.textContent = label; alt.style.display = "flex"; }
+  function paint(st) {
+    days.textContent = "";
+    (st.rewards || []).forEach(function (r, i) { var c = document.createElement("div"); if (i < st.streak) c.className = "d"; if (st.ready && i === st.next_streak - 1) c.className = "t"; c.textContent = r; days.appendChild(c); });
+    if (!st.linked) { need("Link your Minecraft account first: get the command on your profile and type it in the game.", "Open my profile"); return; }
+    var end = Date.now() + st.remaining_ms;
+    function tick() { var l = end - Date.now(); if (st.ready || l <= 0) { s.textContent = "Ready! +" + st.reward_now + " coins. Streak: " + st.streak + " day(s)."; go.disabled = false; go.textContent = "Claim +" + st.reward_now; if (timer) { clearInterval(timer); timer = null; } } else { s.textContent = "Next reward in " + left(l) + ". Streak: " + st.streak + " day(s)."; go.disabled = true; go.textContent = "Come back later"; } }
+    if (timer) clearInterval(timer); tick(); if (!st.ready) timer = setInterval(tick, 1000);
+  }
+  function load() { call("GET", "/api/app/daily").then(function (r) { if (r.ok) paint(r.j); else need("Could not load. Try again later.", "Open my profile"); }).catch(function () { need("Cannot reach the server.", "Open my profile"); }); }
+  go.addEventListener("click", function () {
+    go.disabled = true;
+    call("POST", "/api/app/daily/claim").then(function (r) {
+      if (r.ok) { s.innerHTML = '<span class="ok">+' + r.j.amount + ' coins!</span> They arrive when you are in the game.'; go.textContent = "Done"; setTimeout(load, 2500); }
+      else if (r.status === 409) { need("Link your Minecraft account first.", "Open my profile"); }
+      else load();
+    }).catch(function () { s.textContent = "Cannot reach the server."; go.disabled = false; });
+  });
+  if (!tok()) { need("Log in to your MVP account first, then come back to this page.", "Log in"); alt.href = "/card/"; return; }
+  load();
+})();
+</script>
+</body>
+</html>
