@@ -985,7 +985,7 @@ button{font:inherit}
         '<div class="wc-grid"><div><div class="wc-stage"><div class="wc" id="wccard">' +
         '<div class="wc-top"><div class="wc-brand"><img src="../icon-180.png" alt="" width="38" height="38">MVP</div><span class="wc-badge">' + esc(p.rank) + '</span></div>' +
         '<div class="wc-num">' + esc(pad(p.card_no)) + '</div>' +
-        '<div class="wc-bot"><div style="display:flex;align-items:center;gap:12px">' + (p.nick ? head(p.nick, 44) : "") + '<div><div class="wc-lbl">PLAYER</div><div class="wc-val">' + esc((p.nick || p.display_name || "NOT LINKED").toUpperCase()) + '</div></div></div>' +
+        '<div class="wc-bot"><div style="display:flex;align-items:center;gap:12px">' + (p.nick ? head(p.nick, 44) : "") + '<div><div class="wc-lbl">PLAYER</div><div class="wc-val">' + esc((p.nick || p.display_name || "NOT LINKED").toUpperCase()) + (p.verified ? VTICK.replace('width="16" height="16"', 'width="18" height="18"') : "") + '</div></div></div>' +
         '<div style="text-align:right"><div class="wc-lbl">SINCE</div><div class="wc-val">' + esc(p.since || "") + '</div></div></div></div></div>' +
         '<div class="wc-install">Tip: on your phone, add this page to your Home Screen and it works like an app.</div></div>' +
         '<div><div class="wc-stats">' +
