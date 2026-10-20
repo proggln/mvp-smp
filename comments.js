@@ -56,6 +56,10 @@
       function btn(label, fn) { var b = document.createElement("button"); b.type = "button"; b.textContent = label; b.onclick = fn; act.appendChild(b); return b; }
       if (!isReply) btn("Reply", function () { if (rbox.firstChild) { rbox.innerHTML = ""; return; } rbox.appendChild(compose(c.id, draw)); });
       if (c.mine) btn("Delete", function () { if (!window.confirm("Delete this comment?")) return; call("POST", "/api/app/comments/delete", { id: c.id }).then(function (r) { if (r.ok) { data.items = data.items.filter(function (x) { return x.id !== c.id && x.parent_id !== c.id; }); draw(); } }); });
+      else if (data.admin) {
+        btn("Delete (admin)", function () { if (!window.confirm("Delete this comment" + (c.parent_id ? "" : " and its replies") + "?")) return; call("POST", "/api/app/comments/mod", { action: "delete", id: c.id }).then(function (r) { if (r.ok) { data.items = data.items.filter(function (x) { return x.id !== c.id && x.parent_id !== c.id; }); draw(); } }); });
+        btn("Ban from comments", function (e) { if (!window.confirm("Ban " + c.nick + " from commenting?")) return; var b = e.target; call("POST", "/api/app/comments/mod", { action: "ban", player_id: c.pid, on: true }).then(function (r) { b.textContent = r.ok ? "Banned" : "Error"; b.disabled = true; }); });
+      }
       else if (data.can_comment) btn("Report", function (e) { var b = e.target; call("POST", "/api/app/comments/report", { id: c.id }).then(function (r) { b.textContent = r.ok ? "Reported" : "Try later"; b.disabled = true; }); });
       return el;
     }
