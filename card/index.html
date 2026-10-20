@@ -418,7 +418,7 @@ button{font:inherit}
   }
   function stop() { if (poll) { clearInterval(poll); poll = null; } }
   // v2 test mode: open /card/?v2=1 once, the browser remembers it. Not visible to normal visitors yet.
-  var V2 = false; try { if (/[?&]v2=1/.test(location.search)) localStorage.setItem("mvp_v2", "1"); if (/[?&]v2=0/.test(location.search)) localStorage.removeItem("mvp_v2"); V2 = localStorage.getItem("mvp_v2") === "1"; } catch (e) {}
+  var V2 = true;
 
   function loginView() {
     stop();
