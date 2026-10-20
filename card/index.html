@@ -355,9 +355,9 @@ button{font:inherit}
 .wc-inb:hover{transform:translateY(-1px);border-color:rgba(111,208,255,.5)}.wc-inb:focus-visible{outline:2px solid #6fd0ff;outline-offset:2px}
 .wc-ibadge{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:#e8424f;color:#fff;font:800 .72rem/20px inherit;text-align:center;box-shadow:0 0 0 2px #06111d}
 .wc-idlg{width:min(640px,calc(100vw - 32px))}
-.wc-im{padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);margin:0 0 10px}.wc-im.unread{border-color:rgba(111,208,255,.55);background:rgba(46,162,234,.1)}
-.wc-imh{display:flex;justify-content:space-between;gap:10px;font-size:.78rem;color:var(--muted)}.wc-from{font-weight:700;color:#6fd0ff;text-transform:uppercase;letter-spacing:.06em;display:inline-flex;align-items:center;gap:5px}.wc-ver{flex:none}
-.wc-imt{display:block;font-size:1.05rem;margin:4px 0 6px}.wc-im p{margin:8px 0 0;white-space:pre-wrap;color:#dbe8f3;overflow-wrap:anywhere}.wc-im img{display:block;width:100%;border-radius:12px;margin:8px 0 0}
+.wc-im{display:flex;flex-direction:column;padding:14px 4px 14px 18px;margin:0;border:0;border-bottom:1px solid rgba(255,255,255,.08);border-radius:0;background:none;position:relative}.wc-im:last-child{border-bottom:0}.wc-im.unread::before{content:"";position:absolute;left:3px;top:21px;width:8px;height:8px;border-radius:50%;background:#2ea2ea}.wc-im.unread{border-color:rgba(255,255,255,.08);background:none}
+.wc-imh{order:3;display:flex;gap:8px;align-items:center;font-size:.76rem;color:var(--muted);margin-top:6px}.wc-from{font-weight:600;color:var(--muted);text-transform:none;letter-spacing:0;display:inline-flex;align-items:center;gap:4px}.wc-imh time::before{content:"\00B7";margin-right:8px}.wc-ver{flex:none}
+.wc-imt{order:1;display:block;font-size:1rem;font-weight:700;margin:0}.wc-im p{order:2;margin:4px 0 0;white-space:pre-wrap;color:#b9cddd;font-size:.92rem;overflow-wrap:anywhere}.wc-im img{order:2;display:block;width:100%;border-radius:12px;margin:8px 0 0}
 .wc-im .wc-vid{margin-top:10px}.wc-ihide{margin-top:10px;border:0;background:none;color:#6f8597;font:500 .8rem inherit;text-decoration:underline;cursor:pointer;padding:0}.wc-ihide:hover{color:#ffb3b9}
 .wc-im a{color:#6fd0ff;text-decoration:underline}.wc-iempty{text-align:center;color:var(--muted);padding:20px 10px}.wc-iempty svg{opacity:.8}
 </style>
