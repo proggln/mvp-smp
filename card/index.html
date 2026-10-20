@@ -434,7 +434,7 @@ button{font:inherit}
   var CB = 'style="width:20px;height:20px;min-width:20px;flex:none;margin:0;padding:0;accent-color:#0081cc"';
 
   // Google sign-in: put the public Web client ID here (same one as in the worker). Empty = no Google button.
-  var GOOGLE_CLIENT_ID = "";
+  var GOOGLE_CLIENT_ID = "460112027055-eat6h4kjkahdq5lgcernm9umhs2sbbma.apps.googleusercontent.com";
   function googleSignIn(cred, name, box) {
     var msg = document.getElementById("wcm");
     call("POST", "/api/web/google", { credential: cred, name: name || undefined }).then(function (r) {
