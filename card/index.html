@@ -484,6 +484,51 @@ button{font:inherit}
       }).catch(function () { lb.disabled = false; m.textContent = "Cannot reach the server."; });
     });
   }
+  // players who already have a card and a nickname must connect an e-mail; this window can not be closed
+  function mustEmail(p, tok) {
+    if (document.getElementById("wcmust")) return;
+    var dlg = document.createElement("dialog"); dlg.id = "wcmust"; dlg.className = "wc-dlg";
+    var finished = false;
+    dlg.addEventListener("cancel", function (e) { e.preventDefault(); });
+    // some browsers close a dialog with Esc anyway: open it again at once
+    dlg.addEventListener("close", function () { if (!finished && dlg.isConnected && dlg.showModal) setTimeout(function () { try { dlg.showModal(); } catch (e) {} }, 0); });
+    var CB = 'style="width:20px;height:20px;min-width:20px;flex:none;margin:0;padding:0;accent-color:#0081cc"';
+    var IN = 'style="padding:11px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:transparent;color:inherit;margin:10px 8px 0 0;width:min(280px,100%)"';
+    function step1() {
+      dlg.innerHTML = '<div class="wc-dh"><h2>Welcome back, ' + esc(p.nick || "player") + '!</h2></div>' +
+        '<p class="wc-dsub">To keep using your MVP card you need to connect an e-mail. It protects your account, lets you sign in on any device and keeps your purchases safe. Your card, coins and stats stay exactly as they are.</p>' +
+        '<input id="wmem" type="email" autocomplete="email" maxlength="254" placeholder="you@example.com" ' + IN + '><button type="button" class="mgb" id="wmsend" style="margin-top:10px">Send code</button>' +
+        '<label style="display:flex;gap:10px;align-items:center;margin-top:14px;cursor:pointer;font-size:.9rem"><input type="checkbox" id="wmnl" ' + CB + '> Send me MVP news by e-mail (optional, you can unsubscribe any time)</label><div class="mgmsg" id="wmm"></div>';
+      dlg.querySelector("#wmsend").onclick = function () {
+        var em = dlg.querySelector("#wmem").value.trim().toLowerCase(), m = dlg.querySelector("#wmm"), b = this, news = dlg.querySelector("#wmnl").checked;
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)) { m.textContent = "Type a valid e-mail."; return; }
+        b.disabled = true; m.textContent = "";
+        call("POST", "/api/app/email-change-start", { email: em }, tok).then(function (r) {
+          if (!r.ok) { b.disabled = false; m.textContent = r.j && r.j.error === "email_taken" ? "This e-mail is already used by another account." : r.status === 429 ? "Too many tries. Wait a little." : "Could not send the code. Try again later."; return; }
+          step2(em, news);
+        }).catch(function () { b.disabled = false; m.textContent = "Cannot reach the server."; });
+      };
+    }
+    function step2(em, news) {
+      dlg.innerHTML = '<div class="wc-dh"><h2>Check your e-mail</h2></div><p class="wc-dsub">We sent a 6-digit code to <b>' + esc(em) + '</b>. It works for 10 minutes. Look in Spam too.</p>' +
+        '<input id="wmcode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" ' + IN.replace("width:min(280px,100%)", "width:140px;letter-spacing:4px;font-size:1.1rem") + '><button type="button" class="mgb" id="wmok" style="margin-top:10px">Confirm</button> <button type="button" class="mgb ghost" id="wmback" style="margin-top:10px">Change e-mail</button><div class="mgmsg" id="wmm"></div>';
+      dlg.querySelector("#wmback").onclick = step1;
+      dlg.querySelector("#wmok").onclick = function () {
+        var code = dlg.querySelector("#wmcode").value.trim(), m = dlg.querySelector("#wmm"), b = this;
+        if (!/^\d{6}$/.test(code)) { m.textContent = "The code has 6 digits."; return; }
+        b.disabled = true; m.textContent = "";
+        call("POST", "/api/app/email-change-verify", { email: em, code: code }, tok).then(function (r) {
+          if (!r.ok) { b.disabled = false; m.textContent = r.j && r.j.error === "email_taken" ? "This e-mail is already used by another account." : "Wrong or expired code."; return; }
+          p.email = r.j.email;
+          var done = function () { finished = true; putCache(p); dlg.close(); dlg.remove(); renderCard(p, tok, true); };
+          if (news) call("POST", "/api/app/newsletter", { on: true }, tok).then(function (r2) { if (r2.ok) p.newsletter = true; done(); }).catch(done); else done();
+        }).catch(function () { b.disabled = false; m.textContent = "Cannot reach the server."; });
+      };
+    }
+    step1();
+    document.body.appendChild(dlg);
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", "");
+  }
   // ---------- Settings (v2) ----------
   var SET_CSS = false;
   function openSettings(p, tok) {
@@ -749,6 +794,7 @@ button{font:inherit}
         call("POST", "/api/web/logout", null, tok).catch(function () {}); setTok(""); putCache(null); loginView();
       });
       var c = document.getElementById("wccard");
+      if (V2 && !p.email && (p.nick || p.linked)) mustEmail(p, tok);
       if (V2) {
         var hb = document.querySelector(".wc-hbtns"), ob = document.getElementById("wcout");
         if (hb && ob) {
