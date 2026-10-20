@@ -596,6 +596,9 @@ button{font:inherit}
         if (m.body) { var cap = document.createElement("div"); cap.className = "dk-t2"; cap.textContent = m.body; d.appendChild(cap); }
       } else d.appendChild(document.createTextNode(m.body));
       w.appendChild(d);
+      w.setAttribute("data-min", String(Math.floor((m.at || Date.now()) / 60000))); w.setAttribute("data-me", m.mine ? "1" : "0");
+      var pv = box.lastElementChild;
+      if (pv && pv.getAttribute && pv.getAttribute("data-me") === (m.mine ? "1" : "0") && pv.getAttribute("data-min") === w.getAttribute("data-min")) { var pt = pv.querySelector(".dk-time"); if (pt) pt.style.display = "none"; }
       var meta = document.createElement("div"); meta.className = "dk-meta"; var tm = document.createElement("span"); tm.className = "dk-time"; tm.textContent = fmtT(m.at || Date.now()); meta.appendChild(tm);
       if (m.mine && m.id) {
         var x = document.createElement("button"); x.type = "button"; x.className = "dk-x"; x.setAttribute("aria-label", "Message options");
