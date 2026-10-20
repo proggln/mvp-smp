@@ -290,6 +290,7 @@ button{font:inherit}
 .wc-brand img{width:38px;height:38px;border-radius:10px}
 .wc-badge{font-size:.72rem;font-weight:700;background:rgba(255,255,255,.22);padding:6px 12px;border-radius:999px}
 .wc-num{font:600 1.7rem/1 var(--font-body);letter-spacing:.18em}
+.mch{display:inline-block;flex:none;border-radius:8px;overflow:hidden;background:url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%208%208%27%20shape-rendering=%27crispEdges%27%3E%3Crect%20width=%278%27%20height=%278%27%20fill=%27%23b98a63%27/%3E%3Crect%20width=%278%27%20height=%272%27%20fill=%27%233b2a1d%27/%3E%3Crect%20y=%272%27%20width=%271%27%20height=%271%27%20fill=%27%233b2a1d%27/%3E%3Crect%20x=%277%27%20y=%272%27%20width=%271%27%20height=%271%27%20fill=%27%233b2a1d%27/%3E%3Crect%20x=%271%27%20y=%274%27%20width=%272%27%20height=%271%27%20fill=%27%23fff%27/%3E%3Crect%20x=%275%27%20y=%274%27%20width=%272%27%20height=%271%27%20fill=%27%23fff%27/%3E%3Crect%20x=%272%27%20y=%274%27%20width=%271%27%20height=%271%27%20fill=%27%233a4fa0%27/%3E%3Crect%20x=%275%27%20y=%274%27%20width=%271%27%20height=%271%27%20fill=%27%233a4fa0%27/%3E%3Crect%20x=%273%27%20y=%275%27%20width=%272%27%20height=%271%27%20fill=%27%238f6444%27/%3E%3Crect%20x=%272%27%20y=%276%27%20width=%274%27%20height=%271%27%20fill=%27%236e4a31%27/%3E%3C/svg%3E") center/cover;image-rendering:pixelated;vertical-align:middle}.mch img{width:100%;height:100%;display:block;image-rendering:pixelated}
 .wc-bot{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
 .wc-lbl{font-size:.62rem;letter-spacing:.2em;opacity:.8}
 .wc-val{font-weight:700;font-size:1.05rem}
@@ -402,6 +403,7 @@ button{font:inherit}
 (function () {
   var API = "https://mvp-news-api.mvp-shop.workers.dev", KEY = "mvp_card_token";
   var root = document.getElementById("cardroot"), poll = null, tilt = null;
+  function head(n, s) { return '<span class="mch" style="width:' + s + 'px;height:' + s + 'px"><img alt="" loading="lazy" src="' + API + '/api/skin/' + encodeURIComponent(n) + '" onerror="this.style.display=\'none\'"></span>'; }
   function esc(t) { return String(t == null ? "" : t).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   function getTok() {
     var t = ""; try { t = localStorage.getItem(KEY) || ""; } catch (e) {}
@@ -564,7 +566,7 @@ button{font:inherit}
       var dot = kind === "friend" ? '<span class="wc-sdot' + (f.online ? " on" : "") + '" style="flex:none"></span>' : "";
       var sub = kind === "friend" ? (f.online ? "Online now" : "Last seen " + ago(f.last_online)) : kind === "in" ? "Wants to be your friend" : kind === "sug" ? f.mutual + " mutual friend" + (f.mutual === 1 ? "" : "s") : kind === "blk" ? "Blocked" : "Request sent";
       var btns = kind === "in" ? '<button type="button" class="st-b" data-a="accept" data-n="' + esc(f.nick) + '">Accept</button><button type="button" class="st-b" data-a="decline" data-n="' + esc(f.nick) + '">Decline</button><button type="button" class="st-b red" data-a="block" data-n="' + esc(f.nick) + '">Block</button>' : kind === "out" ? '<button type="button" class="st-b" data-a="remove" data-n="' + esc(f.nick) + '">Cancel</button>' : kind === "sug" ? '<button type="button" class="st-b" data-a="request" data-n="' + esc(f.nick) + '">Add</button>' : kind === "blk" ? '<button type="button" class="st-b" data-a="unblock" data-n="' + esc(f.nick) + '">Unblock</button>' : '<button type="button" class="st-b" data-a="remove" data-n="' + esc(f.nick) + '">Remove</button>';
-      return '<div class="st-r">' + dot + '<div class="st-t"><b><a href="../u/?n=' + encodeURIComponent(f.nick) + '" style="color:#fff;text-decoration:none">' + esc(f.nick) + '</a></b><span>' + esc(sub) + '</span></div>' + btns + '</div>';
+      return '<div class="st-r">' + head(f.nick, 36) + dot + '<div class="st-t"><b><a href="../u/?n=' + encodeURIComponent(f.nick) + '" style="color:#fff;text-decoration:none">' + esc(f.nick) + '</a></b><span>' + esc(sub) + '</span></div>' + btns + '</div>';
     }
     function grp(title, list, kind) { return list.length ? '<div class="st-lab">' + title + '</div><div class="st-grp">' + list.map(function (f) { return row(f, kind); }).join("") + '</div>' : ""; }
     function load() {
@@ -614,7 +616,7 @@ button{font:inherit}
     var ICO2 = function (d, red) { return '<span class="st-ic' + (red ? ' red' : '') + '"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + d + '"/></svg></span>'; };
     var ICN = { mail: "M3 6h18v12H3z M3 7l9 6 9-6", cube: "M12 3l8 4.5v9L12 21l-8-4.5v-9z M4 7.5l8 4.5 8-4.5 M12 12v9", bell: "M6 16V11a6 6 0 0112 0v5l2 2H4z M10 21h4", dev: "M3 5h13v10H3z M8 19h5 M18 9h3v10h-3z", out: "M9 4H5v16h4 M16 8l4 4-4 4 M20 12H9", dl: "M12 4v11 M7 11l5 5 5-5 M5 20h14", trash: "M4 7h16 M9 7V4h6v3 M6 7l1 13h10l1-13", card: "M3 6h18v12H3z M3 10h18 M7 15h4" };
     var ini = (p.nick || p.display_name || p.email || "M").charAt(0).toUpperCase();
-    dlg.innerHTML = '<div class="st-top"><div class="st-av">' + esc(ini) + '</div><div class="st-who"><h2>Settings</h2><div>' + esc(p.email || p.nick || "MVP player") + '</div></div><button type="button" class="wc-dx" aria-label="Close">\u00D7</button></div><div class="st-body">' +
+    dlg.innerHTML = '<div class="st-top"><div class="st-av">' + (p.nick ? head(p.nick, 52) : esc(ini)) + '</div><div class="st-who"><h2>Settings</h2><div>' + esc(p.email || p.nick || "MVP player") + '</div></div><button type="button" class="wc-dx" aria-label="Close">\u00D7</button></div><div class="st-body">' +
       '<div class="st-lab">Account</div><div class="st-grp">' +
         '<div class="st-r">' + ICO2(ICN.mail) + '<div class="st-t"><b>E-mail</b><span>' + esc(p.email || "not added") + '</span></div><button type="button" class="st-b" id="stem">' + (p.email ? "Change" : "Add") + '</button></div><div id="stemf" class="st-sub"></div>' +
         '<div class="st-r">' + ICO2(ICN.card) + '<div class="st-t"><b>Card number</b><span>' + esc(pad(p.card_no)) + '</span></div></div>' +
@@ -885,7 +887,7 @@ button{font:inherit}
         '<div class="wc-grid"><div><div class="wc-stage"><div class="wc" id="wccard">' +
         '<div class="wc-top"><div class="wc-brand"><img src="../icon-180.png" alt="" width="38" height="38">MVP</div><span class="wc-badge">' + esc(p.rank) + '</span></div>' +
         '<div class="wc-num">' + esc(pad(p.card_no)) + '</div>' +
-        '<div class="wc-bot"><div><div class="wc-lbl">PLAYER</div><div class="wc-val">' + esc((p.nick || p.display_name || "NOT LINKED").toUpperCase()) + '</div></div>' +
+        '<div class="wc-bot"><div style="display:flex;align-items:center;gap:12px">' + (p.nick ? head(p.nick, 44) : "") + '<div><div class="wc-lbl">PLAYER</div><div class="wc-val">' + esc((p.nick || p.display_name || "NOT LINKED").toUpperCase()) + '</div></div></div>' +
         '<div style="text-align:right"><div class="wc-lbl">SINCE</div><div class="wc-val">' + esc(p.since || "") + '</div></div></div></div></div>' +
         '<div class="wc-install">Tip: on your phone, add this page to your Home Screen and it works like an app.</div></div>' +
         '<div><div class="wc-stats">' +

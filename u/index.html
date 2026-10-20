@@ -289,6 +289,7 @@ button{font:inherit}
 .wc-brand img{width:38px;height:38px;border-radius:10px}
 .wc-badge{font-size:.72rem;font-weight:700;background:rgba(255,255,255,.22);padding:6px 12px;border-radius:999px}
 .wc-num{font:600 1.7rem/1 var(--font-body);letter-spacing:.18em}
+.mch{display:inline-block;flex:none;border-radius:8px;overflow:hidden;background:url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%208%208%27%20shape-rendering=%27crispEdges%27%3E%3Crect%20width=%278%27%20height=%278%27%20fill=%27%23b98a63%27/%3E%3Crect%20width=%278%27%20height=%272%27%20fill=%27%233b2a1d%27/%3E%3Crect%20y=%272%27%20width=%271%27%20height=%271%27%20fill=%27%233b2a1d%27/%3E%3Crect%20x=%277%27%20y=%272%27%20width=%271%27%20height=%271%27%20fill=%27%233b2a1d%27/%3E%3Crect%20x=%271%27%20y=%274%27%20width=%272%27%20height=%271%27%20fill=%27%23fff%27/%3E%3Crect%20x=%275%27%20y=%274%27%20width=%272%27%20height=%271%27%20fill=%27%23fff%27/%3E%3Crect%20x=%272%27%20y=%274%27%20width=%271%27%20height=%271%27%20fill=%27%233a4fa0%27/%3E%3Crect%20x=%275%27%20y=%274%27%20width=%271%27%20height=%271%27%20fill=%27%233a4fa0%27/%3E%3Crect%20x=%273%27%20y=%275%27%20width=%272%27%20height=%271%27%20fill=%27%238f6444%27/%3E%3Crect%20x=%272%27%20y=%276%27%20width=%274%27%20height=%271%27%20fill=%27%236e4a31%27/%3E%3C/svg%3E") center/cover;image-rendering:pixelated;vertical-align:middle}.mch img{width:100%;height:100%;display:block;image-rendering:pixelated}
 .wc-bot{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
 .wc-lbl{font-size:.62rem;letter-spacing:.2em;opacity:.8}
 .wc-val{font-weight:700;font-size:1.05rem}
@@ -396,6 +397,7 @@ button{font:inherit}
 (function () {
   var API = "https://mvp-news-api.mvp-shop.workers.dev", KEY = "mvp_card_token";
   var root = document.getElementById("cardroot");
+  function head(n, s) { return '<span class="mch" style="width:' + s + 'px;height:' + s + 'px"><img alt="" loading="lazy" src="' + API + '/api/skin/' + encodeURIComponent(n) + '" onerror="this.style.display=\'none\'"></span>'; }
   function esc(t) { return String(t == null ? "" : t).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   function getTok() { var t = ""; try { t = localStorage.getItem(KEY) || ""; } catch (e) {} if (!t) { var m = document.cookie.match(new RegExp("(?:^|; )" + KEY + "=([^;]+)")); if (m) t = m[1]; } return t; }
   function call(method, path, body, tok) {
@@ -473,7 +475,7 @@ button{font:inherit}
     root.innerHTML = '<div class="wc-head"><div><h1>' + esc(d.nick) + '</h1><div class="upd" style="margin:6px 0 0">' + (on || "MVP player") + '</div></div></div>' +
       '<div class="wc-grid"><div><div class="wc-stage"><div class="wc" id="wccard" style="background:linear-gradient(135deg,' + t.colors[0] + ' 0%,' + t.colors[1] + ' 55%,' + t.colors[2] + ' 100%);box-shadow:0 26px 50px ' + hexA(t.colors[1], .45) + '">' +
       '<div class="wc-top"><div class="wc-brand"><img src="../icon-180.png" alt="" width="38" height="38">MVP</div><span class="wc-badge">' + esc(d.rank) + '</span></div>' +
-      '<div class="wc-bot"><div><div class="wc-lbl">PLAYER</div><div class="wc-val">' + esc(d.nick.toUpperCase()) + '</div></div><div style="text-align:right"><div class="wc-lbl">SINCE</div><div class="wc-val">' + esc(d.since) + '</div></div></div></div></div>' +
+      '<div class="wc-bot"><div style="display:flex;align-items:center;gap:12px">' + head(d.nick, 48) + '<div><div class="wc-lbl">PLAYER</div><div class="wc-val">' + esc(d.nick.toUpperCase()) + '</div></div></div><div style="text-align:right"><div class="wc-lbl">SINCE</div><div class="wc-val">' + esc(d.since) + '</div></div></div></div></div>' +
       '<div id="pact" style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">' + actions(d) + '<button type="button" class="mgb ghost" id="pshare">Copy profile link</button></div><div class="mgmsg" id="pmsg"></div></div>' +
       '<div><div class="wc-stats" style="grid-template-columns:repeat(2,minmax(0,1fr))">' +
       '<div class="wc-stat"><div class="wc-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#6fd0ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div class="wc-sv">' + esc(fmtTime(d.playtime)) + '</div><div class="wc-sl">Playtime</div></div>' +
