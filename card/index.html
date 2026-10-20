@@ -955,10 +955,10 @@ button{font:inherit}
     }).catch(function () { msg.textContent = "Cannot reach the server. Try again later."; btn.disabled = false; });
   }
   function codeView(code, pollTok, mode) {
-    var cmd = "/weblogin " + code;
+    var cmd = mode === "app" ? code : "/weblogin " + code;
     root.innerHTML = '<div class="card2 mg"><h1>Sign in</h1>' +
       (mode === "app"
-        ? '<div class="upd"><b>1.</b> Open the MVP app on your phone.<br><b>2.</b> Tap <b>Settings</b> (bottom right), then <b>Sign in to the website</b>.<br><b>3.</b> Type this code there:</div><div class="mgcode">' + esc(code) + '</div>'
+        ? '<div class="upd">Open the MVP app, tap <b>Settings</b>, then <b>Sign in to the website</b>.</div><div class="mgcode">' + esc(code) + '</div><button class="mgb" id="wccopy" type="button">Copy code</button> '
         : '<div class="upd">Join the server and type this command in the game chat:</div><div class="mgcode">' + esc(code) + '</div><div class="mgcmd">' + esc(cmd) + '</div><button class="mgb" id="wccopy" type="button">Copy command</button> ') +
       '<button class="mgb ghost" id="wcback" type="button">Cancel</button>' +
       '<div class="mgmsg ok" id="wcm">Waiting for you to enter the code... It works for 10 minutes.</div></div>';
@@ -966,7 +966,7 @@ button{font:inherit}
     var cp = document.getElementById("wccopy");
     if (cp) cp.addEventListener("click", function () {
       var m = document.getElementById("wcm");
-      try { navigator.clipboard.writeText(cmd).then(function () { m.textContent = "Command copied."; }); } catch (e) { m.textContent = "Copy it by hand: " + cmd; }
+      try { navigator.clipboard.writeText(cmd).then(function () { m.textContent = mode === "app" ? "Code copied. The app fills it in for you." : "Command copied."; }); } catch (e) { m.textContent = "Copy it by hand: " + cmd; }
     });
     stop();
     poll = setInterval(function () {
