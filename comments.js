@@ -2,8 +2,8 @@
 (function () {
   var API = "https://mvp-news-api.mvp-shop.workers.dev", KEY = "mvp_card_token";
   var css = ".cm{margin:14px 0 0}.cm-t{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#fff;border-radius:999px;padding:9px 16px;font:700 .9rem inherit;cursor:pointer}.cm-t:hover{background:rgba(255,255,255,.12)}" +
-    ".cm-b{margin-top:12px}.cm-box{display:flex;gap:10px;align-items:flex-start;margin:0 0 14px}.cm-box textarea{flex:1;min-height:46px;max-height:160px;resize:vertical;padding:11px 13px;border-radius:14px;border:1px solid rgba(255,255,255,.18);background:rgba(3,8,15,.6);color:inherit;font:inherit;margin:0}" +
-    ".cm-go{border:0;border-radius:999px;padding:11px 20px;font:700 .9rem inherit;color:#fff;background:linear-gradient(180deg,#22a6f2,#0081cc);cursor:pointer;flex:none}.cm-go:disabled{opacity:.55;cursor:default}" +
+    ".cm-b{margin-top:12px}.cm-box{margin:0 0 16px;border-radius:18px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);transition:border-color .2s,background .2s}.cm-box:focus-within{border-color:rgba(111,208,255,.6);background:rgba(255,255,255,.07)}.cm-box textarea{display:block;width:100%;box-sizing:border-box;min-height:52px;max-height:200px;resize:none;padding:14px 16px 4px;border:0;outline:0;background:transparent;color:inherit;font:inherit;font-size:.95rem;line-height:1.5;margin:0}.cm-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 10px 10px 16px}.cm-cnt{font-size:.78rem;color:#9db6c9}" +
+    ".cm-go{border:0;border-radius:999px;padding:9px 20px;font:700 .88rem inherit;color:#fff;background:linear-gradient(180deg,#22a6f2,#0081cc);cursor:pointer;flex:none;box-shadow:0 4px 14px rgba(0,129,204,.35)}.cm-go:hover{background:linear-gradient(180deg,#45b6f7,#0a8ee0)}.cm-go:disabled{opacity:.45;cursor:default;box-shadow:none}" +
     ".mch{display:inline-block;flex:none;border-radius:8px;overflow:hidden;background:url(\"data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%208%208%27%20shape-rendering=%27crispEdges%27%3E%3Crect%20width=%278%27%20height=%278%27%20fill=%27%23b98a63%27/%3E%3Crect%20width=%278%27%20height=%272%27%20fill=%27%233b2a1d%27/%3E%3Crect%20y=%272%27%20width=%271%27%20height=%271%27%20fill=%27%233b2a1d%27/%3E%3Crect%20x=%277%27%20y=%272%27%20width=%271%27%20height=%271%27%20fill=%27%233b2a1d%27/%3E%3Crect%20x=%271%27%20y=%274%27%20width=%272%27%20height=%271%27%20fill=%27%23fff%27/%3E%3Crect%20x=%275%27%20y=%274%27%20width=%272%27%20height=%271%27%20fill=%27%23fff%27/%3E%3Crect%20x=%272%27%20y=%274%27%20width=%271%27%20height=%271%27%20fill=%27%233a4fa0%27/%3E%3Crect%20x=%275%27%20y=%274%27%20width=%271%27%20height=%271%27%20fill=%27%233a4fa0%27/%3E%3Crect%20x=%273%27%20y=%275%27%20width=%272%27%20height=%271%27%20fill=%27%238f6444%27/%3E%3Crect%20x=%272%27%20y=%276%27%20width=%274%27%20height=%271%27%20fill=%27%236e4a31%27/%3E%3C/svg%3E\") center/cover;image-rendering:pixelated;vertical-align:middle}.mch img{width:100%;height:100%;display:block;image-rendering:pixelated}" +
     ".cm-i{padding:12px 0;border-top:1px solid rgba(255,255,255,.08)}.cm-i.re{margin-left:28px}.cm-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.85rem;color:#9db6c9}.cm-h a{color:#fff;font-weight:700;text-decoration:none}.cm-h a:hover{text-decoration:underline}" +
     ".cm-rk{padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.1);font-size:.7rem;font-weight:700;color:#cfe3f1}.cm-p{margin:4px 0 6px;font-size:.95rem;line-height:1.5;overflow-wrap:anywhere;white-space:pre-wrap}" +
@@ -42,16 +42,19 @@
         return box;
       }
       var row = document.createElement("div"); row.className = "cm-box";
-      var ta = document.createElement("textarea"); ta.maxLength = 500; ta.placeholder = parent ? "Write a reply..." : "Write a comment..."; ta.rows = 2;
-      var go = document.createElement("button"); go.type = "button"; go.className = "cm-go"; go.textContent = parent ? "Reply" : "Post";
+      var ta = document.createElement("textarea"); ta.maxLength = 500; ta.placeholder = parent ? "Write a reply..." : "Share your thoughts..."; ta.rows = 1;
+      var bar = document.createElement("div"); bar.className = "cm-bar"; var cnt = document.createElement("span"); cnt.className = "cm-cnt"; cnt.textContent = "0 / 500";
+      var go = document.createElement("button"); go.type = "button"; go.className = "cm-go"; go.textContent = parent ? "Reply" : "Post comment";
       var m = document.createElement("div"); m.className = "cm-m";
-      row.appendChild(ta); row.appendChild(go);
+      go.disabled = true;
+      ta.addEventListener("input", function () { ta.style.height = "auto"; ta.style.height = Math.min(ta.scrollHeight, 200) + "px"; cnt.textContent = ta.value.length + " / 500"; go.disabled = !ta.value.trim(); });
+      bar.appendChild(cnt); bar.appendChild(go); row.appendChild(ta); row.appendChild(bar);
       go.onclick = function () {
         var t = ta.value.trim(); if (!t) return; go.disabled = true; m.textContent = "";
         call("POST", "/api/app/comments", { news: nid, body: t, parent: parent || undefined }).then(function (r) {
-          go.disabled = false;
+          go.disabled = !ta.value.trim();
           if (!r.ok) { m.textContent = ERR[r.j && r.j.error] || "Could not post. Try again later."; return; }
-          data.items.push(r.j.item); ta.value = ""; onDone();
+          data.items.push(r.j.item); ta.value = ""; go.disabled = true; onDone();
         }).catch(function () { go.disabled = false; m.textContent = "Cannot reach the server."; });
       };
       var o = document.createElement("div"); o.appendChild(row); o.appendChild(m); return o;
