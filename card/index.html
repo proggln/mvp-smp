@@ -428,44 +428,51 @@ button{font:inherit}
     root.innerHTML = '<div class="card2 mg"><h1>My card</h1>' +
       '<div class="upd">Your personal MVP card with your rank, coins and stats. No password needed.</div>' +
       '<button class="mgb" id="wcapp" type="button">Log in via MVP app</button>' +
-      '<div class="mgmsg" id="wcm"></div><div class="upd" style="margin-top:12px;font-size:.85rem">Already have the MVP app? Use <b>Log in via MVP app</b> to open the same account here.</div></div>';
+      '<div class="mgmsg" id="wcm"></div><div class="upd" style="margin-top:12px;font-size:.9rem">Don\u2019t have an MVP account yet? <a href="#" id="wccreate">Create one</a></div></div>';
+    document.getElementById("wccreate").addEventListener("click", function (e) { e.preventDefault(); emailView(true); });
     document.getElementById("wcapp").addEventListener("click", function () { startLogin("app"); });
     if (V2) {
-      var eb = document.createElement("button"); eb.className = "mgb"; eb.type = "button"; eb.id = "wcmail"; eb.textContent = "Sign in with e-mail"; eb.style.marginRight = "8px";
+      var eb = document.createElement("button"); eb.className = "mgb"; eb.type = "button"; eb.id = "wcmail"; eb.textContent = "Log in with e-mail"; eb.style.marginRight = "8px";
       var first = document.getElementById("wcapp"); first.parentNode.insertBefore(eb, first);
-      eb.addEventListener("click", emailView);
+      eb.addEventListener("click", function () { emailView(false); });
     }
   }
   var INPUT = "padding:11px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:transparent;color:inherit;margin:10px 8px 0 0;";
-  function emailView() {
+  function emailView(create, pre) {
     stop();
-    root.innerHTML = '<div class="card2 mg"><h1>Sign in with e-mail</h1><div class="upd">Type your e-mail. We send you a 6-digit code. No password needed. New here? An account is created for you.</div>' +
-      '<input id="wcem" type="email" autocomplete="email" maxlength="254" placeholder="you@example.com" style="' + INPUT + 'min-width:240px">' +
-      '<label style="display:flex;gap:10px;align-items:center;margin-top:14px;cursor:pointer;font-size:.92rem"><input type="checkbox" id="wcnl0" style="width:20px;height:20px;min-width:20px;flex:none;margin:0;padding:0;accent-color:#0081cc"> Send me MVP news by e-mail (optional, you can unsubscribe any time)</label>' +
-      '<div style="margin-top:12px"><button class="mgb" id="wcsend" type="button">Send code</button> <button class="mgb ghost" id="wcback" type="button">Back</button></div><div class="mgmsg" id="wcm"></div></div>';
+    pre = pre || {};
+    root.innerHTML = '<div class="card2 mg"><h1>' + (create ? "Create your MVP account" : "Log in with e-mail") + '</h1><div class="upd">' + (create ? "Choose a nickname and type your e-mail. We send you a 6-digit code. No password needed." : "Type your e-mail. We send you a 6-digit code. No password needed.") + '</div>' +
+      (create ? '<input id="wcnn" type="text" autocomplete="off" maxlength="16" placeholder="Your Minecraft nickname" value="' + esc(pre.nick || "") + '" style="' + INPUT + 'min-width:240px"><div class="upd" style="font-size:.82rem;margin-top:6px">Your account shows this name plus a short code until you link your Minecraft account with /link. Then your real game nickname is used.</div>' : "") +
+      '<input id="wcem" type="email" autocomplete="email" maxlength="254" placeholder="you@example.com" value="' + esc(pre.email || "") + '" style="' + INPUT + 'min-width:240px">' +
+      (create ? '<label style="display:flex;gap:10px;align-items:center;margin-top:14px;cursor:pointer;font-size:.92rem"><input type="checkbox" id="wcnl0" style="width:20px;height:20px;min-width:20px;flex:none;margin:0;padding:0;accent-color:#0081cc"> Send me MVP news by e-mail (optional, you can unsubscribe any time)</label>' : '') +
+      '<div style="margin-top:12px"><button class="mgb" id="wcsend" type="button">Send code</button> <button class="mgb ghost" id="wcback" type="button">Back</button></div><div class="mgmsg" id="wcm">' + (pre.msg ? esc(pre.msg) : "") + '</div>' +
+      '<div class="upd" style="margin-top:12px;font-size:.9rem">' + (create ? 'Already have an account? <a href="#" id="wcswitch">Log in</a>' : 'Don\u2019t have an MVP account yet? <a href="#" id="wcswitch">Create one</a>') + '</div></div>';
     document.getElementById("wcback").addEventListener("click", loginView);
+    document.getElementById("wcswitch").addEventListener("click", function (e) { e.preventDefault(); emailView(!create); });
     document.getElementById("wcsend").addEventListener("click", function () {
-      var em = document.getElementById("wcem").value.trim().toLowerCase(), msg = document.getElementById("wcm"), b = this;
+      var em = document.getElementById("wcem").value.trim().toLowerCase(), msg = document.getElementById("wcm"), b = this, nk = "";
+      if (create) { nk = document.getElementById("wcnn").value.trim(); if (!/^[A-Za-z0-9_.]{2,16}$/.test(nk)) { msg.textContent = "Nickname: 2 to 16 letters, numbers, _ or ."; return; } }
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)) { msg.textContent = "Type a valid e-mail."; return; }
       b.disabled = true; msg.textContent = "";
       call("POST", "/api/web/email-start", { email: em }).then(function (r) {
-        if (r.ok) return codeEmailView(em, document.getElementById("wcnl0").checked);
+        if (r.ok) return codeEmailView(em, create && document.getElementById("wcnl0").checked, nk);
         b.disabled = false;
         msg.textContent = r.status === 429 ? "Too many tries. Wait a little." : r.status === 503 ? "E-mail sign in is not ready yet." : "Could not send the code. Try again later.";
       }).catch(function () { b.disabled = false; msg.textContent = "Cannot reach the server."; });
     });
   }
-  function codeEmailView(em, news) {
+  function codeEmailView(em, news, name) {
     root.innerHTML = '<div class="card2 mg"><h1>Check your e-mail</h1><div class="upd">We sent a 6-digit code to <b>' + esc(em) + '</b>. It works for 10 minutes. Look in Spam too.</div>' +
       '<input id="wccode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" style="' + INPUT + 'width:140px;letter-spacing:4px;font-size:1.1rem">' +
       '<button class="mgb" id="wcok" type="button">Sign in</button> <button class="mgb ghost" id="wcback" type="button">Back</button><div class="mgmsg" id="wcm"></div></div>';
-    document.getElementById("wcback").addEventListener("click", emailView);
+    document.getElementById("wcback").addEventListener("click", function () { emailView(!!name, { email: em, nick: name }); });
     document.getElementById("wcok").addEventListener("click", function () {
       var code = document.getElementById("wccode").value.trim(), msg = document.getElementById("wcm"), b = this;
       if (!/^\d{6}$/.test(code)) { msg.textContent = "The code has 6 digits."; return; }
       b.disabled = true; msg.textContent = "";
-      call("POST", "/api/web/email-verify", { email: em, code: code, newsletter: !!news }).then(function (r) {
+      call("POST", "/api/web/email-verify", { email: em, code: code, newsletter: !!news, name: name || undefined }).then(function (r) {
         if (r.ok && r.j.token) { setTok(r.j.token); cardView(); return; }
+        if (r.ok && r.j.status === "need_name") { emailView(true, { email: em, msg: "There is no account with this e-mail yet. Choose a nickname to create one." }); return; }
         b.disabled = false; msg.textContent = "Wrong or expired code.";
       }).catch(function () { b.disabled = false; msg.textContent = "Cannot reach the server."; });
     });
@@ -496,7 +503,7 @@ button{font:inherit}
     dlg.addEventListener("close", function () { if (!finished && dlg.isConnected && dlg.showModal) setTimeout(function () { try { dlg.showModal(); } catch (e) {} }, 0); });
     var IN = 'style="padding:11px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:transparent;color:inherit;margin:10px 8px 0 0;width:min(280px,100%)"';
     function step1() {
-      dlg.innerHTML = '<div class="wc-dh"><h2>Welcome back, ' + esc(p.nick || "player") + '!</h2></div>' +
+      dlg.innerHTML = '<div class="wc-dh"><h2>Welcome back, ' + esc(p.nick || p.display_name || "player") + '!</h2></div>' +
         '<p class="wc-dsub">To keep using your MVP card you need to connect an e-mail. It protects your account, lets you sign in on any device and keeps your purchases safe. Your card, coins and stats stay exactly as they are.</p>' +
         '<input id="wmem" type="email" autocomplete="email" maxlength="254" placeholder="you@example.com" ' + IN + '><button type="button" class="mgb" id="wmsend" style="margin-top:10px">Send code</button>' +
         '<label style="display:flex;gap:10px;align-items:center;margin-top:14px;cursor:pointer;font-size:.9rem"><input type="checkbox" id="wmnl" ' + CB + '> Send me MVP news by e-mail (optional, you can unsubscribe any time)</label><div class="mgmsg" id="wmm"></div>';
@@ -596,7 +603,7 @@ button{font:inherit}
       dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); }); }
     var ICO2 = function (d, red) { return '<span class="st-ic' + (red ? ' red' : '') + '"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + d + '"/></svg></span>'; };
     var ICN = { mail: "M3 6h18v12H3z M3 7l9 6 9-6", cube: "M12 3l8 4.5v9L12 21l-8-4.5v-9z M4 7.5l8 4.5 8-4.5 M12 12v9", bell: "M6 16V11a6 6 0 0112 0v5l2 2H4z M10 21h4", dev: "M3 5h13v10H3z M8 19h5 M18 9h3v10h-3z", out: "M9 4H5v16h4 M16 8l4 4-4 4 M20 12H9", dl: "M12 4v11 M7 11l5 5 5-5 M5 20h14", trash: "M4 7h16 M9 7V4h6v3 M6 7l1 13h10l1-13", card: "M3 6h18v12H3z M3 10h18 M7 15h4" };
-    var ini = (p.nick || p.email || "M").charAt(0).toUpperCase();
+    var ini = (p.nick || p.display_name || p.email || "M").charAt(0).toUpperCase();
     dlg.innerHTML = '<div class="st-top"><div class="st-av">' + esc(ini) + '</div><div class="st-who"><h2>Settings</h2><div>' + esc(p.email || p.nick || "MVP player") + '</div></div><button type="button" class="wc-dx" aria-label="Close">\u00D7</button></div><div class="st-body">' +
       '<div class="st-lab">Account</div><div class="st-grp">' +
         '<div class="st-r">' + ICO2(ICN.mail) + '<div class="st-t"><b>E-mail</b><span>' + esc(p.email || "not added") + '</span></div><button type="button" class="st-b" id="stem">' + (p.email ? "Change" : "Add") + '</button></div><div id="stemf" class="st-sub"></div>' +
@@ -856,11 +863,11 @@ button{font:inherit}
       var keep = again ? { pnbox: document.getElementById("pnbox"), evbox: document.getElementById("evbox"), wcnews: document.getElementById("wcnews") } : null;
       var delBanner = p.delete_at ? '<div class="wc-delbar"><div><b>Your account will be deleted on ' + esc(fmtWhen(p.delete_at)) + '.</b><span>Your card, medals and stats will be removed. Changed your mind?</span></div><button class="mgb" id="wcundel" type="button">Cancel deletion</button></div>' : "";
       root.innerHTML = delBanner + '<div id="pnbox"></div><div id="evbox"></div>' +
-        '<div class="wc-head"><div><h1>My card</h1><div class="upd" style="margin:6px 0 0">Welcome back, ' + esc(p.nick || "player") + '</div></div><div class="wc-hbtns"><button class="wc-inb" id="wcinb" type="button" aria-label="Inbox' + (p.inbox_unread ? ', ' + p.inbox_unread + ' unread' : '') + '" title="Inbox">' + icSvg("inbox", 22, "#6fd0ff") + (p.inbox_unread ? '<span class="wc-ibadge">' + (p.inbox_unread > 99 ? "99+" : p.inbox_unread) + '</span>' : '') + '</button><button class="mgb ghost" id="wcout" type="button">Sign out</button></div></div>' +
+        '<div class="wc-head"><div><h1>My card</h1><div class="upd" style="margin:6px 0 0">Welcome back, ' + esc(p.nick || p.display_name || "player") + '</div></div><div class="wc-hbtns"><button class="wc-inb" id="wcinb" type="button" aria-label="Inbox' + (p.inbox_unread ? ', ' + p.inbox_unread + ' unread' : '') + '" title="Inbox">' + icSvg("inbox", 22, "#6fd0ff") + (p.inbox_unread ? '<span class="wc-ibadge">' + (p.inbox_unread > 99 ? "99+" : p.inbox_unread) + '</span>' : '') + '</button><button class="mgb ghost" id="wcout" type="button">Sign out</button></div></div>' +
         '<div class="wc-grid"><div><div class="wc-stage"><div class="wc" id="wccard">' +
         '<div class="wc-top"><div class="wc-brand"><img src="../icon-180.png" alt="" width="38" height="38">MVP</div><span class="wc-badge">' + esc(p.rank) + '</span></div>' +
         '<div class="wc-num">' + esc(pad(p.card_no)) + '</div>' +
-        '<div class="wc-bot"><div><div class="wc-lbl">PLAYER</div><div class="wc-val">' + esc((p.nick || "NOT LINKED").toUpperCase()) + '</div></div>' +
+        '<div class="wc-bot"><div><div class="wc-lbl">PLAYER</div><div class="wc-val">' + esc((p.nick || p.display_name || "NOT LINKED").toUpperCase()) + '</div></div>' +
         '<div style="text-align:right"><div class="wc-lbl">SINCE</div><div class="wc-val">' + esc(p.since || "") + '</div></div></div></div></div>' +
         '<div class="wc-install">Tip: on your phone, add this page to your Home Screen and it works like an app.</div></div>' +
         '<div><div class="wc-stats">' +
