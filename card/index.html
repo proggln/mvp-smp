@@ -331,7 +331,8 @@ button{font:inherit}
 .wc-mt{min-width:0}.wc-mt b{display:block;color:var(--mc);font-size:.98rem}.wc-mt span{display:block;font-size:.9rem;color:#dbe8f3}.wc-mt small{display:block;font-size:.78rem;color:var(--muted);margin-top:2px}
 .wc-skel{background:linear-gradient(90deg,rgba(255,255,255,.05),rgba(255,255,255,.12),rgba(255,255,255,.05));background-size:200% 100%;animation:wcsk 1.2s linear infinite;min-height:90px}.wc.wc-skel{box-shadow:none}
 @keyframes wcsk{from{background-position:200% 0}to{background-position:-200% 0}}
-.wc-bd{margin:14px 0 0;padding:14px 16px;border-radius:18px;border:1px solid rgba(255,255,255,.12);background:rgba(6,16,28,.6)}.wc-bdh{font:700 .72rem/1 Montserrat,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}.wc-bdl{display:flex;flex-wrap:wrap;gap:8px}.wc-badge{width:40px;height:40px;border-radius:12px;border:1px solid color-mix(in srgb,var(--mc,#6fd0ff) 55%,transparent);background:color-mix(in srgb,var(--mc,#6fd0ff) 16%,rgba(255,255,255,.04));display:grid;place-items:center;cursor:pointer;padding:0;transition:transform .12s}.wc-badge:hover,.wc-badge:focus-visible{transform:translateY(-2px);outline:0;box-shadow:0 0 0 2px var(--mc,#6fd0ff)}.wc-bdn{color:var(--muted);font-size:.9rem}.wc-tip{position:fixed;z-index:9999;max-width:260px;padding:12px 14px;border-radius:14px;background:#0b1a2a;border:1px solid rgba(255,255,255,.18);box-shadow:0 14px 40px rgba(0,0,0,.55);color:#fff;pointer-events:none;opacity:0;transition:opacity .12s}.wc-tip.on{opacity:1}.wc-tip b{display:block;font-size:.95rem}.wc-tip span{display:block;color:var(--muted);font-size:.84rem;margin-top:3px}.wc-tip small{display:block;color:var(--muted);font-size:.75rem;margin-top:6px}
+.wc-bd{margin:14px 0 0;padding:14px 16px;border-radius:18px;border:1px solid rgba(255,255,255,.12);background:rgba(6,16,28,.6)}.wc-bdh{font:700 .72rem/1 Montserrat,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}.wc-bdl{display:flex;flex-wrap:wrap;gap:8px}.wc-bdg{width:40px;height:40px;border-radius:12px;border:1px solid color-mix(in srgb,var(--mc,#6fd0ff) 55%,transparent);background:color-mix(in srgb,var(--mc,#6fd0ff) 16%,rgba(255,255,255,.04));display:grid;place-items:center;cursor:pointer;padding:0;transition:transform .12s}.wc-bdg:hover,.wc-bdg:focus-visible{transform:translateY(-2px);outline:0;box-shadow:0 0 0 2px var(--mc,#6fd0ff)}.wc-bdn{color:var(--muted);font-size:.9rem}.wc-tip{position:fixed;z-index:9999;max-width:260px;padding:12px 14px;border-radius:14px;background:#0b1a2a;border:1px solid rgba(255,255,255,.18);box-shadow:0 14px 40px rgba(0,0,0,.55);color:#fff;pointer-events:none;opacity:0;transition:opacity .12s}.wc-tip.on{opacity:1}.wc-tip b{display:block;font-size:.95rem}.wc-tip span{display:block;color:var(--muted);font-size:.84rem;margin-top:3px}.wc-tip small{display:block;color:var(--muted);font-size:.75rem;margin-top:6px}
+.wc-srv{margin:16px 0 0;padding:16px;border-radius:18px;border:1px solid rgba(255,255,255,.12);background:rgba(6,16,28,.6)}.wc-srv h3{margin:0 0 12px;font:700 .72rem/1 Montserrat,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}.wc-sr{display:flex;align-items:center;gap:12px;margin:0 0 12px}.wc-sr:last-child{margin:0}.wc-sdot{width:10px;height:10px;border-radius:50%;background:#7a8794;flex:none}.wc-sdot.on{background:#3fd07a;box-shadow:0 0 0 4px rgba(63,208,122,.2)}.wc-sr .t{flex:1;min-width:0}.wc-sr .t b{display:block;font-size:.98rem}.wc-sr .t span{display:block;font-size:.82rem;color:var(--muted)}.wc-sb{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);color:#fff;border-radius:999px;padding:9px 16px;font:700 .85rem Montserrat,sans-serif;cursor:pointer;text-decoration:none!important;color:#fff!important;flex:none}.wc-sb:hover{background:rgba(255,255,255,.14)}
 .wc-mbtn{display:flex;align-items:center;gap:12px;width:100%;margin:14px 0 0;padding:14px 16px;border-radius:18px;border:1px solid rgba(255,255,255,.12);background:rgba(6,16,28,.6);color:#fff;font:inherit;text-align:left;cursor:pointer;transition:transform .15s,border-color .15s}
 .wc-mbtn:hover{transform:translateY(-1px);border-color:rgba(111,208,255,.5)}.wc-mbtn:focus-visible{outline:2px solid #6fd0ff;outline-offset:2px}
 .wc-mbi{flex:none;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(111,208,255,.12)}
@@ -692,7 +693,7 @@ button{font:inherit}
     list = list || [];
     var h = list.map(function (m, i) {
       var col = /^#[0-9a-fA-F]{6}$/.test(m.color || "") ? m.color : "#6fd0ff";
-      return '<button type="button" class="wc-badge" data-bi="' + i + '" style="--mc:' + col + '" aria-label="' + esc(m.name) + '">' + pxSvg(m.icon, 24) + '</button>';
+      return '<button type="button" class="wc-bdg" data-bi="' + i + '" style="--mc:' + col + '" aria-label="' + esc(m.name) + '">' + pxSvg(m.icon, 24) + '</button>';
     }).join("");
     return '<div class="wc-bd"><div class="wc-bdh">Badges</div><div class="wc-bdl">' + (h || '<span class="wc-bdn">No badges yet. Join events and play to collect them.</span>') + '</div></div>';
   }
@@ -708,7 +709,7 @@ button{font:inherit}
       var w = tip.offsetWidth, h2 = tip.offsetHeight, x = Math.max(8, Math.min(window.innerWidth - w - 8, r.left + r.width / 2 - w / 2)), y = r.top - h2 - 10; if (y < 8) y = r.bottom + 10;
       tip.style.left = x + "px"; tip.style.top = y + "px"; window.__tipAt = Date.now();
     };
-    Array.prototype.forEach.call(document.querySelectorAll(".wc-badge"), function (el) {
+    Array.prototype.forEach.call(document.querySelectorAll(".wc-bdg"), function (el) {
       el.addEventListener("mouseenter", function () { show(el); }); el.addEventListener("mouseleave", hide);
       el.addEventListener("focus", function () { show(el); }); el.addEventListener("blur", hide);
       el.addEventListener("click", function (e) { e.stopPropagation(); show(el); });
@@ -800,6 +801,7 @@ button{font:inherit}
         '<div class="wc-num">' + esc(pad(p.card_no)) + '</div>' +
         '<div class="wc-bot"><div><div class="wc-lbl">PLAYER</div><div class="wc-val">' + esc((p.nick || "NOT LINKED").toUpperCase()) + '</div></div>' +
         '<div style="text-align:right"><div class="wc-lbl">SINCE</div><div class="wc-val">' + esc(p.since || "") + '</div></div></div></div></div>' +
+        '<div class="wc-srv"><h3>Server</h3><div class="wc-sr"><span class="wc-sdot" id="wcsdot"></span><div class="t"><b id="wcsst">Checking...</b><span id="wcssub">mc.playmvp.org</span></div><button type="button" class="wc-sb" id="wcsip">Copy IP</button></div><div class="wc-sr"><div class="t"><b>Community</b><span>Chat, events and support</span></div><a class="wc-sb" href="https://playmvp.org/discord" target="_blank" rel="noopener">Join Discord</a></div></div>' +
         '<div class="wc-install">Tip: on your phone, add this page to your Home Screen and it works like an app.</div></div>' +
         '<div><div class="wc-stats">' +
         '<div class="wc-stat"><div class="wc-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#6fd0ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div class="wc-sv">' + esc(fmtTime(p.playtime)) + '</div><div class="wc-sl">Playtime</div></div>' +
@@ -808,6 +810,15 @@ button{font:inherit}
         '</div>' + medalsBtn(p.medals) + '<div class="wc-news"><h2>Latest news <a href="../news/" style="font-size:.85rem;font-weight:600;margin-left:8px">All news</a></h2><div id="wcnews"></div></div></div></div>' +
         (V2 ? '' : '<div class="wc-foot"><button class="wc-dellink" id="wcdel" type="button">Delete account</button></div>');
       badgeTips(p.medals);
+      (function () {
+        var ip = "mc.playmvp.org", st = document.getElementById("wcsst"), dot = document.getElementById("wcsdot"), cp = document.getElementById("wcsip");
+        if (cp) cp.addEventListener("click", function () { var done = function () { cp.textContent = "Copied"; setTimeout(function () { cp.textContent = "Copy IP"; }, 1600); }; try { navigator.clipboard.writeText(ip).then(done, done); } catch (e) { done(); } });
+        fetch("https://api.mcsrvstat.us/3/" + ip).then(function (r) { return r.json(); }).then(function (j) {
+          if (!st) return;
+          if (j && j.online) { dot.className = "wc-sdot on"; st.textContent = "Online"; document.getElementById("wcssub").textContent = (j.players ? j.players.online + " / " + j.players.max + " players - " : "") + ip; }
+          else { st.textContent = "Offline"; }
+        }).catch(function () { if (st) st.textContent = "Status unavailable"; });
+      })();
       document.getElementById("wcinb").addEventListener("click", function () { openInbox(tok, p); });
       if (location.hash === "#inbox" && !window.__inboxOpened) { window.__inboxOpened = true; openInbox(tok, p); }
       // a browser that already has notifications on is tied to this card, so personal messages reach it
