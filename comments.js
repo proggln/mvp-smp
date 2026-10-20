@@ -109,6 +109,17 @@
       }).catch(function () { body.innerHTML = '<div class="cm-e">Cannot reach the server.</div>'; });
     }
     body.hidden = false; load();
+    // new comments and likes show up by themselves (not while somebody is typing)
+    var sig = function (d) { return d.items.map(function (x) { return x.id + ":" + x.likes + ":" + (x.liked ? 1 : 0); }).join(",") + "|" + d.can_comment; };
+    var iv = setInterval(function () {
+      if (!document.body.contains(wrap)) { clearInterval(iv); return; }
+      if (document.hidden || !loaded) return;
+      var ae = document.activeElement; if (ae && wrap.contains(ae) && /^(TEXTAREA|INPUT)$/.test(ae.tagName)) return;
+      if (wrap.querySelector("textarea") && Array.prototype.some.call(wrap.querySelectorAll("textarea"), function (t) { return t.value; })) return;
+      call("GET", (prof ? "/api/comments?profile=" + encodeURIComponent(prof) : "/api/comments?news=" + nid)).then(function (r) {
+        if (r.ok && sig(r.j) !== sig(data)) { data = r.j; draw(); }
+      }).catch(function () {});
+    }, 12000);
     tb.onclick = function () { body.hidden = !body.hidden; };
     return wrap;
   };

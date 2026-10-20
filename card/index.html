@@ -870,6 +870,37 @@ button{font:inherit}
     root.innerHTML = '<div class="wc-head"><div><h1>My card</h1><div class="upd" style="margin:6px 0 0">Loading your card...</div></div></div>' +
       '<div class="wc-grid"><div><div class="wc-stage"><div class="wc wc-skel"></div></div></div><div><div class="wc-stats"><div class="wc-stat wc-skel"></div><div class="wc-stat wc-skel"></div><div class="wc-stat wc-skel"></div></div></div></div>';
   }
+  // the page keeps itself up to date: every few seconds one small question to the server, and only the part that changed is reloaded
+  function startPulse(tok) {
+    if (window.__pulseOn) return; window.__pulseOn = true;
+    var last = null, busy = false;
+    function ch(o, n, k) { return String(o[k]) !== String(n[k]); }
+    function tick() {
+      if (busy || document.hidden) return; busy = true;
+      call("GET", "/api/app/pulse", null, tok).then(function (r) {
+        busy = false; if (!r.ok) return;
+        var n = r.j, o = last; last = n; if (!o) return;
+        var p = getCache(); if (!p) return;
+        if (ch(o, n, "inbox")) { var idlg = document.getElementById("wcidlg"); if (idlg && idlg.open) openInbox(tok, p); }
+        if (ch(o, n, "friends") || ch(o, n, "msgs") || ch(o, n, "requests")) {
+          var dk = document.getElementById("mvpdock");
+          if (dk && !dk.querySelector("#dkmsgs")) dockList(dk, tok, function () { openFriends(getCache() || p, tok); });
+          var fd = document.getElementById("wcfdlg"), fi = fd && fd.querySelector("input");
+          if (fd && fd.open && !(fi && fi.value)) openFriends(p, tok);
+        }
+        if (ch(o, n, "inbox") || ch(o, n, "requests") || ch(o, n, "me") || ch(o, n, "profile") || ch(o, n, "friends")) {
+          call("GET", "/api/app/me", null, tok).then(function (m) {
+            if (!m.ok) return;
+            var shownNow = JSON.stringify(getCache()); putCache(m.j);
+            if (JSON.stringify(m.j) !== shownNow || ch(o, n, "profile")) renderCard(m.j, tok, true);
+          }).catch(function () {});
+        }
+      }).catch(function () { busy = false; });
+    }
+    setInterval(tick, 6000);
+    document.addEventListener("visibilitychange", function () { if (!document.hidden) tick(); });
+    tick();
+  }
   function cardView() {
     var tok = getTok();
     if (!tok) { putCache(null); loginView(); return; }
@@ -880,6 +911,7 @@ button{font:inherit}
       if (!r.ok) { if (!cached) root.innerHTML = '<div class="card2 mg"><h1>My card</h1><div class="mgmsg">Cannot load your card. Try again later.</div></div>'; return; }
       setTok(tok); putCache(r.j);
       if (JSON.stringify(r.j) !== shown) renderCard(r.j, tok, !!cached);
+      startPulse(tok);
     }).catch(function () { if (!cached) root.innerHTML = '<div class="card2 mg"><h1>My card</h1><div class="mgmsg">Cannot reach the server. Try again later.</div></div>'; });
   }
   // medal icons: small pixel pictures drawn here (no emoji)
