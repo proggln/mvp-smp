@@ -694,7 +694,7 @@ button{font:inherit}
       var col = /^#[0-9a-fA-F]{6}$/.test(m.color || "") ? m.color : "#6fd0ff";
       return '<button type="button" class="wc-badge" data-bi="' + i + '" style="--mc:' + col + '" aria-label="' + esc(m.name) + '">' + pxSvg(m.icon, 24) + '</button>';
     }).join("");
-    return '<div class="wc-bd"><div class="wc-bdh">Badges' + (list.length ? ' - ' + list.length : '') + '</div><div class="wc-bdl">' + (h || '<span class="wc-bdn">No badges yet. Join events and play to collect them.</span>') + '</div></div>';
+    return '<div class="wc-bd"><div class="wc-bdh">Badges</div><div class="wc-bdl">' + (h || '<span class="wc-bdn">No badges yet. Join events and play to collect them.</span>') + '</div></div>';
   }
   function badgeTips(list) {
     var tip = document.getElementById("wctip");
