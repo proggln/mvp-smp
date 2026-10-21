@@ -370,6 +370,7 @@ button{font:inherit}
 .wc-im .wc-vid{margin-top:10px}.wc-ihide{margin-top:10px;border:0;background:none;color:#6f8597;font:500 .8rem inherit;text-decoration:underline;cursor:pointer;padding:0}.wc-ihide:hover{color:#ffb3b9}
 .wc-im a{color:#6fd0ff;text-decoration:underline}.wc-iempty{text-align:center;color:var(--muted);padding:20px 10px}.wc-iempty svg{opacity:.8}
 </style>
+<style>.pl-ld{display:flex;flex-direction:column;align-items:center;gap:14px;padding:90px 0;color:#9fb3c8;font-weight:700;letter-spacing:.04em}.pl-sp{display:grid;grid-template-columns:repeat(3,14px);grid-template-rows:repeat(3,14px);gap:4px}.pl-sp i{background:#4aa8ff;border-radius:2px;animation:plb 1.2s infinite both}.pl-sp i:nth-child(1){animation-delay:0s}.pl-sp i:nth-child(2){animation-delay:.1s}.pl-sp i:nth-child(3){animation-delay:.2s}.pl-sp i:nth-child(6){animation-delay:.3s}.pl-sp i:nth-child(9){animation-delay:.4s}.pl-sp i:nth-child(8){animation-delay:.5s}.pl-sp i:nth-child(7){animation-delay:.6s}.pl-sp i:nth-child(4){animation-delay:.7s}.pl-sp i:nth-child(5){animation-delay:.8s}@keyframes plb{0%,60%,100%{opacity:.18;transform:scale(.8)}20%{opacity:1;transform:scale(1)}}@media(prefers-reduced-motion:reduce){.pl-sp i{animation:none;opacity:.6}}</style>
 </head>
 <body>
 
@@ -527,6 +528,7 @@ button{font:inherit}
   function load() {
     if (!nick) { location.replace("../card/"); return; }
     if (false) { root.innerHTML = '<div class="card2 mg"><h1>Profiles</h1><div class="upd">Open a player page from your friends list, or use a link like playmvp.org/u/?n=Nick.</div></div>'; return; }
+    root.innerHTML = '<div class="pl-ld" role="status" aria-live="polite"><div class="pl-sp"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>Loading profile</div>';
     call("GET", "/api/profile?nick=" + encodeURIComponent(nick), null, tok).then(function (r) {
       if (!r.ok) { root.innerHTML = '<div class="card2 mg"><h1>Profile</h1><div class="mgmsg">Could not load this profile. Try again later.</div></div>'; return; }
       view(r.j);
