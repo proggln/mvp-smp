@@ -465,7 +465,7 @@ const CONFIG = {
           if (!r.ok) { msg.textContent = r.j.error === "too_many" ? "Too many attempts. Wait a few minutes." : "Something went wrong. Try again."; btn.disabled = false; return; }
           try { localStorage.setItem(SKEY, nick); } catch (e) {}
           stepVerify(p, nick, r.j.code);
-        }).catch(() => { msg.textContent = "Cannot reach the store. Try again later."; btn.disabled = false; });
+        }).catch(() => { msg.textContent = "The store is not open yet. Coming soon!"; btn.disabled = false; });
     };
     btn.addEventListener("click", go);
     inp.addEventListener("keydown", (e) => { if (e.key === "Enter") go(); });
@@ -501,7 +501,7 @@ const CONFIG = {
           msg.textContent = r.j.error === "payments_disabled" ? "Payments are not open yet. Please come back soon!" : r.j.error === "payment_unavailable" ? "Payment is temporarily unavailable. Try again in a minute." :
             r.j.error === "not_verified" ? "The confirmation expired. Start again." : "Something went wrong. Try again.";
           btn.disabled = false;
-        }).catch(() => { msg.textContent = "Cannot reach the store. Try again later."; btn.disabled = false; });
+        }).catch(() => { msg.textContent = "The store is not open yet. Coming soon!"; btn.disabled = false; });
     });
   }
   function stepDone(p, nick, j) {
