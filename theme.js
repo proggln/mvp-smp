@@ -110,3 +110,34 @@
   document.addEventListener("visibilitychange", function () { if (!document.hidden) tick(); });
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", tick); else tick();
 })();
+
+/* Contest banner: a slim bar at the bottom of every page except the home page while a contest is running. */
+(function () {
+  var seg = (location.pathname.replace(/^\/+/, "").split("/")[0] || "").toLowerCase();
+  if (seg === "" || seg === "index.html" || seg === "daily") return;
+  var API = "https://mvp-news-api.mvp-shop.workers.dev", KEY = "mvp_card_token";
+  function ls(k) { try { return localStorage.getItem(k) || ""; } catch (e) { return ""; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function esc(t) { return String(t == null ? "" : t).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function left(ms) { var t = Math.max(0, Math.ceil(ms / 1000)), d = Math.floor(t / 86400), h = Math.floor(t % 86400 / 3600), m = Math.floor(t % 3600 / 60); return d ? d + "d " + h + "h" : h ? h + "h " + m + "m" : m + "m"; }
+  var base = (function () { var s = document.currentScript; return s ? s.src.replace(/theme\.js(\?.*)?$/, "") : "/"; })();
+  function run() {
+    var tok = ls(KEY), h = tok ? { Authorization: "Bearer " + tok } : {};
+    fetch(API + "/api/contests", { headers: h }).then(function (r) { return r.ok ? r.json() : []; }).then(function (list) {
+      var c = null;
+      (list || []).forEach(function (x) { if (!c && x.open && !x.joined && Date.now() - Number(ls("mvp_ct_" + x.id) || 0) > 86400000) c = x; });
+      if (!c || document.getElementById("mvpCt")) return;
+      var st = document.createElement("style");
+      st.textContent = "#mvpCt{position:fixed;z-index:55;left:50%;bottom:max(14px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(620px,calc(100% - 24px));display:flex;align-items:center;gap:12px;padding:10px 12px 10px 14px;border-radius:18px;color:#fff;font:600 .9rem system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:linear-gradient(120deg,rgba(255,157,28,.97),rgba(190,70,12,.97));box-shadow:0 14px 40px rgba(0,0,0,.45);animation:mvpCtIn .6s cubic-bezier(.2,.9,.3,1.1) both;box-sizing:border-box}" +
+        "#mvpCt img.i{width:34px;height:34px;image-rendering:pixelated;flex:none}#mvpCt .t{flex:1;min-width:0}#mvpCt b{display:block;font-size:.98rem;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#mvpCt small{display:block;opacity:.92;font-weight:600;font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" +
+        "#mvpCt a.go{flex:none;display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:0 16px;border-radius:999px;background:#fff;color:#8a3a00;font-weight:800;text-decoration:none}#mvpCt button{flex:none;border:0;background:transparent;color:#fff;font-size:22px;line-height:1;cursor:pointer;padding:2px 4px;opacity:.85}" +
+        "@keyframes mvpCtIn{from{opacity:0;transform:translate(-50%,24px)}to{opacity:1;transform:translateX(-50%)}}@media(prefers-reduced-motion:reduce){#mvpCt{animation:none}}";
+      document.head.appendChild(st);
+      var el = document.createElement("div"); el.id = "mvpCt"; el.setAttribute("role", "complementary"); el.setAttribute("aria-label", "Contest");
+      el.innerHTML = '<img class="i" src="' + base + 'img/ic/calendar.png" alt=""><div class="t"><b>' + esc(c.title) + '</b><small>' + (c.prize ? "Prize: " + esc(c.prize) + " | " : "") + 'Ends in ' + left(c.ends_at - Date.now()) + '</small></div><a class="go" href="' + base + 'card/#contests">Join</a><button type="button" aria-label="Close">&times;</button>';
+      el.querySelector("button").addEventListener("click", function () { lsSet("mvp_ct_" + c.id, String(Date.now())); el.remove(); });
+      document.body.appendChild(el);
+    }).catch(function () {});
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", run); else run();
+})();

@@ -324,6 +324,17 @@ button{font:inherit}
 .wc-n p{margin:6px 0 0;color:#cfe3f1;white-space:pre-wrap;font-size:.95rem;line-height:1.55}
 .wc-how{margin:14px 0 0;padding-left:20px;color:#cfe3f1;line-height:1.7}
 .wc-styles{margin-top:14px}.wc-slabel{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:#9db6c9;margin-bottom:8px}
+.ct-box{margin:14px 0;padding:16px;border-radius:18px;background:linear-gradient(160deg,rgba(255,207,58,.14),rgba(255,255,255,.05) 55%);border:1px solid rgba(255,207,58,.28)}
+.ct-h{display:flex;align-items:center;gap:10px;font:800 1.05rem var(--font-head,inherit);margin-bottom:6px}
+.ct-t{margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1)}
+.ct-n{font:800 1.12rem var(--font-head,inherit)}
+.ct-d{margin-top:4px;opacity:.8;font-size:.92rem}
+.ct-chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.ct-c{display:inline-flex;align-items:center;gap:6px;padding:5px 11px 5px 7px;border-radius:999px;background:rgba(255,255,255,.1);font:600 .8rem var(--font-body,inherit)}
+.ct-c.gold{background:rgba(255,207,58,.18);color:#ffe08a}
+.ct-b{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;border:0;border-radius:999px;cursor:pointer;font:800 .98rem var(--font-head,inherit);color:#2a1a00;background:linear-gradient(180deg,#ffd75a,#ff9d1c);box-shadow:0 8px 22px rgba(255,157,28,.35)}
+.ct-b.on{background:rgba(46,158,91,.25);color:#9bf0bd;box-shadow:none;cursor:default}
+.ct-t.done .ct-n{opacity:.7}
 /* Textured cards: block texture + pixel shine (generic, set from JS) */
 .wc-tex{background:linear-gradient(rgba(0,0,0,var(--shade,0)),rgba(0,0,0,var(--shade,0))),var(--texurl) 0 0/64px 64px!important;image-rendering:pixelated;position:relative;overflow:hidden}
 .wc-tex>*:not(.wc-shine){position:relative;z-index:1;text-shadow:0 1px 3px rgba(0,0,0,.6)}
@@ -564,16 +575,42 @@ button{font:inherit}
   function contestBox(p, tok, anc) {
     call("GET", "/api/contests", null, tok).then(function (r) {
       if (!r.ok || !r.j.length) return;
-      var box = mkBox(anc); box.innerHTML = "<b>Contests</b>";
+      var box = mkBox(anc); box.id = "contests"; box.className = "wc-install wc-x ct-box"; box.style.cssText = "";
+      var px = function (n, z) { return '<img src="../img/ic/' + n + '.png" alt="" width="' + z + '" height="' + z + '" style="image-rendering:pixelated;width:' + z + 'px;height:' + z + 'px;flex:none">'; };
+      box.innerHTML = '<div class="ct-h">' + px("calendar", 26) + '<b>Contests</b></div>';
+      var timers = [];
       r.j.forEach(function (c) {
-        var row = document.createElement("div"); row.style.cssText = "margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.1)";
-        var t = document.createElement("div"); t.style.fontWeight = "700"; t.textContent = c.title; row.appendChild(t);
-        if (c.description) { var ds = document.createElement("div"); ds.style.cssText = "opacity:.8;font-size:.9rem"; ds.textContent = c.description; row.appendChild(ds); }
-        var inf = document.createElement("div"); inf.style.cssText = "opacity:.7;font-size:.85rem;margin:4px 0"; inf.textContent = (c.prize ? "Prize: " + c.prize + ". " : "") + (c.drawn_at ? "Winner: " + (c.winner || "-") : "Ends " + new Date(c.ends_at).toLocaleString() + ". " + c.entries + " joined."); row.appendChild(inf);
-        if (c.open) { var b = document.createElement("button"); b.type = "button"; b.className = "mgb" + (c.joined ? " ghost" : ""); b.style.padding = "9px 18px"; b.textContent = c.joined ? "Joined" : "Join"; b.disabled = !!c.joined;
-          b.addEventListener("click", function () { b.disabled = true; call("POST", "/api/app/contests/" + c.id + "/join", {}, tok).then(function (x) { b.textContent = x.ok ? "Joined" : "Try again"; b.disabled = x.ok; if (x.ok) b.classList.add("ghost"); }); }); row.appendChild(b); }
-        box.appendChild(row);
+        var t = document.createElement("div"); t.className = "ct-t" + (c.drawn_at ? " done" : "");
+        var h = '<div class="ct-n">' + esc(c.title) + '</div>';
+        if (c.description) h += '<div class="ct-d">' + esc(c.description) + '</div>';
+        h += '<div class="ct-chips">';
+        if (c.prize) h += '<span class="ct-c gold">' + px("daily", 18) + esc(c.prize) + '</span>';
+        h += '<span class="ct-c">' + px("people", 18) + esc(c.entries) + ' joined</span>';
+        if (c.drawn_at) h += '<span class="ct-c gold">' + px("baltop", 18) + 'Winner: ' + esc(c.winner || "-") + '</span>';
+        else h += '<span class="ct-c" data-end="' + c.ends_at + '">' + px("history", 18) + '<i></i></span>';
+        h += '</div>';
+        t.innerHTML = h;
+        if (c.open) {
+          var b = document.createElement("button"); b.type = "button"; b.className = "ct-b" + (c.joined ? " on" : "");
+          b.innerHTML = c.joined ? px("on", 20) + "You joined" : "Join the contest"; b.disabled = !!c.joined;
+          b.addEventListener("click", function () {
+            b.disabled = true;
+            call("POST", "/api/app/contests/" + c.id + "/join", {}, tok).then(function (x) {
+              if (x.ok) { b.className = "ct-b on"; b.innerHTML = px("on", 20) + "You joined"; } else { b.disabled = false; b.textContent = "Try again"; }
+            }).catch(function () { b.disabled = false; b.textContent = "Try again"; });
+          });
+          t.appendChild(b);
+        }
+        box.appendChild(t);
       });
+      function tick() {
+        Array.prototype.forEach.call(box.querySelectorAll("[data-end]"), function (el) {
+          var l = Number(el.getAttribute("data-end")) - Date.now(), i = el.querySelector("i");
+          i.textContent = l <= 0 ? "Ended" : "Ends in " + fmtLeft(l);
+        });
+      }
+      tick(); var iv = setInterval(function () { if (!document.body.contains(box)) { clearInterval(iv); return; } tick(); }, 1000);
+      if (location.hash === "#contests") setTimeout(function () { box.scrollIntoView({ behavior: "smooth", block: "center" }); }, 400);
     }).catch(function () {});
   }
   // link box: only while the account is not linked to Minecraft
