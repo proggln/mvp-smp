@@ -1,5 +1,5 @@
 /* Banners made in the admin page (Banners tab). They look like the "get the app" banner:
-   beside the page column on a wide screen, a bar at the bottom on a phone. Closing one hides it for 7 days. */
+   beside the page column on a wide screen, a bar at the bottom on a phone. They cannot be closed. On the profile page the friends panel is kept free. */
 (function () {
   var API = "https://mvp-news-api.mvp-shop.workers.dev", HIDE = 7 * 86400000, W = 268;
   var COL = { blue: ["rgba(14,120,200,.96)", "rgba(11,58,120,.96)"], purple: ["rgba(124,77,255,.96)", "rgba(58,30,140,.96)"], orange: ["rgba(255,138,31,.96)", "rgba(170,60,10,.96)"],
@@ -27,9 +27,7 @@
     el.className = "mvp-bn"; el.setAttribute("role", "complementary"); el.setAttribute("aria-label", b.title);
     el.style.background = "linear-gradient(135deg," + c[0] + "," + c[1] + ")";
     el.innerHTML = '<img src="' + esc(b.image || BASE + "icon-192.png") + '" alt=""><div class="t">' + (b.tag ? '<span class="tag">' + esc(b.tag) + '</span>' : "") +
-      '<b>' + esc(b.title) + '</b>' + (b.subtitle ? '<small>' + esc(b.subtitle) + '</small>' : "") + '</div>' + (b.cta ? '<span class="go">' + esc(b.cta) + '</span>' : "") +
-      '<button class="x" type="button" aria-label="Close">&times;</button>';
-    el.querySelector("button.x").addEventListener("click", function (e) { e.stopPropagation(); lsSet("mvp_bn_" + b.id, String(Date.now())); el.remove(); place(); });
+      '<b>' + esc(b.title) + '</b>' + (b.subtitle ? '<small>' + esc(b.subtitle) + '</small>' : "") + '</div>' + (b.cta ? '<span class="go">' + esc(b.cta) + '</span>' : "");
     if (b.link) el.addEventListener("click", function () {
       hit(b.id, "click");
       var ext = /^https?:\/\//.test(b.link) && b.link.indexOf(location.origin) !== 0;
@@ -43,6 +41,7 @@
     var col = document.querySelector("main") || document.body, r = col.getBoundingClientRect();
     var promo = document.getElementById("mvpPromo"), promoSide = promo && promo.classList.contains("side");
     var leftRoom = r.left >= W + 24 + 12, rightRoom = innerWidth - r.right >= W + 24 + 12, bar = null;
+    var dk = document.querySelector(".dk"); if (dk && getComputedStyle(dk).display !== "none") rightRoom = false; // the friends panel lives on the right of the profile page
     shown = shown.filter(function (x) { return document.body.contains(x.el); });
     shown.forEach(function (x) {
       var side = x.b.side === "left" ? (leftRoom ? "left" : (rightRoom ? "right" : "")) : (rightRoom ? "right" : (leftRoom ? "left" : ""));
@@ -69,12 +68,12 @@
       if ((b.pages || "").split(",").indexOf(PAGE) < 0) return false;
       if (b.device === "phone" && !phone) return false;
       if (b.device === "computer" && phone) return false;
-      var t = Number(lsGet("mvp_bn_" + b.id) || 0); return !(t && now - t < HIDE);
+      return true; // banners cannot be closed
     });
     if (!list.length) return;
     var st = document.createElement("style"); st.textContent = css; document.head.appendChild(st);
     list.slice(0, 3).forEach(function (b) { var el = make(b); document.body.appendChild(el); shown.push({ b: b, el: el, side: "" }); });
-    place(); window.addEventListener("resize", place); setTimeout(place, 700); setTimeout(place, 1600);
+    place(); window.addEventListener("resize", place); setTimeout(place, 700); setTimeout(place, 1600); setTimeout(place, 3200); setTimeout(place, 6000);
     shown.forEach(function (x) { if (x.el.style.display !== "none") hit(x.b.id, "view"); });
   }
   function go() { fetch(API + "/api/banners").then(function (r) { return r.ok ? r.json() : []; }).then(start).catch(function () {}); }
