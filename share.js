@@ -16,7 +16,7 @@
     ".wc-shg img{display:block;width:34px;height:34px;object-fit:contain;border-radius:9px}.wc-shg i{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:11px;color:#fff;background:var(--bc)}.wc-shg .wide{flex-direction:row;min-height:48px}.wc-shg .wide i{background:none;width:auto;height:auto}" +
     ".wc-shg .wide{grid-column:1/-1;background:linear-gradient(180deg,#22a6f2,#0081cc);border:0;color:#fff}" +
     ".wc-shx{display:block;margin:12px auto 0;border:0;background:none;color:#9db6c9;font:600 .9rem inherit;cursor:pointer}.wc-shmsg{min-height:1.2em;margin-top:10px;text-align:center;color:#7be3a0;font-size:.88rem}";
-  var IC = '<img src="/img/ic/share64.png" alt="" width="32" height="32" style="width:32px;height:32px;display:block;image-rendering:auto">';
+  var IC = '<img src="/img/ic/share64.png" alt="" width="32" height="32" style="width:32px;height:32px;display:block;image-rendering:pixelated">';
   var G = {
     link: '<path d="M10 13.5a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10.5a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
     chat: '<path d="M4 5h16v11H9l-5 4z"/><path d="M8.5 10.5h.01M12 10.5h.01M15.5 10.5h.01"/>',
