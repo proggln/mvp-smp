@@ -439,7 +439,6 @@ const CONFIG = {
   function openBuy(p) {
     if (!bm) {
       bm = el("div", "bm");
-      bm.addEventListener("click", (e) => { if (e.target === bm) closeBuy(); });
       document.body.appendChild(bm);
       document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeBuy(); });
     }
