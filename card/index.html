@@ -290,6 +290,8 @@ button{font:inherit}
 .wc-brand img{width:38px;height:38px;border-radius:10px}
 .wc-badge{font-size:.72rem;font-weight:700;background:rgba(255,255,255,.22);padding:6px 12px;border-radius:999px}
 .wc-num{font:600 1.7rem/1 var(--font-body);letter-spacing:.18em}
+.wc-qr{position:absolute;right:22px;top:66px;width:88px;height:88px;padding:5px;box-sizing:border-box;border-radius:12px;background:#fff;box-shadow:0 6px 16px rgba(0,30,60,.35);display:block;line-height:0}.wc-qr svg{width:100%;height:100%;display:block;shape-rendering:crispEdges}
+@media (max-width:480px){.wc-qr{width:70px;height:70px;padding:4px;top:70px;right:18px}.wc-num{font-size:1.35rem;letter-spacing:.12em}}
 .mch{display:inline-block;flex:none;border-radius:8px;overflow:hidden;image-rendering:pixelated;vertical-align:middle}.mch.bad{background:url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%208%208%27%20shape-rendering=%27crispEdges%27%3E%3Crect%20width=%278%27%20height=%278%27%20fill=%27%23b98a63%27/%3E%3Crect%20width=%278%27%20height=%272%27%20fill=%27%233b2a1d%27/%3E%3Crect%20y=%272%27%20width=%271%27%20height=%271%27%20fill=%27%233b2a1d%27/%3E%3Crect%20x=%277%27%20y=%272%27%20width=%271%27%20height=%271%27%20fill=%27%233b2a1d%27/%3E%3Crect%20x=%271%27%20y=%274%27%20width=%272%27%20height=%271%27%20fill=%27%23fff%27/%3E%3Crect%20x=%275%27%20y=%274%27%20width=%272%27%20height=%271%27%20fill=%27%23fff%27/%3E%3Crect%20x=%272%27%20y=%274%27%20width=%271%27%20height=%271%27%20fill=%27%233a4fa0%27/%3E%3Crect%20x=%275%27%20y=%274%27%20width=%271%27%20height=%271%27%20fill=%27%233a4fa0%27/%3E%3Crect%20x=%273%27%20y=%275%27%20width=%272%27%20height=%271%27%20fill=%27%238f6444%27/%3E%3Crect%20x=%272%27%20y=%276%27%20width=%274%27%20height=%271%27%20fill=%27%236e4a31%27/%3E%3C/svg%3E") center/cover}.mch img{width:100%;height:100%;display:block;image-rendering:pixelated}
 .wc-bot{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
 .wc-lbl{font-size:.62rem;letter-spacing:.2em;opacity:.8}
@@ -438,6 +440,7 @@ button{font:inherit}
 <script src="../promo.js"></script>
 <script src="../ev.js"></script>
 <script src="../poll.js"></script>
+<script src="qr.js"></script>
 <script src="../share.js"></script>
 <script src="../comments.js"></script>
 <script src="../push.js"></script>
@@ -1331,6 +1334,15 @@ button{font:inherit}
       return '<div class="wc-md" style="--mc:' + col + '"><div class="wc-mi">' + pxSvg(m.icon, 30) + '</div><div class="wc-mt"><b>[' + esc(m.name) + ']</b><span>' + esc(m.description || "") + '</span>' + (d ? '<small>' + esc(d) + '</small>' : "") + '</div></div>';
     }).join("") + '</div></div>';
   }
+  function qrHtml(nick) {
+    try {
+      if (!nick || !window.MVPQR) return "";
+      var q = window.MVPQR(location.origin + "/u/?n=" + encodeURIComponent(nick)); if (!q) return "";
+      var d = "", n = q.size, x, y;
+      for (y = 0; y < n; y++) for (x = 0; x < n; x++) if (q.get(x, y)) d += "M" + (x + 1) + " " + (y + 1) + "h1v1h-1z";
+      return '<a class="wc-qr" href="../u/?n=' + encodeURIComponent(nick) + '" title="Scan to open this profile" aria-label="QR code of this profile"><svg viewBox="0 0 ' + (n + 2) + " " + (n + 2) + '" aria-hidden="true"><path fill="#0a2a43" d="' + d + '"/></svg></a>';
+    } catch (e) { return ""; }
+  }
   function renderCard(p, tok, again) {
       // on a refresh keep the parts that are already loaded (notifications, timers, news)
       var keep = again ? { pnbox: document.getElementById("pnbox"), evbox: document.getElementById("evbox"), wcnews: document.getElementById("wcnews") } : null;
@@ -1339,7 +1351,7 @@ button{font:inherit}
         '<div class="wc-head"><div><h1>My profile</h1><div class="upd" style="margin:6px 0 0">Welcome back, ' + esc(p.nick || p.display_name || "player") + '</div></div><div class="wc-hbtns"><button class="wc-inb" id="wcinb" type="button" aria-label="Inbox' + (p.inbox_unread ? ', ' + p.inbox_unread + ' unread' : '') + '" title="Inbox">' + '<img src="../img/ic/mail.png" alt="" width="32" height="32" style="width:32px;height:32px;image-rendering:pixelated">' + (p.inbox_unread ? '<span class="wc-ibadge">' + (p.inbox_unread > 99 ? "99+" : p.inbox_unread) + '</span>' : '') + '</button><button class="mgb ghost" id="wcout" type="button">Sign out</button></div></div>' +
         '<div class="wc-grid"><div><div class="wc-stage"><div class="wc" id="wccard">' +
         '<div class="wc-top"><div class="wc-brand"><img src="../icon-180.png" alt="" width="38" height="38">MVP</div><span class="wc-badge">' + esc(p.rank) + '</span></div>' +
-        '<div class="wc-num">' + esc(pad(p.card_no)) + '</div>' +
+        '<div class="wc-num">' + esc(pad(p.card_no)) + '</div>' + qrHtml(p.nick) +
         '<div class="wc-bot"><div style="display:flex;align-items:center;gap:12px">' + (p.nick ? head(p.nick, 44) : "") + '<div><div class="wc-lbl">PLAYER</div><div class="wc-val">' + esc((p.nick || p.display_name || "NOT LINKED").toUpperCase()) + (p.verified ? VTICK.replace('width="16" height="16"', 'width="18" height="18"') : "") + '</div></div></div>' +
         '<div style="text-align:right"><div class="wc-lbl">SINCE</div><div class="wc-val">' + esc(p.since || "") + '</div></div></div></div></div>' +
         '<div class="wc-install">Tip: on your phone, add this page to your Home Screen and it works like an app.</div></div>' +
