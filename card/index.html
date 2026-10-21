@@ -1408,7 +1408,7 @@ button{font:inherit}
         var sp = document.createElement("div"); sp.className = "wc-styles"; sp.innerHTML = '<div class="wc-slabel">Card style</div><div class="wc-sw"></div>';
         var swb = sp.querySelector(".wc-sw");
         themes.forEach(function (t) {
-          var b = document.createElement("button"); b.type = "button"; b.title = t.name; b.setAttribute("aria-label", t.name); b.className = t.id === cur ? "on" : "";
+          var b = document.createElement("button"); b.type = "button"; var rn = ["", "Common", "Uncommon", "Rare", "Epic", "Legendary"][Math.max(1, Math.min(5, Number(t.rarity) || 1))]; b.title = t.name + " (" + rn + ")"; b.setAttribute("aria-label", t.name + ", " + rn); b.className = t.id === cur ? "on" : "";
           b.style.background = "linear-gradient(135deg," + t.colors.join(",") + ")";
           if (t.tex) { b.style.background = "url(" + t.tex + ".png) 0 0/12px 12px"; b.style.imageRendering = "pixelated"; }
           b.onclick = function () {
