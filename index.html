@@ -107,7 +107,7 @@ button{font:inherit}
 .copy .ic-check{display:none}
 .copy.done{background:linear-gradient(180deg,#fff,#d4eeff);color:#06304d;box-shadow:0 10px 34px rgba(111,208,255,.55),inset 0 -3px 0 rgba(120,185,230,.6)}
 .copy.done .ic-copy{display:none}
-.copy.done .ic-check{display:block}
+.copy.done .ic-check{display:none}
 .px{position:fixed;left:0;top:0;z-index:60;pointer-events:none;will-change:transform,opacity}
 
 /* ---------- Stats ---------- */
@@ -190,7 +190,7 @@ button{font:inherit}
         <span class="ip-value" id="ip" title="Click to copy"><span data-ip>mc.playmvp.org</span></span>
         <button class="copy" id="copy-ip" type="button" aria-label="Copy server IP">
           <svg class="ic-copy" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" d="M8 8h11v13H8zM5 16H4V3h11v2"/></svg>
-          <img class="ic-check" src="img/ic/check.png" alt="" width="32" height="32" style="width:32px;height:32px;image-rendering:pixelated">
+          <img class="ic-check" hidden src="img/ic/check.png" alt="" width="32" height="32" style="width:32px;height:32px;image-rendering:pixelated">
           <span id="copy-label">Copy IP</span>
         </button>
       </div>
