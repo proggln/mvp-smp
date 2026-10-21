@@ -481,9 +481,10 @@ button{font:inherit}
     });
   }
   var TH = {
-    up: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 11v9H4v-9h3zM7 11l4-8c1.7 0 2.7 1.3 2.3 3L13 9h5.5a2 2 0 0 1 2 2.4l-1.3 6.6A2.5 2.5 0 0 1 16.8 20H7"/></svg>',
-    dn: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 13V4h3v9h-3zM17 13l-4 8c-1.7 0-2.7-1.3-2.3-3L11 15H5.5a2 2 0 0 1-2-2.4l1.3-6.6A2.5 2.5 0 0 1 7.2 4H17"/></svg>'
+    up: '<img src="../img/ic/on.png" alt="" width="22" height="22" style="width:22px;height:22px;image-rendering:pixelated;flex:none">',
+    dn: '<img src="../img/ic/off.png" alt="" width="22" height="22" style="width:22px;height:22px;image-rendering:pixelated;flex:none">'
   };
+
   function rating(d) {
     var box = document.getElementById("prate"); if (!box) return;
     var st = { up: d.up || 0, down: d.down || 0, my: d.my_vote || 0 };
