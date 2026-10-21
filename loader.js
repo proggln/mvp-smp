@@ -4,12 +4,4 @@
   var sp = function (c) { return '<span class="pl-sp ' + (c || '') + '" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>'; };
   window.mvpSpin = function (txt) { return '<div class="pl-ld" role="status">' + sp() + (txt ? '<span>' + txt + '</span>' : '') + '</div>'; };
   window.mvpSpinSm = function () { return sp('sm'); };
-  var seen = false; try { seen = sessionStorage.getItem('mvl') === '1'; sessionStorage.setItem('mvl', '1'); } catch (e) {}
-  if (seen) return;
-  var ov = document.createElement('div'); ov.className = 'mvl'; ov.setAttribute('role', 'status'); ov.innerHTML = sp() + '<span>LOADING</span>';
-  (document.body || document.documentElement).appendChild(ov);
-  var gone = false;
-  function hide() { if (gone) return; gone = true; ov.classList.add('out'); setTimeout(function () { if (ov.parentNode) ov.parentNode.removeChild(ov); }, 400); }
-  if (document.readyState === 'complete') setTimeout(hide, 150); else window.addEventListener('load', function () { setTimeout(hide, 200); });
-  setTimeout(hide, 7000);
 })();
