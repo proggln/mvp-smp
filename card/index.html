@@ -1205,6 +1205,26 @@ button{font:inherit}
     });
     if (!window.__tipDoc) { window.__tipDoc = true; document.addEventListener("click", function () { var t = document.getElementById("wctip"); if (t) t.classList.remove("on"); }); window.addEventListener("scroll", function () { if (Date.now() - (window.__tipAt || 0) < 500) return; var t = document.getElementById("wctip"); if (t) t.classList.remove("on"); }, true); }
   }
+  // tooltip for card styles: hover on a computer, long press on a phone (same box as the badges)
+  function styleTip(b, t) {
+    var RN = ["", "Common", "Uncommon", "Rare", "Epic", "Legendary"], RC = ["", "#9fb3c8", "#58d68d", "#4aa8ff", "#b476ff", "#ffb02e"], rv = Math.max(1, Math.min(5, Number(t.rarity) || 1));
+    b.setAttribute("aria-label", t.name + ", " + RN[rv]);
+    var tip = function () { var el = document.getElementById("wctip"); if (!el) { el = document.createElement("div"); el.id = "wctip"; el.className = "wc-tip"; el.setAttribute("role", "tooltip"); document.body.appendChild(el); } return el; };
+    var show = function () {
+      var el = tip(); el.innerHTML = "<b>" + esc(t.name) + "</b><span style=\"color:" + RC[rv] + ";font-weight:700\">" + RN[rv] + "</span>";
+      var r = b.getBoundingClientRect(); el.style.left = "0px"; el.style.top = "0px"; el.classList.add("on");
+      var w = el.offsetWidth, h = el.offsetHeight, x = Math.max(8, Math.min(window.innerWidth - w - 8, r.left + r.width / 2 - w / 2)), y = r.top - h - 10; if (y < 8) y = r.bottom + 10;
+      el.style.left = x + "px"; el.style.top = y + "px"; window.__tipAt = Date.now();
+    };
+    var hide = function () { var el = document.getElementById("wctip"); if (el) el.classList.remove("on"); };
+    var timer = 0, held = false;
+    b.addEventListener("mouseenter", show); b.addEventListener("mouseleave", hide); b.addEventListener("focus", show); b.addEventListener("blur", hide);
+    b.addEventListener("touchstart", function () { held = false; clearTimeout(timer); timer = setTimeout(function () { held = true; show(); }, 350); }, { passive: true });
+    var end = function () { clearTimeout(timer); if (held) setTimeout(hide, 1600); };
+    b.addEventListener("touchend", end); b.addEventListener("touchcancel", end); b.addEventListener("touchmove", function () { clearTimeout(timer); }, { passive: true });
+    b.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+    b.addEventListener("click", function (e) { if (held) { e.stopImmediatePropagation(); e.preventDefault(); held = false; } }, true);
+  }
   function fmtWhen(ms) { try { return new Date(ms).toLocaleString([], { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" }); } catch (e) { return ""; } }
   function askDelete(tok, p) {
     if (p.delete_at) { var b = document.querySelector(".wc-delbar"); if (b) b.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
@@ -1408,7 +1428,7 @@ button{font:inherit}
         var sp = document.createElement("div"); sp.className = "wc-styles"; sp.innerHTML = '<div class="wc-slabel">Card style</div><div class="wc-sw"></div>';
         var swb = sp.querySelector(".wc-sw");
         themes.forEach(function (t) {
-          var b = document.createElement("button"); b.type = "button"; var rn = ["", "Common", "Uncommon", "Rare", "Epic", "Legendary"][Math.max(1, Math.min(5, Number(t.rarity) || 1))]; b.title = t.name + " (" + rn + ")"; b.setAttribute("aria-label", t.name + ", " + rn); b.className = t.id === cur ? "on" : "";
+          var b = document.createElement("button"); b.type = "button"; styleTip(b, t); b.className = t.id === cur ? "on" : "";
           b.style.background = "linear-gradient(135deg," + t.colors.join(",") + ")";
           if (t.tex) { b.style.background = "url(" + t.tex + ".png) 0 0/12px 12px"; b.style.imageRendering = "pixelated"; }
           b.onclick = function () {
