@@ -323,11 +323,12 @@ button{font:inherit}
 
 <main class="doc"><div class="card2 mg"><h1>Manage subscription</h1>
 <div class="upd">Last updated: 20 October 2026</div>
-<p>Rank subscriptions (VIP, MVP and MVP+) are paid through <b>Stripe</b>. Confirm your nickname in the game to cancel or restore a subscription.</p>
+<p>Rank subscriptions (VIP, MVP and MVP+) are paid through <b>Stripe</b>. Signed in on this site with a linked Minecraft account? Your subscriptions show up by themselves. Otherwise confirm your nickname in the game.</p>
 <div id="mgapp"><label for="mgn">Your Minecraft nickname</label><input id="mgn" maxlength="16" autocomplete="off" spellcheck="false" placeholder="Steve"><button class="mgb" id="mgs" type="button">Continue</button><div class="mgmsg" id="mgm"></div></div>
 <script>
 (function(){
-var API="https://mvp-shop.mvp-shop.workers.dev",IP="mc.playmvp.org",root=document.getElementById("mgapp"),token="",poll=null,nick="";
+var API="https://mvp-shop.mvp-shop.workers.dev",IP="mc.playmvp.org",root=document.getElementById("mgapp"),token="",poll=null,nick="",site="";
+try{site=localStorage.getItem("mvp_card_token")||"";}catch(e){}
 function esc(t){return String(t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
 function api(path,o){return fetch(API+path,o).then(function(r){return r.json().then(function(j){return{ok:r.ok,status:r.status,j:j};});});}
 function post(path,b){return api(path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(b)});}
@@ -356,9 +357,11 @@ function verify(code){
 function fmt(ms){try{return new Date(ms).toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});}catch(e){return "";}}
 function list(){
   root.innerHTML='<div class="mgmsg ok">Loading your subscriptions...</div>';
-  post("/api/subs/list",{token:token}).then(function(r){
+  post("/api/subs/list",{token:token,siteToken:site}).then(function(r){
+    if(!r.ok&&site&&!token&&r.status===401){site="";form();return;}
     if(!r.ok){root.innerHTML='<div class="mgmsg">'+(r.j.error==="not_verified"?"The confirmation expired. Start again.":"Could not load subscriptions. Try again later.")+'</div><button class="mgb ghost" id="mgback" type="button">Back</button>';document.getElementById("mgback").onclick=form;return;}
     var subs=r.j.subs||[];
+    if(r.j.nick)nick=r.j.nick;
     if(!subs.length){root.innerHTML='<p>No active subscriptions for <b>'+esc(nick)+'</b>.</p>';return;}
     root.innerHTML='<p>Subscriptions for <b>'+esc(nick)+'</b>:</p>';
     subs.forEach(function(s){
@@ -369,7 +372,7 @@ function list(){
         b.onclick=function(){
           if(!canceling&&!confirm("Cancel this subscription? Your rank stays active until the end of the paid month."))return;
           b.disabled=true;mm.textContent="";
-          post("/api/subs/cancel",{token:token,id:s.id,undo:canceling}).then(function(x){
+          post("/api/subs/cancel",{token:token,siteToken:site,id:s.id,undo:canceling}).then(function(x){
             if(x.ok){draw(x.j.canceling,x.j.periodEnd||end);}else{b.disabled=false;mm.textContent="Could not change it. Try again or contact us.";}
           }).catch(function(){b.disabled=false;mm.textContent="Cannot reach the server.";});
         };
@@ -380,6 +383,7 @@ function list(){
 }
 function form(){root.innerHTML='<label for="mgn">Your Minecraft nickname</label><input id="mgn" maxlength="16" autocomplete="off" spellcheck="false" placeholder="Steve" value="'+esc(nick)+'"><button class="mgb" id="mgs" type="button">Continue</button><div class="mgmsg" id="mgm"></div>';document.getElementById("mgs").onclick=start;}
 document.getElementById("mgs").onclick=start;
+if(site){nick="";list();}
 document.getElementById("mgn").addEventListener("keydown",function(e){if(e.key==="Enter")start();});
 })();
 </script>
