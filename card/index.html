@@ -305,7 +305,7 @@ button{font:inherit}
 .wc-news h2{margin:0 0 12px}
 .wc-n{padding:16px 18px;border-radius:18px;background:rgba(6,16,28,.6);border:1px solid rgba(255,255,255,.1);margin-bottom:12px}
 .wc-n img{display:block;width:100%;max-width:960px;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:12px;margin-bottom:12px}
-.wc-n img.px{margin:0;aspect-ratio:auto;border-radius:0;max-width:none;object-fit:contain;image-rendering:pixelated;display:block}
+.wc-n img.pxi{margin:0;aspect-ratio:auto;border-radius:0;max-width:none;object-fit:contain;image-rendering:pixelated;display:block}
 .wc-n b{display:block;font:800 clamp(1.6rem,4.2vw,2.3rem)/1.15 var(--font-head);letter-spacing:-.02em;margin:2px 0 6px;padding-left:14px;border-left:4px solid #22a6f2;background:linear-gradient(90deg,#fff 30%,#9fdcff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;word-break:break-word}
 .wc-n small{display:block;color:#6fd0ff;font-size:.82rem;margin:0 0 10px 18px}
 .wc-v{display:flex;align-items:center;gap:12px;margin-top:16px;flex-wrap:wrap}
@@ -1446,9 +1446,9 @@ button{font:inherit}
         var bar = document.createElement("div"); bar.className = "wc-v";
         var up = document.createElement("button"), dn = document.createElement("button"), ey = document.createElement("span"), note = document.createElement("span");
         up.type = dn.type = "button"; up.setAttribute("aria-label", "Like"); dn.setAttribute("aria-label", "Dislike");
-        var IC_UP = '<img class="px" src="../img/ic/on.png" alt="" width="26" height="26" style="width:26px;height:26px;flex:none">';
-      var IC_DN = '<img class="px" src="../img/ic/off.png" alt="" width="26" height="26" style="width:26px;height:26px;flex:none">';
-      var IC_EY = '<img class="px" src="../img/ic/show.png" alt="" width="26" height="26" style="width:26px;height:26px;flex:none">';
+        var IC_UP = '<img class="pxi" src="../img/ic/on.png" alt="" width="26" height="26" style="width:26px;height:26px;flex:none">';
+      var IC_DN = '<img class="pxi" src="../img/ic/off.png" alt="" width="26" height="26" style="width:26px;height:26px;flex:none">';
+      var IC_EY = '<img class="pxi" src="../img/ic/show.png" alt="" width="26" height="26" style="width:26px;height:26px;flex:none">';
       function paint() {
           up.innerHTML = IC_UP + "<b>" + n.likes + "</b>"; dn.innerHTML = IC_DN + "<b>" + n.dislikes + "</b>";
           up.className = n.my === 1 ? "on" : ""; dn.className = n.my === -1 ? "on" : "";
