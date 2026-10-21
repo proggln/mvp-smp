@@ -399,6 +399,7 @@ button{font:inherit}
 #wcidlg .wc-ibt{align-items:center;padding-right:16px}#wcidlg .wc-imt{font-size:1.02rem}#wcidlg .wc-ibt time{background:rgba(255,255,255,.07);padding:3px 9px;border-radius:99px;font-size:.7rem;white-space:nowrap}
 #wcidlg .wc-im p{margin-top:5px;font-size:.9rem;line-height:1.45}#wcidlg .wc-ifrom{margin-top:8px;font-size:.72rem;letter-spacing:.03em}
 #wcidlg .wc-iact{gap:10px}#wcidlg .wc-ia{border-radius:999px;padding:8px 20px}#wcidlg .wc-ia.ok{background:linear-gradient(180deg,#22a6f2,#0081cc);border-color:transparent;box-shadow:0 4px 14px rgba(0,129,204,.35)}
+#wcidlg .wc-im a.wc-ilk{color:#fff;font-weight:700;text-decoration:none;border-bottom:2px solid var(--k);padding-bottom:1px}#wcidlg .wc-im a.wc-ilk:hover{color:var(--k)}
 #wcidlg .wc-iempty{padding:46px 10px}
 </style>
 </head>
@@ -1246,6 +1247,8 @@ button{font:inherit}
         var w = document.createElement("article"); w.className = "wc-im" + (m.read ? "" : " unread");
         var rb = rich(m.body), d = "", t = String(m.title || ""), kind = /friend request accepted/i.test(t) ? "ok" : /friend request/i.test(t) ? "fr" : /like/i.test(t) ? "like" : m.sender === "server" ? "srv" : "team";
         w.classList.add("ik-" + kind);
+        var pn = /^([A-Za-z0-9_]{3,16}) (?:liked|disliked|accepted|wants|sent|commented|replied|mentioned|rated|removed|is now)\b/.exec(String(m.body || ""));
+        if (pn && rb.html.indexOf(pn[1]) === 0) rb.html = '<a class="wc-ilk" href="../u/?n=' + encodeURIComponent(pn[1]) + '">' + esc(pn[1]) + '</a>' + rb.html.slice(pn[1].length);
         try { d = new Date(m.created_at).toLocaleString([], { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }); } catch (e) {}
         var P = { fr: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 3-6 6.5-6s6.5 2.4 6.5 6"/><path d="M19 8v6M16 11h6"/>', ok: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 3-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 11l2 2 4-4"/>', like: '<path d="M12 21s-7.5-4.6-9.5-9.2C1.2 8.6 3 5 6.4 5c2 0 3.6 1.1 4.6 2.7C12 6.1 13.600 5 15.600 5 19 5 20.800 8.600 19.500 11.800 17.500 16.400 12 21 12 21z"/>', srv: '<rect x="3" y="4" width="18" height="6" rx="1.500"/><rect x="3" y="14" width="18" height="6" rx="1.500"/><path d="M7 7h.01M7 17h.01"/>', team: '<path d="M4 5h16v11H8l-4 4z"/>' }[kind];
         var who = m.sender === "server" ? "Game server" : "MVP team" + VER_SVG, nick = "", mt = kind === "fr" ? /^(\S+) wants to be your friend/.exec(String(m.body || "")) : null;
