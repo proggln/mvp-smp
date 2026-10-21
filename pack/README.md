@@ -13,7 +13,7 @@ URL: https://raw.githubusercontent.com/proggln/mvp-smp/main/pack/MVP-Resource-Pa
 ## Used base items and number ranges
 | Plugin     | Base item       | custom_model_data |
 |------------|-----------------|-------------------|
-| MVPCoins   | paper           | 9101-9108, 9201   |
+| MVPCoins   | paper           | 9101-9108, 9201, 9202 (MVP coin) |
 | MVPProtect | knowledge_book  | 9009-9035         |
 | MVPCrates  | amethyst_shard  | 9301-9304, 9321-9326 |
 | MVPCrates  | tripwire_hook   | 9311-9314         |
