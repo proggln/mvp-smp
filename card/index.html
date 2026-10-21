@@ -602,6 +602,7 @@ button{font:inherit}
         if (c.description) h += '<div class="ct-d">' + esc(c.description) + '</div>';
         h += '<div class="ct-chips">';
         if (c.prize) h += '<span class="ct-c gold">' + px("daily", 18) + esc(c.prize) + '</span>';
+        if (c.prize_coins > 0) h += '<span class="ct-c gold"><img src="../card/coin.png" alt="" width="18" height="18" style="width:18px;height:18px;image-rendering:pixelated">' + esc(c.prize_coins) + ' Coins</span>';
         h += '<span class="ct-c">' + px("people", 18) + '<em data-cn="' + c.id + '" style="font-style:normal">' + esc(c.entries) + '</em> joined</span>';
         if (c.drawn_at) h += '<span class="ct-c gold">' + px("baltop", 18) + 'Winner: ' + esc(c.winner || "-") + '</span>';
         else h += '<span class="ct-c" data-end="' + c.ends_at + '">' + px("history", 18) + '<i></i></span>';
