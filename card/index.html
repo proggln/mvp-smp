@@ -385,6 +385,21 @@ button{font:inherit}
 .wc-iact{display:flex;gap:8px;margin-top:10px}.wc-ia{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;border-radius:10px;padding:7px 16px;font:600 .85rem inherit;cursor:pointer}.wc-ia.ok{background:#2ea2ea;border-color:#2ea2ea}.wc-ia:disabled{opacity:.5}.wc-idone{font-size:.85rem;color:#58e09a;font-weight:600}
 .wc-im .wc-vid{margin-top:10px}.wc-ihide{margin-top:10px;border:0;background:none;color:#6f8597;font:500 .8rem inherit;text-decoration:underline;cursor:pointer;padding:0}.wc-ihide:hover{color:#ffb3b9}
 .wc-im a{color:#6fd0ff;text-decoration:underline}.wc-iempty{text-align:center;color:var(--muted);padding:20px 10px}.wc-iempty svg{opacity:.8}
+/* inbox redesign */
+#wcidlg{width:min(560px,calc(100vw - 20px));max-height:min(86vh,820px);padding:0;overflow:hidden}#wcidlg[open]{display:flex;flex-direction:column}
+#wcidlg .wc-dh{padding:20px 22px 14px;background:linear-gradient(180deg,rgba(46,162,234,.16),rgba(46,162,234,0));border-bottom:1px solid rgba(255,255,255,.07);flex:none}#wcidlg .wc-dh h2{font-size:1.45rem}
+#wcidlg .wc-il{flex:1;min-height:0;overflow-y:auto;padding:14px 14px 18px 18px;scrollbar-width:thin;scrollbar-color:rgba(111,208,255,.4) transparent}
+#wcidlg .wc-il::-webkit-scrollbar{width:8px}#wcidlg .wc-il::-webkit-scrollbar-track{background:transparent;margin:6px 0}#wcidlg .wc-il::-webkit-scrollbar-thumb{background:rgba(111,208,255,.32);border-radius:99px;border:2px solid transparent;background-clip:padding-box}#wcidlg .wc-il::-webkit-scrollbar-thumb:hover{background:rgba(111,208,255,.6);background-clip:padding-box;border:2px solid transparent}
+#wcidlg .wc-im{--k:#6fd0ff;gap:14px;padding:14px 16px 14px 14px;margin:0 0 10px;border-radius:18px;border:1px solid rgba(255,255,255,.07);border-left:4px solid var(--k);background:linear-gradient(90deg,rgba(255,255,255,.045),rgba(255,255,255,.02));transition:transform .15s,background .15s}
+#wcidlg .wc-im:hover{transform:translateX(2px);background:linear-gradient(90deg,rgba(255,255,255,.07),rgba(255,255,255,.03))}
+#wcidlg .wc-im.ik-like{--k:#ff7a8c}#wcidlg .wc-im.ik-ok{--k:#47d98a}#wcidlg .wc-im.ik-fr{--k:#6fd0ff}#wcidlg .wc-im.ik-srv{--k:#ffc05a}#wcidlg .wc-im.ik-team{--k:#ffd23f}
+#wcidlg .wc-im.unread{border-color:rgba(255,255,255,.14);border-left-color:var(--k);background:linear-gradient(90deg,rgba(255,255,255,.09),rgba(255,255,255,.035));box-shadow:0 0 0 1px rgba(111,208,255,.12),0 8px 22px rgba(0,0,0,.25)}
+#wcidlg .wc-im.unread::after{content:"";position:absolute;top:14px;right:14px;width:9px;height:9px;border-radius:50%;background:var(--k);box-shadow:0 0 10px var(--k)}
+#wcidlg .wc-ii{width:52px;height:52px;border-radius:14px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.08)}#wcidlg .wc-ii img{margin:0;border-radius:0;display:block}
+#wcidlg .wc-ibt{align-items:center;padding-right:16px}#wcidlg .wc-imt{font-size:1.02rem}#wcidlg .wc-ibt time{background:rgba(255,255,255,.07);padding:3px 9px;border-radius:99px;font-size:.7rem;white-space:nowrap}
+#wcidlg .wc-im p{margin-top:5px;font-size:.9rem;line-height:1.45}#wcidlg .wc-ifrom{margin-top:8px;font-size:.72rem;letter-spacing:.03em}
+#wcidlg .wc-iact{gap:10px}#wcidlg .wc-ia{border-radius:999px;padding:8px 20px}#wcidlg .wc-ia.ok{background:linear-gradient(180deg,#22a6f2,#0081cc);border-color:transparent;box-shadow:0 4px 14px rgba(0,129,204,.35)}
+#wcidlg .wc-iempty{padding:46px 10px}
 </style>
 </head>
 <body>
@@ -1230,6 +1245,7 @@ button{font:inherit}
       items.forEach(function (m) {
         var w = document.createElement("article"); w.className = "wc-im" + (m.read ? "" : " unread");
         var rb = rich(m.body), d = "", t = String(m.title || ""), kind = /friend request accepted/i.test(t) ? "ok" : /friend request/i.test(t) ? "fr" : /like/i.test(t) ? "like" : m.sender === "server" ? "srv" : "team";
+        w.classList.add("ik-" + kind);
         try { d = new Date(m.created_at).toLocaleString([], { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }); } catch (e) {}
         var P = { fr: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 3-6 6.5-6s6.5 2.4 6.5 6"/><path d="M19 8v6M16 11h6"/>', ok: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 3-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 11l2 2 4-4"/>', like: '<path d="M12 21s-7.5-4.6-9.5-9.2C1.2 8.6 3 5 6.4 5c2 0 3.6 1.1 4.6 2.7C12 6.1 13.600 5 15.600 5 19 5 20.800 8.600 19.500 11.800 17.500 16.400 12 21 12 21z"/>', srv: '<rect x="3" y="4" width="18" height="6" rx="1.500"/><rect x="3" y="14" width="18" height="6" rx="1.500"/><path d="M7 7h.01M7 17h.01"/>', team: '<path d="M4 5h16v11H8l-4 4z"/>' }[kind];
         var who = m.sender === "server" ? "Game server" : "MVP team" + VER_SVG, nick = "", mt = kind === "fr" ? /^(\S+) wants to be your friend/.exec(String(m.body || "")) : null;
