@@ -325,13 +325,13 @@ button{font:inherit}
 .wc-how{margin:14px 0 0;padding-left:20px;color:#cfe3f1;line-height:1.7}
 .wc-styles{margin-top:14px}.wc-slabel{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:#9db6c9;margin-bottom:8px}
 /* Diamond card: block texture + pixel shine */
-.wc-tex-diamond{background:linear-gradient(rgba(0,45,55,.52),rgba(0,45,55,.3)),url(diamond.png) 0 0/96px 96px!important;image-rendering:pixelated;position:relative;overflow:hidden}
+.wc-tex-diamond{background:linear-gradient(rgba(0,60,70,.12),rgba(0,60,70,.02)),url(diamond.png) 0 0/96px 96px!important;image-rendering:pixelated;position:relative;overflow:hidden}
 .wc-shine{position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:inherit;z-index:0}
-.wc-shine:before{content:"";position:absolute;top:-10%;bottom:-10%;left:0;width:34%;background:linear-gradient(90deg,rgba(255,255,255,0) 0,rgba(255,255,255,.14) 25%,rgba(255,255,255,.34) 50%,rgba(255,255,255,.14) 75%,rgba(255,255,255,0) 100%);transform:skewX(-22deg);animation:wcsweep 5.5s steps(26) infinite}
-@keyframes wcsweep{0%{left:-45%}55%,100%{left:125%}}
+.wc-shine:before{content:"";position:absolute;top:-10%;bottom:-10%;left:0;width:34%;left:0;will-change:transform;background:linear-gradient(90deg,rgba(255,255,255,0) 0,rgba(255,255,255,.14) 25%,rgba(255,255,255,.34) 50%,rgba(255,255,255,.14) 75%,rgba(255,255,255,0) 100%);transform:translate3d(-130%,0,0) skewX(-22deg);animation:wcsweep 4.5s linear infinite}
+@keyframes wcsweep{0%{transform:translate3d(-130%,0,0) skewX(-22deg)}60%,100%{transform:translate3d(360%,0,0) skewX(-22deg)}}
 .wc-shine i{position:absolute;width:4px;height:4px;background:#fff;box-shadow:-4px 0 #bff,4px 0 #bff,0 -4px #bff,0 4px #bff;opacity:0;animation:wctw 2.4s steps(1) infinite}
 @keyframes wctw{0%,55%,100%{opacity:0}60%{opacity:1;transform:scale(.5)}70%{opacity:1;transform:scale(1)}85%{opacity:1;transform:scale(.5)}90%{opacity:0}}
-.wc-tex-diamond>*:not(.wc-shine){position:relative;z-index:1}
+.wc-tex-diamond>*:not(.wc-shine){position:relative;z-index:1;text-shadow:0 1px 3px rgba(0,50,60,.65)}
 @media (prefers-reduced-motion:reduce){.wc-shine:before,.wc-shine i{animation:none}}
 @property --p{syntax:"<length>";inherits:false;initial-value:0px}.wc-flow{background:repeating-linear-gradient(135deg,var(--c0) var(--p),var(--c1) calc(var(--p) + 170px),var(--c2) calc(var(--p) + 340px),var(--c1) calc(var(--p) + 510px),var(--c0) calc(var(--p) + 680px))!important;animation:wcflow 12s linear infinite}@keyframes wcflow{to{--p:680px}}@media(prefers-reduced-motion:reduce){.wc-flow{animation:none}}
 .wc-sw{display:flex;gap:8px;flex-wrap:nowrap;padding:4px 2px}.wc-sw button{flex:1 1 0;min-width:0;max-width:46px;width:auto;height:auto;aspect-ratio:1/1;border-radius:14px;border:2px solid rgba(255,255,255,.2);cursor:pointer;padding:0;transition:transform .12s}.wc-sw button:active{transform:scale(.92)}.wc-sw button.on{border-color:#fff;box-shadow:0 0 0 3px rgba(111,208,255,.55)}
