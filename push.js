@@ -8,7 +8,7 @@
     ".pn svg{flex:none;color:#6fd0ff}.pn .pt{flex:1;min-width:180px}.pn .pt b{display:block;font-size:1rem}.pn .pt span{font-size:.85rem;color:#9db6c9}" +
     ".pn button{min-height:46px;padding:0 22px;border-radius:999px;border:0;font:700 .95rem inherit;cursor:pointer;color:#fff;background:linear-gradient(180deg,#22a6f2,#0081cc);box-shadow:0 6px 18px rgba(0,129,204,.35)}" +
     ".pn button.off{background:rgba(255,255,255,.08);box-shadow:none;border:1px solid rgba(255,255,255,.18)}.pn button:disabled{opacity:.6}";
-  var BELL = '<img src="/img/ic/bell.png" alt="" width="30" height="30" style="width:30px;height:30px;image-rendering:pixelated">';
+  var BELL = '<img src="/img/ic/bell.png" alt="" width="32" height="32" style="width:32px;height:32px;image-rendering:pixelated">';
   function ls(k, v) { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} return null; }
   function post(path, token) { var h = { "Content-Type": "application/json" }, ct = ""; try { ct = localStorage.getItem("mvp_card_token") || ""; } catch (e) {} if (ct) h.Authorization = "Bearer " + ct; return fetch(API + path, { method: "POST", headers: h, body: JSON.stringify({ token: token }) }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); }); }
   var lib = null;

@@ -13,7 +13,7 @@
   var VTICK = '<svg class="wc-ver" viewBox="0 0 24 24" width="16" height="16" style="vertical-align:-3px;margin-left:4px;display:inline-block" aria-label="Verified" role="img"><path d="M12.00 2.00 L14.23 3.69 L17.00 3.34 L18.08 5.92 L20.66 7.00 L20.31 9.77 L22.00 12.00 L20.31 14.23 L20.66 17.00 L18.08 18.08 L17.00 20.66 L14.23 20.31 L12.00 22.00 L9.77 20.31 L7.00 20.66 L5.92 18.08 L3.34 17.00 L3.69 14.23 L2.00 12.00 L3.69 9.77 L3.34 7.00 L5.92 5.92 L7.00 3.34 L9.77 3.69 Z" fill="#2ea2ea"/><path d="M8 12.3 L10.8 15 L16.2 9.4" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   function head(n, s) { return '<span class="mch" style="width:' + s + 'px;height:' + s + 'px"><img alt="" loading="lazy" src="' + API + '/api/skin/' + encodeURIComponent(n) + '" onerror="this.style.display=\'none\';this.parentNode.className+=\' bad\'"></span>'; }
   var IC = {
-    heart: '<img class="cm-hi" src="/img/ic/heart.png" alt="" width="20" height="20" style="width:20px;height:20px;image-rendering:pixelated">',
+    heart: '<img class="cm-hi" src="/img/ic/heart.png" alt="" width="16" height="16" style="width:16px;height:16px;image-rendering:pixelated">',
     reply: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16M14 6l6 6-6 6"/></svg>',
     flag: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg>'
   };
@@ -32,7 +32,7 @@
     if (!document.getElementById("cm-css")) { var st = document.createElement("style"); st.id = "cm-css"; st.textContent = css; document.head.appendChild(st); }
     var wrap = document.createElement("div"); wrap.className = "cm";
     var tb = document.createElement("button"); tb.type = "button"; tb.className = "cm-t";
-    tb.innerHTML = '<img src="/img/ic/comments.png" alt="" width="24" height="24" style="width:24px;height:24px;image-rendering:pixelated"><span>Comments</span>';
+    tb.innerHTML = '<img src="/img/ic/comments.png" alt="" width="32" height="32" style="width:32px;height:32px;image-rendering:pixelated"><span>Comments</span>';
     var body = document.createElement("div"); body.className = "cm-b"; body.hidden = true;
     wrap.appendChild(tb); wrap.appendChild(body);
     var loaded = false, data = null, showAll = false;

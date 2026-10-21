@@ -416,9 +416,9 @@ button{font:inherit}
       var bar = document.createElement("div"); bar.className = "wc-v";
       var up = document.createElement("button"), dn = document.createElement("button"), ey = document.createElement("span"), note = document.createElement("span");
       up.type = dn.type = "button"; up.setAttribute("aria-label", "Like"); dn.setAttribute("aria-label", "Dislike");
-      var IC_UP = '<img class="pxi" src="../img/ic/on.png" alt="" width="26" height="26" style="width:26px;height:26px;flex:none">';
-      var IC_DN = '<img class="pxi" src="../img/ic/off.png" alt="" width="26" height="26" style="width:26px;height:26px;flex:none">';
-      var IC_EY = '<img class="pxi" src="../img/ic/show.png" alt="" width="26" height="26" style="width:26px;height:26px;flex:none">';
+      var IC_UP = '<img class="pxi" src="../img/ic/on.png" alt="" width="32" height="32" style="width:32px;height:32px;flex:none">';
+      var IC_DN = '<img class="pxi" src="../img/ic/off.png" alt="" width="32" height="32" style="width:32px;height:32px;flex:none">';
+      var IC_EY = '<img class="pxi" src="../img/ic/show.png" alt="" width="32" height="32" style="width:32px;height:32px;flex:none">';
       function paint() {
         up.innerHTML = IC_UP + "<b>" + n.likes + "</b>"; dn.innerHTML = IC_DN + "<b>" + n.dislikes + "</b>";
         up.className = n.my === 1 ? "on" : ""; dn.className = n.my === -1 ? "on" : "";
