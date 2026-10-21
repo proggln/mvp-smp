@@ -330,7 +330,7 @@ const CONFIG = {
   // Store backend (Cloudflare Worker): empty = the Buy buttons stay "Coming soon".
   api: (function () { var D = "https://mvp-shop.mvp-shop.workers.dev"; try { var a = new URLSearchParams(location.search).get("api") || ""; return /^https:\/\/[a-z0-9.-]+\.workers\.dev$/i.test(a) ? a : D; } catch (e) { return D; } })(),
   // STORE ITEMS: ready-made EXAMPLES for a Minecraft SMP. Edit names, prices and perks to match your server,
-  // and paste a checkout link per item (Stripe Payment Link or Checkout). Empty checkout = "Coming soon".
+  // and paste a checkout link per item (Tebex package link). Empty checkout = "Coming soon".
   // cat: ranks | keys | coins | cosmetics | extras   icon: see ICONS in the script   color: card accent
   // image: "banner" or "stamp" (your brand artwork)   featured: true = big card on top   chip: small badge text
   products: [
