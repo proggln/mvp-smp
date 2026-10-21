@@ -602,7 +602,7 @@ button{font:inherit}
         if (c.description) h += '<div class="ct-d">' + esc(c.description) + '</div>';
         h += '<div class="ct-chips">';
         if (c.prize) h += '<span class="ct-c gold">' + px("daily", 18) + esc(c.prize) + '</span>';
-        h += '<span class="ct-c">' + px("people", 18) + esc(c.entries) + ' joined</span>';
+        h += '<span class="ct-c">' + px("people", 18) + '<em data-cn="' + c.id + '" style="font-style:normal">' + esc(c.entries) + '</em> joined</span>';
         if (c.drawn_at) h += '<span class="ct-c gold">' + px("baltop", 18) + 'Winner: ' + esc(c.winner || "-") + '</span>';
         else h += '<span class="ct-c" data-end="' + c.ends_at + '">' + px("history", 18) + '<i></i></span>';
         h += '</div>';
@@ -613,7 +613,7 @@ button{font:inherit}
           b.addEventListener("click", function () {
             b.disabled = true;
             call("POST", "/api/app/contests/" + c.id + "/join", {}, tok).then(function (x) {
-              if (x.ok) { b.className = "ct-b on"; b.innerHTML = px("on", 20) + "You joined"; } else { b.disabled = false; b.textContent = "Try again"; }
+              if (x.ok) { b.className = "ct-b on"; b.innerHTML = px("on", 20) + "You joined"; refreshCounts(); } else { b.disabled = false; b.textContent = "Try again"; }
             }).catch(function () { b.disabled = false; b.textContent = "Try again"; });
           });
           t.appendChild(b);
@@ -626,7 +626,13 @@ button{font:inherit}
           i.textContent = l <= 0 ? "Ended" : "Ends in " + fmtLeft(l);
         });
       }
-      tick(); var iv = setInterval(function () { if (!document.body.contains(box)) { clearInterval(iv); return; } tick(); }, 1000);
+      function refreshCounts() {
+        call("GET", "/api/contests", null, tok).then(function (q) {
+          if (!q.ok) return;
+          q.j.forEach(function (c) { var e = box.querySelector('[data-cn="' + c.id + '"]'); if (e) e.textContent = c.entries; });
+        }).catch(function () {});
+      }
+      tick(); var n20 = 0; var iv = setInterval(function () { if (!document.body.contains(box)) { clearInterval(iv); return; } tick(); if (++n20 % 15 === 0) refreshCounts(); }, 1000);
       if (location.hash === "#contests") setTimeout(function () { box.scrollIntoView({ behavior: "smooth", block: "center" }); }, 400);
     }).catch(function () {});
   }
