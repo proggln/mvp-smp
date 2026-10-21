@@ -141,3 +141,31 @@
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", run); else run();
 })();
+
+/* MVP social links: shown above the legal links at the bottom of every page */
+(function () {
+  var LINKS = [
+    { name: "Discord", href: "https://playmvp.org/discord", img: "/img/share/discord.png" },
+    { name: "TikTok", href: "https://playmvp.org/tiktok", svg: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M10 8.5v7l6-3.5z" fill="currentColor"/></svg>' }
+  ];
+  var css = ".mvp-social{position:relative;z-index:10;display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:18px 18px 6px}" +
+    ".mvp-social a{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:#e6f2fb;font-family:inherit;font-weight:600;font-size:.88rem;text-decoration:none;transition:background .15s,border-color .15s}" +
+    ".mvp-social a:hover{background:rgba(46,162,234,.22);border-color:rgba(111,208,255,.5);color:#fff}" +
+    ".mvp-social img{width:18px;height:18px;object-fit:contain}";
+  function run() {
+    var navs = document.querySelectorAll("nav.legal-links");
+    if (!navs.length || document.querySelector(".mvp-social")) return;
+    var st = document.createElement("style"); st.textContent = css; document.head.appendChild(st);
+    Array.prototype.forEach.call(navs, function (nav) {
+      var box = document.createElement("nav"); box.className = "mvp-social"; box.setAttribute("aria-label", "MVP on social media");
+      LINKS.forEach(function (l) {
+        var a = document.createElement("a"); a.href = l.href; a.target = "_blank"; a.rel = "noopener me";
+        a.setAttribute("aria-label", "MVP on " + l.name);
+        a.innerHTML = (l.img ? '<img src="' + l.img + '" alt="">' : l.svg) + "<span>" + l.name + "</span>";
+        box.appendChild(a);
+      });
+      nav.parentNode.insertBefore(box, nav);
+    });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", run); else run();
+})();
