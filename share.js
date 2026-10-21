@@ -4,7 +4,7 @@
   var API = "https://mvp-news-api.mvp-shop.workers.dev";
   var me = document.currentScript, BASE = me ? me.src.replace(/share\.js(\?.*)?$/, "") : "/";
   function logo(k) { return '<img src="' + BASE + 'img/share/' + k + '.png" alt="" width="34" height="34">'; }
-  var css = ".wc-v button.wc-share{height:54px;padding:0 20px;border:1px solid rgba(255,255,255,.14)!important;border-radius:999px;background:rgba(255,255,255,.06);color:#b9d3e6;gap:8px}" +
+  var css = ".wc-v button.wc-share{height:54px;padding:0 22px 0 18px;border:1px solid rgba(255,255,255,.14)!important;border-radius:999px;background:rgba(255,255,255,.06);color:#b9d3e6;gap:12px}" +
     ".wc-v button.wc-share:hover{background:rgba(255,255,255,.12);color:#fff}" +
     ".wc-shm{position:fixed;inset:0;z-index:80;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.55);padding:16px}" +
     "@media (min-width:640px){.wc-shm{align-items:center}}" +
@@ -16,7 +16,7 @@
     ".wc-shg img{display:block;width:34px;height:34px;object-fit:contain;border-radius:9px}.wc-shg i{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:11px;color:#fff;background:var(--bc)}.wc-shg .wide{flex-direction:row;min-height:48px}.wc-shg .wide i{background:none;width:auto;height:auto}" +
     ".wc-shg .wide{grid-column:1/-1;background:linear-gradient(180deg,#22a6f2,#0081cc);border:0;color:#fff}" +
     ".wc-shx{display:block;margin:12px auto 0;border:0;background:none;color:#9db6c9;font:600 .9rem inherit;cursor:pointer}.wc-shmsg{min-height:1.2em;margin-top:10px;text-align:center;color:#7be3a0;font-size:.88rem}";
-  var IC = '<img src="/img/ic/share64.png" alt="" width="32" height="32" style="width:32px;height:32px;display:block;image-rendering:pixelated">';
+  var IC = '<img src="/img/ic/share64.png" alt="" width="32" height="32" style="width:32px;height:32px;display:block;margin-top:2px;image-rendering:pixelated">';
   var G = {
     link: '<path d="M10 13.5a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10.5a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
     chat: '<path d="M4 5h16v11H9l-5 4z"/><path d="M8.5 10.5h.01M12 10.5h.01M15.5 10.5h.01"/>',
