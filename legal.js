@@ -5,7 +5,7 @@ window.LEGAL = {
   email:    "info@playmvp.org",               // public support email
   country:  "Lithuania",     // for the governing law, e.g. Lithuania
   retention:"10 years",              // Lithuanian accounting rules: keep order/accounting records 10 years (confirm with your accountant)
-  portal:   "https://www.tebex.io/",   // Tebex: replace with your store page or the Tebex customer portal link once your store exists
+  portal:   "https://billing.stripe.com/",   // Stripe: replace with your Stripe customer portal login link once it exists
   updated:  "20 October 2026"
 };
 (function () {
@@ -15,7 +15,7 @@ window.LEGAL = {
       if (!v) return;
       el.textContent = v;
       if (el.tagName === "A" && el.getAttribute("data-k") === "email" && v.indexOf("@") > 0) el.href = "mailto:" + v;
-      if (el.tagName === "A" && el.getAttribute("data-k") === "portal") { el.href = v; el.textContent = "Tebex payment portal"; }
+      if (el.tagName === "A" && el.getAttribute("data-k") === "portal") { el.href = v; el.textContent = "Stripe customer portal"; }
       if (v.charAt(0) !== "[") el.classList.remove("ph");
     });
   }

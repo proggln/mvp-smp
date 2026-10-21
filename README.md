@@ -27,7 +27,7 @@ Site: `https://<username>.github.io/<repo>/`
 ## Store (v2/store/)
 
 `v2/store/index.html` is a store page. Edit `CONFIG.products` at the bottom of that file:
-name, price, perks and a `checkout` link per item (Tebex, Stripe Payment Link, PayPal...).
+name, price, perks and a `checkout` link per item (Stripe Payment Link or Checkout).
 Items without a checkout link show "Coming soon". The site is static, so payments always go through the external checkout.
 
 ## Wiki (v2/wiki/), hidden
