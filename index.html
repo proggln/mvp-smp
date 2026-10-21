@@ -323,7 +323,7 @@ const CONFIG = {
    const backup = () => { if (ytStarted) return; ytStarted = true; v.remove(); startYT(); };
    v.addEventListener("playing", () => { clearTimeout(window.__vTo); v.classList.add("on"); });
    v.addEventListener("error", backup);
-   v.src = "img/bg.mp4";
+   v.src = "img/bg60.mp4";
    vbg.insertBefore(v, vbg.firstChild);
    const tryPlay = () => { const r = v.play(); if (r && r.catch) r.catch(() => {}); };
    tryPlay();
