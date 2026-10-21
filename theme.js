@@ -146,9 +146,9 @@
 (function () {
   var LINKS = [
     { name: "Discord", href: "https://playmvp.org/discord", img: "/img/share/discord.png" },
-    { name: "TikTok", href: "https://playmvp.org/tiktok", svg: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M10 8.5v7l6-3.5z" fill="currentColor"/></svg>' },
-    { name: "Instagram", href: "https://playmvp.org/instagram", svg: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg>' },
-    { name: "YouTube", href: "https://playmvp.org/youtube", svg: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="4"/><path d="M10 9v6l5-3z" fill="currentColor"/></svg>' },
+    { name: "TikTok", href: "https://playmvp.org/tiktok", img: "/img/share/tiktok.png" },
+    { name: "Instagram", href: "https://playmvp.org/instagram", img: "/img/share/instagram.png" },
+    { name: "YouTube", href: "https://playmvp.org/youtube", img: "/img/share/youtube.png" },
     { name: "X", href: "https://playmvp.org/x", img: "/img/share/x.png" }
   ];
   var css = ".mvp-social{position:relative;z-index:10;display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:18px 18px 6px}" +
