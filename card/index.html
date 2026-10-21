@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head><script src="../loader.js"></script>
 <meta name="robots" content="noindex">
 <meta charset="UTF-8">
 <link rel="manifest" href="manifest.webmanifest">
@@ -828,7 +828,7 @@ button{font:inherit}
   }
   function dockList(host, tok, onAdd) {
     dkCss(); if (host._t) clearInterval(host._t);
-    host.innerHTML = '<div class="dk-t">Friends <span id="dkc"></span></div><div class="dk-l" id="dkl"><div class="dk-e">Loading...</div></div>';
+    host.innerHTML = '<div class="dk-t">Friends <span id="dkc"></span></div><div class="dk-l" id="dkl"><div class="dk-e">' + (window.mvpSpinSm ? mvpSpinSm() : "Loading...") + '</div></div>';
     var list = host.querySelector("#dkl");
     function load() {
       call("GET", "/api/app/friends", null, tok).then(function (r) {
@@ -1251,7 +1251,7 @@ button{font:inherit}
     if (!dlg) { dlg = document.createElement("dialog"); dlg.id = "wcidlg"; dlg.className = "wc-dlg wc-idlg"; document.body.appendChild(dlg);
       dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); });
       dlg.addEventListener("close", function () { if (location.hash === "#inbox") history.replaceState(null, "", location.pathname + location.search); }); }
-    dlg.innerHTML = '<div class="wc-dh"><h2>Inbox</h2><button type="button" class="wc-dx" aria-label="Close"><img src="../img/ic/close.png" alt="" width="16" height="16" style="width:16px;height:16px;image-rendering:pixelated"></button></div><div class="wc-il"><p class="wc-dsub">Loading...</p></div>';
+    dlg.innerHTML = '<div class="wc-dh"><h2>Inbox</h2><button type="button" class="wc-dx" aria-label="Close"><img src="../img/ic/close.png" alt="" width="16" height="16" style="width:16px;height:16px;image-rendering:pixelated"></button></div><div class="wc-il"><p class="wc-dsub">' + (window.mvpSpinSm ? mvpSpinSm() : "Loading...") + '</p></div>';
     dlg.querySelector(".wc-dx").onclick = function () { dlg.close(); };
     if (dlg.showModal) { if (!dlg.open) dlg.showModal(); } else dlg.setAttribute("open", "");
     var box = dlg.querySelector(".wc-il");
