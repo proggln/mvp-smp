@@ -323,9 +323,67 @@ button{font:inherit}
 
 <main class="doc"><div class="card2 mg"><h1>Manage subscription</h1>
 <div class="upd">Last updated: 20 October 2026</div>
-<p>Rank subscriptions (VIP, MVP and MVP+) are paid through <b>Stripe</b>, so you manage them there.</p>
-<p><b>Cancel or change your payment method:</b> open the <a data-k="portal" href="#">Stripe customer portal</a> and sign in with the e-mail you used at checkout. Cancelling stops the next payment, and your rank stays active until the end of the month you already paid for.</p>
-<p><b>Cannot find it?</b> Write to <a data-k="email" href="#">[contact email]</a> with your Minecraft nickname and we will cancel it for you. See also the <a href="../refunds/">Refund Policy</a> and <a href="../support/">Support</a>.</p></div></main>
+<p>Rank subscriptions (VIP, MVP and MVP+) are paid through <b>Stripe</b>. Confirm your nickname in the game to cancel or restore a subscription.</p>
+<div id="mgapp"><label for="mgn">Your Minecraft nickname</label><input id="mgn" maxlength="16" autocomplete="off" spellcheck="false" placeholder="Steve"><button class="mgb" id="mgs" type="button">Continue</button><div class="mgmsg" id="mgm"></div></div>
+<script>
+(function(){
+var API="https://mvp-shop.mvp-shop.workers.dev",IP="mc.playmvp.org",root=document.getElementById("mgapp"),token="",poll=null,nick="";
+function esc(t){return String(t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function api(path,o){return fetch(API+path,o).then(function(r){return r.json().then(function(j){return{ok:r.ok,status:r.status,j:j};});});}
+function post(path,b){return api(path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(b)});}
+try{var sv=localStorage.getItem("mvpsmp.nick")||"";if(sv)document.getElementById("mgn").value=sv;}catch(e){}
+function start(){
+  var m=document.getElementById("mgm"),n=document.getElementById("mgn").value.trim();
+  if(!/^[A-Za-z0-9_]{3,16}$/.test(n)){m.textContent="Enter a valid Minecraft nickname (3-16 letters, digits or _).";return;}
+  nick=n;m.textContent="";document.getElementById("mgs").disabled=true;
+  post("/api/verify/start",{nick:n}).then(function(r){
+    if(!r.ok){m.textContent=r.j.error==="too_many"?"Too many attempts. Wait a few minutes.":"Something went wrong. Try again.";document.getElementById("mgs").disabled=false;return;}
+    try{localStorage.setItem("mvpsmp.nick",n);}catch(e){}
+    verify(r.j.code);
+  }).catch(function(){m.textContent="Cannot reach the server. Try again later.";document.getElementById("mgs").disabled=false;});
+}
+function verify(code){
+  root.innerHTML='<p>Join <b>'+esc(IP)+'</b> as <b>'+esc(nick)+'</b> and type this command in the game chat:</p><p style="font:800 1.4rem monospace;letter-spacing:2px">/verify '+esc(code)+'</p><div class="mgmsg ok" id="mgm">Waiting for confirmation...</div><button class="mgb ghost" id="mgback" type="button">Back</button>';
+  document.getElementById("mgback").onclick=function(){if(poll)clearInterval(poll);poll=null;form();};
+  if(poll)clearInterval(poll);
+  poll=setInterval(function(){
+    api("/api/verify/status?code="+encodeURIComponent(code)).then(function(r){
+      if(r.status===410||r.status===404){clearInterval(poll);poll=null;document.getElementById("mgm").textContent="The code expired. Go back and request a new one.";return;}
+      if(r.j.verified&&r.j.token){clearInterval(poll);poll=null;token=r.j.token;list();}
+    }).catch(function(){});
+  },2500);
+}
+function fmt(ms){try{return new Date(ms).toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});}catch(e){return "";}}
+function list(){
+  root.innerHTML='<div class="mgmsg ok">Loading your subscriptions...</div>';
+  post("/api/subs/list",{token:token}).then(function(r){
+    if(!r.ok){root.innerHTML='<div class="mgmsg">'+(r.j.error==="not_verified"?"The confirmation expired. Start again.":"Could not load subscriptions. Try again later.")+'</div><button class="mgb ghost" id="mgback" type="button">Back</button>';document.getElementById("mgback").onclick=form;return;}
+    var subs=r.j.subs||[];
+    if(!subs.length){root.innerHTML='<p>No active subscriptions for <b>'+esc(nick)+'</b>.</p>';return;}
+    root.innerHTML='<p>Subscriptions for <b>'+esc(nick)+'</b>:</p>';
+    subs.forEach(function(s){
+      var d=document.createElement("div");d.style.cssText="padding:14px 16px;margin:10px 0;border-radius:16px;background:rgba(255,255,255,.06)";
+      function draw(canceling,end){
+        d.innerHTML='<b>'+esc(s.name)+'</b> <span style="color:#9fb3c8">EUR '+(s.cents/100).toFixed(2)+' / month</span><div style="margin:6px 0 10px;color:#9fb3c8;font-size:.92rem">'+(canceling?'Cancelled. Your rank stays active until '+esc(fmt(end))+'.':'Renews on '+esc(fmt(end))+'.')+'</div><button class="mgb '+(canceling?'ghost':'danger')+'" type="button">'+(canceling?'Keep my subscription':'Cancel subscription')+'</button><div class="mgmsg"></div>';
+        var b=d.querySelector("button"),mm=d.querySelector(".mgmsg");
+        b.onclick=function(){
+          if(!canceling&&!confirm("Cancel this subscription? Your rank stays active until the end of the paid month."))return;
+          b.disabled=true;mm.textContent="";
+          post("/api/subs/cancel",{token:token,id:s.id,undo:canceling}).then(function(x){
+            if(x.ok){draw(x.j.canceling,x.j.periodEnd||end);}else{b.disabled=false;mm.textContent="Could not change it. Try again or contact us.";}
+          }).catch(function(){b.disabled=false;mm.textContent="Cannot reach the server.";});
+        };
+      }
+      draw(!!s.canceling,s.periodEnd);root.appendChild(d);
+    });
+  }).catch(function(){root.innerHTML='<div class="mgmsg">Cannot reach the server. Try again later.</div>';});
+}
+function form(){root.innerHTML='<label for="mgn">Your Minecraft nickname</label><input id="mgn" maxlength="16" autocomplete="off" spellcheck="false" placeholder="Steve" value="'+esc(nick)+'"><button class="mgb" id="mgs" type="button">Continue</button><div class="mgmsg" id="mgm"></div>';document.getElementById("mgs").onclick=start;}
+document.getElementById("mgs").onclick=start;
+document.getElementById("mgn").addEventListener("keydown",function(e){if(e.key==="Enter")start();});
+})();
+</script>
+<p style="margin-top:18px"><b>Cannot find it?</b> Write to <a data-k="email" href="#">[contact email]</a> with your Minecraft nickname and we will cancel it for you. See also the <a href="../refunds/">Refund Policy</a> and <a href="../support/">Support</a>.</p></div></main>
 <nav class="legal-links" aria-label="Legal"><a href="../privacy/">Privacy Policy</a><a href="../terms/">Terms of Service</a><a href="../refunds/">Refund Policy</a><a href="../seller/">Seller information</a><a href="../manage/">Manage subscription</a><a href="../support/">Support</a></nav>
 <script src="../legal.js"></script>
 
