@@ -8,7 +8,7 @@
     ".pn svg{flex:none;color:#6fd0ff}.pn .pt{flex:1;min-width:180px}.pn .pt b{display:block;font-size:1rem}.pn .pt span{font-size:.85rem;color:#9db6c9}" +
     ".pn button{min-height:46px;padding:0 22px;border-radius:999px;border:0;font:700 .95rem inherit;cursor:pointer;color:#fff;background:linear-gradient(180deg,#22a6f2,#0081cc);box-shadow:0 6px 18px rgba(0,129,204,.35)}" +
     ".pn button.off{background:rgba(255,255,255,.08);box-shadow:none;border:1px solid rgba(255,255,255,.18)}.pn button:disabled{opacity:.6}";
-  var BELL = '<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>';
+  var BELL = '<img src="/img/ic/bell.png" alt="" width="30" height="30" style="width:30px;height:30px;image-rendering:pixelated">';
   function ls(k, v) { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} return null; }
   function post(path, token) { var h = { "Content-Type": "application/json" }, ct = ""; try { ct = localStorage.getItem("mvp_card_token") || ""; } catch (e) {} if (ct) h.Authorization = "Bearer " + ct; return fetch(API + path, { method: "POST", headers: h, body: JSON.stringify({ token: token }) }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); }); }
   var lib = null;
