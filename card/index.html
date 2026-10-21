@@ -1193,7 +1193,7 @@ button{font:inherit}
       var m = (list || [])[Number(el.getAttribute("data-bi"))]; if (!m) return;
       var d = ""; try { d = m.awarded_at ? new Date(m.awarded_at).toLocaleDateString([], { year: "numeric", month: "short", day: "numeric" }) : ""; } catch (e) {}
       var RN = ["", "Common", "Uncommon", "Rare", "Epic", "Legendary"], RC = ["", "#9fb3c8", "#58d68d", "#4aa8ff", "#b476ff", "#ffb02e"], rv = Math.max(1, Math.min(5, Number(m.rarity) || 1));
-      tip.innerHTML = "<b>" + esc(m.name) + "</b><span style=\"color:" + RC[rv] + ";font-weight:700\">" + RN[rv] + " (" + rv + "/5)</span>" + (m.description ? "<span>" + esc(m.description) + "</span>" : "") + (d ? "<small>Earned " + esc(d) + "</small>" : "");
+      tip.innerHTML = "<b>" + esc(m.name) + "</b><span style=\"color:" + RC[rv] + ";font-weight:700\">" + RN[rv] + "</span>" + (m.description ? "<span>" + esc(m.description) + "</span>" : "") + (d ? "<small>Earned " + esc(d) + "</small>" : "");
       var r = el.getBoundingClientRect(); tip.style.left = "0px"; tip.style.top = "0px"; tip.classList.add("on");
       var w = tip.offsetWidth, h2 = tip.offsetHeight, x = Math.max(8, Math.min(window.innerWidth - w - 8, r.left + r.width / 2 - w / 2)), y = r.top - h2 - 10; if (y < 8) y = r.bottom + 10;
       tip.style.left = x + "px"; tip.style.top = y + "px"; window.__tipAt = Date.now();
