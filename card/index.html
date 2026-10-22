@@ -454,6 +454,8 @@ button{font:inherit}
   function cardGrad(t) { var c = t.colors; return "linear-gradient(135deg," + c[0] + " 0%," + c[1] + " 55%," + c[2] + " 100%)"; }
   function flowVars(el, t) { el.classList.toggle("wc-flow", !!t.anim); if (t.anim) { el.style.setProperty("--c0", t.colors[0]); el.style.setProperty("--c1", t.colors[1]); el.style.setProperty("--c2", t.colors[2]); } }
   function esc(t) { return String(t == null ? "" : t).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  // invite link: /card/?ref=CODE is remembered until the player has an account
+  try { var rm = location.search.match(/[?&]ref=([A-Za-z0-9]{4,10})/); if (rm) localStorage.setItem("mvp_ref", rm[1].toUpperCase()); } catch (e) {}
   function getTok() {
     var t = ""; try { t = localStorage.getItem(KEY) || ""; } catch (e) {}
     if (!t) { var m = document.cookie.match(new RegExp("(?:^|; )" + KEY + "=([^;]+)")); if (m) { t = m[1]; try { localStorage.setItem(KEY, t); } catch (e) {} } }
@@ -591,6 +593,60 @@ button{font:inherit}
         else { load(); }
       }).catch(function () { d.textContent = "Cannot reach the server."; btn.disabled = false; });
     });
+    load();
+  }
+  // invite friends: link, progress, and the code field for people who were invited
+  function refBox(p, tok, anc) {
+    var box = mkBox(anc); box.id = "invite";
+    var ic = function (n) { return '<img src="../img/ic/' + n + '.png" alt="" width="26" height="26" style="width:26px;height:26px;image-rendering:pixelated;flex:none">'; };
+    box.innerHTML = '<div style="display:flex;align-items:center;gap:8px">' + ic("people") + '<b>Invite friends</b></div><div class="rf-b" style="margin-top:8px;opacity:.85">Loading...</div>';
+    var body = box.querySelector(".rf-b");
+    function claim(code, done) {
+      call("POST", "/api/app/referral/claim", { code: code }, tok).then(function (r) {
+        var m = r.ok ? "Done! Play " + (r.j.minutes_needed / 60) + " hours in the game and you both get coins." :
+          r.status === 404 ? "This invite code does not exist." : r.status === 409 ? (r.j.error === "same_network" ? "Too many invites from this network." : "You already used an invite.") :
+          r.status === 410 ? "Invites only work in the first 2 weeks of an account." : r.status === 400 ? "You cannot invite yourself." : r.status === 429 ? "Too many tries. Wait a little." : "Could not use the code. Try again later.";
+        try { if (r.ok || r.status !== 429) localStorage.removeItem("mvp_ref"); } catch (e) {}
+        done(m, r.ok);
+      }).catch(function () { done("Cannot reach the server.", false); });
+    }
+    function load(note) {
+      call("GET", "/api/app/referral", null, tok).then(function (r) {
+        if (!r.ok) { body.textContent = "Could not load."; return; }
+        var j = r.j, saved = ""; try { saved = localStorage.getItem("mvp_ref") || ""; } catch (e) {}
+        if (saved && j.can_claim && !note) { claim(saved, function (m) { load(m); }); return; }
+        var h = '<div>You and your friend get <b>' + esc(j.reward_inviter) + ' coins</b> each when they link their Minecraft nick and play <b>' + esc(j.minutes_needed / 60) + ' hours</b>.</div>';
+        h += '<div style="display:flex;gap:6px;margin:10px 0;flex-wrap:wrap"><input class="rf-l" readonly value="' + esc(j.link) + '" style="' + INPUT + 'flex:1 1 100%;min-width:0"><button class="mgb rf-c" type="button">Copy link</button></div>';
+        h += '<div style="opacity:.85">Friends who got you rewards: <b>' + esc(j.rewarded_count) + '</b> of ' + esc(j.max_rewards) + ' &middot; coins earned: <b>' + esc(j.earned) + '</b></div>';
+        if (!j.linked) h += '<div style="margin-top:6px;opacity:.85">Link your Minecraft account to receive your coins.</div>';
+        if (j.invited.length) {
+          h += '<div style="margin-top:10px">';
+          j.invited.forEach(function (x) {
+            var st = x.status === "rewarded" || x.status === "capped" ? "Rewarded" : (!x.linked ? "Has not linked yet" : x.minutes + " / " + j.minutes_needed + " min");
+            h += '<div style="display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-top:1px solid rgba(255,255,255,.08)"><span>' + esc(x.name) + '</span><span style="opacity:.8">' + esc(st) + '</span></div>';
+          });
+          h += '</div>';
+        }
+        if (j.referrer) h += '<div style="margin-top:10px;opacity:.85">You joined through <b>' + esc(j.referrer.name) + '</b>' + (j.referrer.status === "pending" ? ". Your coins arrive after " + (j.minutes_needed / 60) + " hours of play." : ". Reward paid.") + '</div>';
+        else if (j.can_claim) h += '<div style="margin-top:12px"><div style="opacity:.85;margin-bottom:6px">Did a friend invite you? Type their code:</div><div style="display:flex;gap:6px;flex-wrap:wrap"><input class="rf-i" maxlength="10" placeholder="ABC123" style="' + INPUT + 'width:130px;text-transform:uppercase"><button class="mgb rf-u" type="button">Use code</button></div></div>';
+        if (note) h += '<div class="rf-n" style="margin-top:8px"></div>';
+        body.innerHTML = h;
+        if (note) body.querySelector(".rf-n").textContent = note;
+        var cb = body.querySelector(".rf-c"), li = body.querySelector(".rf-l");
+        cb.addEventListener("click", function () {
+          li.select();
+          var ok = function () { cb.textContent = "Copied"; setTimeout(function () { cb.textContent = "Copy link"; }, 1600); };
+          if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(j.link).then(ok, function () { try { document.execCommand("copy"); ok(); } catch (e) {} });
+          else { try { document.execCommand("copy"); ok(); } catch (e) {} }
+        });
+        var ub = body.querySelector(".rf-u");
+        if (ub) ub.addEventListener("click", function () {
+          var c = body.querySelector(".rf-i").value.trim().toUpperCase();
+          if (!/^[A-Z0-9]{4,10}$/.test(c)) return;
+          ub.disabled = true; claim(c, function (m) { load(m); });
+        });
+      }).catch(function () { body.textContent = "Cannot reach the server."; });
+    }
     load();
   }
   function contestBox(p, tok, anc) {
@@ -1407,7 +1463,7 @@ button{font:inherit}
           mountDock(p, tok);
         }
         if (p.email) accountBox(p, tok, document.querySelector(".wc-install"));
-        if (p.nick || p.email) { var anc = document.querySelector(".wc-install"); if (anc && anc.parentNode) { contestBox(p, tok, anc); } }
+        if (p.nick || p.email) { var anc = document.querySelector(".wc-install"); if (anc && anc.parentNode) { contestBox(p, tok, anc); refBox(p, tok, anc); } }
       }
       if (!p.nick && !(V2 && p.email)) {
         var rb = document.createElement("div"); rb.className = "wc-install"; rb.style.cssText = "margin:14px 0;padding:14px;border-radius:14px;background:rgba(255,255,255,.06)";
