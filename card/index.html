@@ -338,6 +338,36 @@ button{font:inherit}
 .ct-b{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;border:0;border-radius:999px;cursor:pointer;font:800 .98rem var(--font-head,inherit);color:#2a1a00;background:linear-gradient(180deg,#ffd75a,#ff9d1c);box-shadow:0 8px 22px rgba(255,157,28,.35)}
 .ct-b.on{background:rgba(46,158,91,.25);color:#9bf0bd;box-shadow:none;cursor:default}
 .ct-t.done .ct-n{opacity:.7}
+.rf-box{margin:14px 0;padding:16px;border-radius:18px;background:linear-gradient(160deg,rgba(46,200,140,.16),rgba(255,255,255,.05) 55%);border:1px solid rgba(46,200,140,.3)}
+.rf-h{display:flex;align-items:center;gap:10px;font:800 1.05rem var(--font-head,inherit)}
+.rf-h .rf-chip{margin-left:auto}
+.rf-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px 5px 7px;border-radius:999px;background:rgba(255,207,58,.18);color:#ffe08a;font:700 .8rem var(--font-body,inherit);white-space:nowrap}
+.rf-lead{margin:8px 0 12px;opacity:.85;font-size:.94rem;line-height:1.45}
+.rf-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.rf-st{padding:10px 8px;border-radius:12px;background:rgba(255,255,255,.07);text-align:center;font-size:.78rem;line-height:1.3}
+.rf-st i{display:flex;align-items:center;justify-content:center;width:24px;height:24px;margin:0 auto 6px;border-radius:50%;background:rgba(46,200,140,.3);color:#9bf0cf;font:800 .8rem var(--font-head,inherit);font-style:normal}
+.rf-link{display:flex;align-items:center;border-radius:999px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.16);overflow:hidden}
+.rf-link input{flex:1;min-width:0;padding:12px 14px;border:0;background:transparent;color:inherit;font:600 .88rem var(--font-body,inherit);outline:none;text-overflow:ellipsis}
+.rf-copy{display:inline-flex;align-items:center;gap:7px;margin:4px;padding:9px 16px;border:0;border-radius:999px;cursor:pointer;font:800 .88rem var(--font-head,inherit);color:#04281a;background:linear-gradient(180deg,#5eeab0,#22b57a);white-space:nowrap}
+.rf-copy.on{background:rgba(255,255,255,.18);color:#fff}
+.rf-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.rf-sv{padding:11px 12px;border-radius:12px;background:rgba(255,255,255,.07)}
+.rf-sv b{display:flex;align-items:center;gap:6px;font:800 1.25rem var(--font-head,inherit)}
+.rf-sv span{display:block;margin-top:2px;opacity:.7;font-size:.76rem}
+.rf-list{margin-top:4px}
+.rf-row{padding:10px 0;border-top:1px solid rgba(255,255,255,.1)}
+.rf-r1{display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:700}
+.rf-tag{padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.1);font:600 .74rem var(--font-body,inherit);opacity:.9}
+.rf-tag.ok{background:rgba(46,158,91,.28);color:#9bf0bd}
+.rf-bar{height:6px;margin-top:8px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden}
+.rf-bar u{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#5eeab0,#22b57a)}
+.rf-note{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.07);font-size:.88rem;line-height:1.4}
+.rf-code{display:flex;gap:8px;margin-top:6px}
+.rf-code input{flex:1;min-width:0;padding:11px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.2);color:inherit;font:700 .95rem var(--font-body,inherit);letter-spacing:2px;text-transform:uppercase;outline:none}
+.rf-use{padding:11px 18px;border:0;border-radius:999px;cursor:pointer;font:800 .9rem var(--font-head,inherit);color:#fff;background:rgba(255,255,255,.14)}
+.rf-use:disabled{opacity:.55;cursor:default}
+.rf-sub{margin-top:14px;font:700 .82rem var(--font-head,inherit);opacity:.75}
+@media (max-width:420px){.rf-steps{grid-template-columns:1fr}.rf-st{display:flex;align-items:center;gap:10px;text-align:left}.rf-st i{margin:0}.rf-copy span{display:none}}
 /* Textured cards: block texture + pixel shine (generic, set from JS) */
 .wc-tex{background:linear-gradient(rgba(0,0,0,var(--shade,0)),rgba(0,0,0,var(--shade,0))),var(--texurl) 0 0/64px 64px!important;image-rendering:pixelated;position:relative;overflow:hidden}
 .wc-tex>*:not(.wc-shine){position:relative;z-index:1;text-shadow:0 1px 3px rgba(0,0,0,.6)}
@@ -597,9 +627,10 @@ button{font:inherit}
   }
   // invite friends: link, progress, and the code field for people who were invited
   function refBox(p, tok, anc) {
-    var box = mkBox(anc); box.id = "invite";
-    var ic = function (n) { return '<img src="../img/ic/' + n + '.png" alt="" width="26" height="26" style="width:26px;height:26px;image-rendering:pixelated;flex:none">'; };
-    box.innerHTML = '<div style="display:flex;align-items:center;gap:8px">' + ic("people") + '<b>Invite friends</b></div><div class="rf-b" style="margin-top:8px;opacity:.85">Loading...</div>';
+    var box = mkBox(anc); box.id = "invite"; box.className = "wc-install wc-x rf-box"; box.style.cssText = "";
+    var ic = function (n, z) { z = z || 26; return '<img src="../img/ic/' + n + '.png" alt="" width="' + z + '" height="' + z + '" style="width:' + z + 'px;height:' + z + 'px;image-rendering:pixelated;flex:none">'; };
+    var coin = function (z) { z = z || 18; return '<img src="../card/coin.png" alt="" width="' + z + '" height="' + z + '" style="width:' + z + 'px;height:' + z + 'px;image-rendering:pixelated;flex:none">'; };
+    box.innerHTML = '<div class="rf-h">' + ic("people") + '<span>Invite friends</span></div><div class="rf-b" style="margin-top:10px;opacity:.85">Loading...</div>';
     var body = box.querySelector(".rf-b");
     function claim(code, done) {
       call("POST", "/api/app/referral/claim", { code: code }, tok).then(function (r) {
@@ -615,31 +646,37 @@ button{font:inherit}
         if (!r.ok) { body.textContent = "Could not load."; return; }
         var j = r.j, saved = ""; try { saved = localStorage.getItem("mvp_ref") || ""; } catch (e) {}
         if (saved && j.can_claim && !note) { claim(saved, function (m) { load(m); }); return; }
-        var h = '<div>You and your friend get <b>' + esc(j.reward_inviter) + ' coins</b> each when they link their Minecraft nick and play <b>' + esc(j.minutes_needed / 60) + ' hours</b>.</div>';
-        h += '<div style="display:flex;gap:6px;margin:10px 0;flex-wrap:wrap"><input class="rf-l" readonly value="' + esc(j.link) + '" style="' + INPUT + 'flex:1 1 100%;min-width:0"><button class="mgb rf-c" type="button">Copy link</button></div>';
-        h += '<div style="opacity:.85">Friends who got you rewards: <b>' + esc(j.rewarded_count) + '</b> of ' + esc(j.max_rewards) + ' &middot; coins earned: <b>' + esc(j.earned) + '</b></div>';
-        if (!j.linked) h += '<div style="margin-top:6px;opacity:.85">Link your Minecraft account to receive your coins.</div>';
+        var hrs = j.minutes_needed / 60;
+        var h = '<div class="rf-lead">Share your link. When a friend links their Minecraft nick and plays <b>' + esc(hrs) + ' hours</b>, you both get coins.</div>';
+        h += '<div class="rf-steps"><div class="rf-st"><i>1</i><span>Send your link</span></div><div class="rf-st"><i>2</i><span>Friend links a nick and plays ' + esc(hrs) + ' h</span></div><div class="rf-st"><i>3</i><span>You both get <b>' + esc(j.reward_inviter) + '</b> coins</span></div></div>';
+        h += '<div class="rf-link"><input class="rf-l" readonly value="' + esc(j.link) + '" aria-label="Your invite link"><button class="rf-copy" type="button">' + ic("share", 18) + '<span>Copy link</span></button></div>';
+        h += '<div class="rf-stats"><div class="rf-sv"><b>' + esc(j.rewarded_count) + '<small style="font-weight:600;opacity:.6;font-size:.8rem">/' + esc(j.max_rewards) + '</small></b><span>Friends rewarded</span></div><div class="rf-sv"><b>' + coin(20) + esc(j.earned) + '</b><span>Coins earned</span></div></div>';
+        if (!j.linked) h += '<div class="rf-note">Link your Minecraft account to receive your coins.</div>';
         if (j.invited.length) {
-          h += '<div style="margin-top:10px">';
+          h += '<div class="rf-sub">Your friends</div><div class="rf-list">';
           j.invited.forEach(function (x) {
-            var st = x.status === "rewarded" || x.status === "capped" ? "Rewarded" : (!x.linked ? "Has not linked yet" : x.minutes + " / " + j.minutes_needed + " min");
-            h += '<div style="display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-top:1px solid rgba(255,255,255,.08)"><span>' + esc(x.name) + '</span><span style="opacity:.8">' + esc(st) + '</span></div>';
+            var done = x.status === "rewarded" || x.status === "capped";
+            var pct = done ? 100 : Math.min(100, Math.round(x.minutes * 100 / j.minutes_needed));
+            var tag = done ? "Rewarded" : (!x.linked ? "Not linked yet" : x.minutes + " / " + j.minutes_needed + " min");
+            h += '<div class="rf-row"><div class="rf-r1"><span>' + esc(x.name) + '</span><span class="rf-tag' + (done ? " ok" : "") + '">' + esc(tag) + '</span></div><div class="rf-bar"><u style="width:' + pct + '%"></u></div></div>';
           });
           h += '</div>';
         }
-        if (j.referrer) h += '<div style="margin-top:10px;opacity:.85">You joined through <b>' + esc(j.referrer.name) + '</b>' + (j.referrer.status === "pending" ? ". Your coins arrive after " + (j.minutes_needed / 60) + " hours of play." : ". Reward paid.") + '</div>';
-        else if (j.can_claim) h += '<div style="margin-top:12px"><div style="opacity:.85;margin-bottom:6px">Did a friend invite you? Type their code:</div><div style="display:flex;gap:6px;flex-wrap:wrap"><input class="rf-i" maxlength="10" placeholder="ABC123" style="' + INPUT + 'width:130px;text-transform:uppercase"><button class="mgb rf-u" type="button">Use code</button></div></div>';
-        if (note) h += '<div class="rf-n" style="margin-top:8px"></div>';
+        if (j.referrer) h += '<div class="rf-note">You joined through <b>' + esc(j.referrer.name) + '</b>' + (j.referrer.status === "pending" ? ". Your coins arrive after " + esc(hrs) + " hours of play." : ". Reward paid.") + '</div>';
+        else if (j.can_claim) h += '<div class="rf-sub">Did a friend invite you?</div><div class="rf-code"><input class="rf-i" maxlength="10" placeholder="CODE" aria-label="Invite code"><button class="rf-use" type="button">Use code</button></div>';
+        if (note) h += '<div class="rf-note rf-n"></div>';
+        body.style.cssText = "";
         body.innerHTML = h;
         if (note) body.querySelector(".rf-n").textContent = note;
-        var cb = body.querySelector(".rf-c"), li = body.querySelector(".rf-l");
+        var cb = body.querySelector(".rf-copy"), li = body.querySelector(".rf-l");
         cb.addEventListener("click", function () {
           li.select();
-          var ok = function () { cb.textContent = "Copied"; setTimeout(function () { cb.textContent = "Copy link"; }, 1600); };
+          var lab = cb.querySelector("span");
+          var ok = function () { cb.classList.add("on"); lab.textContent = "Copied"; setTimeout(function () { cb.classList.remove("on"); lab.textContent = "Copy link"; }, 1600); };
           if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(j.link).then(ok, function () { try { document.execCommand("copy"); ok(); } catch (e) {} });
           else { try { document.execCommand("copy"); ok(); } catch (e) {} }
         });
-        var ub = body.querySelector(".rf-u");
+        var ub = body.querySelector(".rf-use");
         if (ub) ub.addEventListener("click", function () {
           var c = body.querySelector(".rf-i").value.trim().toUpperCase();
           if (!/^[A-Z0-9]{4,10}$/.test(c)) return;
