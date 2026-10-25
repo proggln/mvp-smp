@@ -229,11 +229,15 @@ button{font:inherit}
 .tcard{overflow:visible;margin-top:12px;align-items:center;text-align:center;gap:0;padding:30px 24px 24px;background:linear-gradient(180deg,rgba(28,20,48,.85),rgba(12,10,24,.9));border-color:rgba(160,107,255,.18)}
 .tcard.best{border-color:rgba(160,107,255,.7);box-shadow:0 0 0 1px rgba(160,107,255,.35),0 20px 60px rgba(120,60,220,.25)}
 .tcard .tbadge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);padding:5px 12px;border-radius:999px;background:#a06bff;color:#fff;font:800 .7rem/1 var(--font-head);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
-.tcard .tpic{width:100%;max-width:220px;height:130px;object-fit:contain;image-rendering:pixelated;margin-bottom:10px}
+.tcard .tpic{width:100%;max-width:240px;height:150px;object-fit:contain;image-rendering:pixelated;margin-bottom:10px}
 .tcard .tbonus{padding:3px 9px;border-radius:6px;background:rgba(40,160,70,.18);color:#5dff8a;font:800 .78rem/1.3 var(--font-head)}
 .tcard .tamount{margin-top:10px;font:800 1.9rem/1.1 var(--font-head);color:#c9a8ff}
 .tcard .tname{margin-top:4px;color:var(--muted);font-size:.92rem;font-weight:600}
-.tcard .tsp{flex:1;min-height:20px}
+.tcard .tsp{flex:1;min-height:22px}
+.tcard .tbonus.base{background:rgba(160,107,255,.14);color:#c9a8ff}
+.tcard .tpic.p1{transform:scale(1.8)}
+.tcard .tpic.p2{transform:scale(1.25)}
+.tcard .thours{margin-top:6px;color:var(--muted);font-size:.9rem;font-weight:600}
 .tcard .tbuy{width:100%;font-size:1.05rem}
 .bonus{display:inline-block;align-self:flex-start;margin:14px 0 -6px;padding:3px 10px;border-radius:7px;background:rgba(40,160,70,.22);border:1px solid rgba(80,230,120,.35);color:#5dff8a;font:800 .82rem/1.2 var(--font-head);letter-spacing:.04em}
 .amount s.base{color:var(--muted);font-size:1.05rem;font-weight:700;margin-right:10px;vertical-align:middle;text-decoration-thickness:2px}
@@ -587,9 +591,11 @@ const CONFIG = {
     const c = el("article", "card tcard" + (p.best ? " best" : ""));
     c.style.setProperty("--i", i);
     if (p.chip) c.appendChild(el("span", "tbadge", p.chip));
-    const img = el("img", "tpic"); img.src = "../img/tokens/pack-" + (p.pack || 1) + ".png"; img.alt = ""; img.decoding = "async"; c.appendChild(img);
-    const bo = el("span", "tbonus", p.extra ? "+" + p.bonusPct + "% bonus" : "x"); if (!p.extra) bo.style.visibility = "hidden"; c.appendChild(bo);
+    const img = el("img", "tpic p" + (p.pack || 1)); img.src = "../img/tokens/pack-" + (p.pack || 1) + ".png"; img.alt = ""; img.decoding = "async"; c.appendChild(img);
+    c.appendChild(el("span", "tbonus" + (p.extra ? "" : " base"), p.extra ? "+" + p.bonusPct + "% bonus" : "Starter"));
     c.appendChild(el("div", "tamount", p.amount + " Tokens"));
+    const n = parseInt(String(p.amount).replace(/,/g, ""), 10) || 0;
+    c.appendChild(el("div", "thours", "= " + Math.round(n / 6) + " hours of playing"));
     c.appendChild(el("div", "tsp"));
     const b = buyButton(p);
     if (!b.disabled) { b.textContent = priceText(p) || "Buy"; b.classList.add("tbuy"); }
