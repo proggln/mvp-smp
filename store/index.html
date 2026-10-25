@@ -3,14 +3,14 @@
 <head><script src="../loader.js?v=2"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Store - Ranks, Crate Keys and MVP Coins | MVP Minecraft Server</title>
-<meta name="description" content="Buy VIP, MVP and MVP+ ranks, crate keys and MVP Coins for the MVP Minecraft SMP server. Delivered in the game right after payment.">
-<meta name="keywords" content="MVP store, Minecraft server store, Minecraft ranks, buy Minecraft rank, VIP rank, MVP+ rank, crate keys, MVP Coins, playmvp store">
+<title>Store - Ranks and MVP Coins | MVP Minecraft Server</title>
+<meta name="description" content="Buy VIP, MVP and MVP+ ranks and MVP Coins for the MVP Minecraft SMP server. Delivered in the game right after payment.">
+<meta name="keywords" content="MVP store, Minecraft server store, Minecraft ranks, buy Minecraft rank, VIP rank, MVP+ rank, MVP Coins, playmvp store">
 
 <script src="../theme.js"></script>
 <meta name="theme-color" content="#03080f">
-<meta property="og:title" content="Store - Ranks, Crate Keys and MVP Coins | MVP">
-<meta property="og:description" content="Ranks, crate keys and MVP Coins for the MVP Minecraft server. Delivered in the game right after payment.">
+<meta property="og:title" content="Store - Ranks and MVP Coins | MVP">
+<meta property="og:description" content="Ranks and MVP Coins for the MVP Minecraft server. Delivered in the game right after payment.">
 <link rel="canonical" href="https://playmvp.org/store/">
 <meta property="og:url" content="https://playmvp.org/store/">
 <meta property="og:site_name" content="MVP">
@@ -300,7 +300,6 @@ button{font:inherit}
   <div class="tabs" id="tabs" role="tablist" aria-label="Store categories"></div>
   <div class="fxbar"><span>Show approx. price in</span><button type="button" class="fxbtn" id="fxbtn" aria-haspopup="listbox" aria-expanded="false"><span id="fxcur">€ EUR</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8l5 5 5-5"/></svg></button><div class="fxmenu" id="fxmenu" role="listbox" aria-label="Currency"></div></div>
   <div class="mgl">Already have a rank? <a href="../manage/">Manage subscription</a></div>
-  <div class="mgl">Buying keys? See the exact <a href="../odds/">crate drop chances</a></div>
   <div class="sections" id="grid" aria-live="polite"></div>
   <ol class="steps" aria-label="How it works">
     <li><b>1</b><span>Pick an item</span></li>
@@ -342,11 +341,6 @@ const CONFIG = {
       perks: ["[MVP] blue prefix in chat & tab", "12 homes", "Gift: 3x Large Protection Blocks (3 days of upkeep included)"], checkout: "" },
     { cat: "ranks", id: "mvp-plus", name: "MVP+", image: "mvpplus", color: "#8a5cff", price: 6.99, period: "/ month", best: true, chip: "★ Best Value",
       perks: ["[MVP+] pink prefix, the brightest in chat & tab", "20 homes", "Gift: 5x Large Protection Blocks (3 days of upkeep included)", "Special join message"], checkout: "" },
-    // Crate keys (bundles: the more you take, the cheaper a key; prices follow the in-game coin value of each key)
-    { cat: "keys", id: "keys-common-25", name: "Common Keys ×25",    icon: "key_common",  color: "#9fb4c4", price: 0.99, perks: ["25 Common Crate keys", "Just 4 cents per key"], checkout: "" },
-    { cat: "keys", id: "keys-rare-10", name: "Rare Keys ×10",      icon: "key_rare",  color: "#4cc3ff", price: 1.49, perks: ["10 Rare Crate keys", "Just 15 cents per key"], checkout: "" },
-    { cat: "keys", id: "keys-epic-5", name: "Epic Keys ×5",       icon: "key_epic", color: "#a06bff", price: 2.49, chip: "Popular", perks: ["5 Epic Crate keys", "Just 50 cents per key"], checkout: "" },
-    { cat: "keys", id: "keys-legendary-3", name: "Legendary Keys ×3",  icon: "key_legendary", color: "#ffb347", price: 4.99, chip: "Best Value", perks: ["3 Legendary Crate keys", "Just €1.66 per key"], checkout: "" },
     // MVP Coins (the bigger the pack, the more bonus coins)
     { cat: "coins", id: "coins-1000", name: "1,000 Coins",  icon: "coin", color: "#2ea2ea", price: 0.99,  amount: "1,000",  chip: "Starter", perks: ["1,000 coins"], checkout: "" },
     { cat: "coins", id: "coins-3300", name: "3,300 Coins",  icon: "coin", color: "#2ea2ea", price: 2.49,  amount: "3,300",  chip: "+10% bonus", perks: ["3,300 coins", "10% more coins"], checkout: "" },
@@ -356,7 +350,6 @@ const CONFIG = {
   categories: [
     { id: "all", label: "All", icon: "grid" },
     { id: "ranks", label: "Ranks", icon: "crown" },
-    { id: "keys", label: "Crate Keys", icon: "key" },
     { id: "coins", label: "Coins", icon: "coin" }
   ]
 };
