@@ -226,19 +226,15 @@ button{font:inherit}
 @keyframes pop{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
 .chip{position:absolute;right:20px;top:20px;padding:5px 10px;border-radius:999px;font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#031018;background:linear-gradient(180deg,#9be0ff,#4cc3ff);box-shadow:0 4px 14px rgba(76,195,255,.4)}
 .amount{position:relative;font:800 2rem/1.1 var(--font-head)}
-.tcard{padding-top:0;gap:0}
-.tcard .tart{position:relative;margin:0 -32px 18px;height:132px;border-radius:28px 28px 0 0;overflow:hidden;background:#2a1060}
-.tcard .tart img{width:100%;height:100%;object-fit:cover;image-rendering:pixelated;display:block}
-.tcard .tbadge{position:absolute;top:12px;right:12px;padding:5px 11px;border-radius:999px;background:rgba(10,6,24,.72);border:1px solid rgba(255,255,255,.22);color:#fff;font:800 .72rem/1 var(--font-head);letter-spacing:.06em;text-transform:uppercase;backdrop-filter:blur(6px)}
-.tcard.best .tbadge{background:#a06bff;border-color:#c9a8ff}
-.tcard .tname{margin:0;font-size:1.05rem;color:#cdbdf2;font-weight:700}
-.tcard .tamt{display:flex;align-items:center;gap:10px;margin-top:8px}
-.tcard .tamt .tic{width:30px;height:30px;image-rendering:pixelated}
-.tcard .tamt b{font:800 2.3rem/1 var(--font-head);color:#fff}
-.tcard .tamt span{color:var(--muted);font-weight:600}
-.tcard .textra{min-height:1.3em;margin-top:6px;color:#7be3a0;font-size:.9rem;font-weight:600}
-.tcard .price{margin-top:14px}
-.tcard .tuse{margin:14px 0 18px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08);color:#d7e6f2;font-size:.98rem;flex:1}
+.tcard{overflow:visible;margin-top:12px;align-items:center;text-align:center;gap:0;padding:30px 24px 24px;background:linear-gradient(180deg,rgba(28,20,48,.85),rgba(12,10,24,.9));border-color:rgba(160,107,255,.18)}
+.tcard.best{border-color:rgba(160,107,255,.7);box-shadow:0 0 0 1px rgba(160,107,255,.35),0 20px 60px rgba(120,60,220,.25)}
+.tcard .tbadge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);padding:5px 12px;border-radius:999px;background:#a06bff;color:#fff;font:800 .7rem/1 var(--font-head);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.tcard .tpic{width:100%;max-width:220px;height:130px;object-fit:contain;image-rendering:pixelated;margin-bottom:10px}
+.tcard .tbonus{padding:3px 9px;border-radius:6px;background:rgba(40,160,70,.18);color:#5dff8a;font:800 .78rem/1.3 var(--font-head)}
+.tcard .tamount{margin-top:10px;font:800 1.9rem/1.1 var(--font-head);color:#c9a8ff}
+.tcard .tname{margin-top:4px;color:var(--muted);font-size:.92rem;font-weight:600}
+.tcard .tuse{margin:14px 0 18px;color:#aebfcd;font-size:.88rem;flex:1}
+.tcard .tbuy{width:100%;font-size:1.05rem}
 .bonus{display:inline-block;align-self:flex-start;margin:14px 0 -6px;padding:3px 10px;border-radius:7px;background:rgba(40,160,70,.22);border:1px solid rgba(80,230,120,.35);color:#5dff8a;font:800 .82rem/1.2 var(--font-head);letter-spacing:.04em}
 .amount s.base{color:var(--muted);font-size:1.05rem;font-weight:700;margin-right:10px;vertical-align:middle;text-decoration-thickness:2px}
 .art.tokart{image-rendering:pixelated;background:#2a1060;height:150px}
@@ -359,10 +355,10 @@ const CONFIG = {
     { cat: "ranks", id: "mvp-plus", name: "MVP+", image: "mvpplus", color: "#8a5cff", price: 6.99, period: "/ month", best: true, chip: "★ Best Value",
       perks: ["[MVP+] pink prefix, the brightest in chat & tab", "20 homes", "Gift: 5x Large Protection Blocks (3 days of upkeep included)", "Special join message"], checkout: "" },
     // MVP Tokens (the bigger the pack, the bigger the bonus). Spent in the game with /tokens
-    { cat: "tokens", id: "tokens-60", name: "A Token", image: "token", color: "#a06bff", price: 0.99, amount: "60", perks: ["Golden apples, totems or a bow"], checkout: "" },
-    { cat: "tokens", id: "tokens-330", name: "Handful of Tokens", image: "token", color: "#a06bff", price: 4.99, amount: "330", extra: "30", perks: ["Enough for 2 Netherite Swords"], checkout: "" },
-    { cat: "tokens", id: "tokens-720", name: "Pile of Tokens", image: "token", color: "#a06bff", price: 9.99, amount: "720", extra: "120", chip: "Most Popular", best: true, perks: ["Full Netherite armor and more"], checkout: "" },
-    { cat: "tokens", id: "tokens-1560", name: "Chest of Tokens", image: "token", color: "#a06bff", price: 19.99, amount: "1,560", extra: "360", chip: "Best Value", perks: ["Full Netherite kit, Elytra and a Mace"], checkout: "" }
+    { cat: "tokens", id: "tokens-60", pack: 1, bonusPct: 0, name: "A Token", image: "token", color: "#a06bff", price: 0.99, amount: "60", perks: ["Golden apples, totems or a bow"], checkout: "" },
+    { cat: "tokens", id: "tokens-330", pack: 2, bonusPct: 10, name: "Handful of Tokens", image: "token", color: "#a06bff", price: 4.99, amount: "330", extra: "30", perks: ["Enough for 2 Netherite Swords"], checkout: "" },
+    { cat: "tokens", id: "tokens-720", pack: 3, bonusPct: 20, name: "Pile of Tokens", image: "token", color: "#a06bff", price: 9.99, amount: "720", extra: "120", chip: "Most Popular", best: true, perks: ["Full Netherite armor and more"], checkout: "" },
+    { cat: "tokens", id: "tokens-1560", pack: 4, bonusPct: 30, name: "Chest of Tokens", image: "token", color: "#a06bff", price: 19.99, amount: "1,560", extra: "360", chip: "Best Value", perks: ["Full Netherite kit, Elytra and a Mace"], checkout: "" }
   ],
   categories: [
     { id: "all", label: "All", icon: "grid" },
@@ -590,16 +586,15 @@ const CONFIG = {
   function tokenCard(p, i) {
     const c = el("article", "card tcard" + (p.best ? " best" : ""));
     c.style.setProperty("--i", i);
-    const art = el("div", "tart"); const img = el("img"); img.src = IMAGES.token; img.alt = ""; img.decoding = "async"; art.appendChild(img);
-    if (p.chip) art.appendChild(el("span", "tbadge", p.chip));
-    c.appendChild(art);
-    c.appendChild(el("h2", "tname", p.name));
-    const amt = el("div", "tamt"); const ic = el("img", "tic"); ic.src = "../img/tokens/token.png"; ic.alt = "";
-    amt.append(ic, el("b", "", p.amount), el("span", "", "tokens")); c.appendChild(amt);
-    c.appendChild(el("div", "textra", p.extra ? "includes " + p.extra + " bonus tokens" : "\u00a0"));
-    c.append(priceEl(p));
+    if (p.chip) c.appendChild(el("span", "tbadge", p.chip));
+    const img = el("img", "tpic"); img.src = "../img/tokens/pack-" + (p.pack || 1) + ".png"; img.alt = ""; img.decoding = "async"; c.appendChild(img);
+    const bo = el("span", "tbonus", p.extra ? "+" + p.bonusPct + "% bonus" : "x"); if (!p.extra) bo.style.visibility = "hidden"; c.appendChild(bo);
+    c.appendChild(el("div", "tamount", p.amount + " Tokens"));
+    c.appendChild(el("div", "tname", p.name));
     if (p.perks && p.perks[0]) c.appendChild(el("p", "tuse", p.perks[0]));
-    c.appendChild(buyButton(p));
+    const b = buyButton(p);
+    if (!b.disabled) { b.textContent = priceText(p) || "Buy"; b.classList.add("tbuy"); }
+    c.appendChild(b);
     return c;
   }
   function card(p, i) {
