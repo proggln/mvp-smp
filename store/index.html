@@ -408,7 +408,7 @@ const CONFIG = {
     { cat: "ranks", id: "mvp", name: "MVP",  image: "mvp", color: "#2ea2ea", price: 4.99, period: "/ month",
       perks: ["[MVP] blue prefix in chat & tab", "12 homes", "+25% income from /jobs", "+25% daily reward", "+100 MVP Tokens every month", "Gift: 3x Large Protection Blocks (3 days of upkeep included)"], checkout: "" },
     { cat: "ranks", id: "mvp-plus", name: "MVP+", image: "mvpplus", color: "#8a5cff", price: 6.99, period: "/ month", best: true, chip: "★ Best Value",
-      perks: ["[MVP+] pink prefix, the brightest in chat & tab", "20 homes", "+40% income from /jobs", "+40% daily reward", "+200 MVP Tokens every month", "Gift: 5x Large Protection Blocks (3 days of upkeep included)", "Special join message"], checkout: "" },
+      perks: ["[MVP+] pink prefix, the brightest in chat & tab", "25 homes", "+50% income from /jobs", "+50% daily reward", "+200 MVP Tokens every month", "Gift: 5x Large Protection Blocks (3 days of upkeep included)", "Special join message"], checkout: "" },
     // MVP Tokens (the bigger the pack, the bigger the bonus). Spent in the game with /tokens
     { cat: "tokens", id: "tokens-60", pack: 1, bonusPct: 0, name: "60 Tokens", image: "token", color: "#a06bff", price: 0.99, amount: "60", perks: [], checkout: "" },
     { cat: "tokens", id: "tokens-330", pack: 2, bonusPct: 10, name: "330 Tokens", image: "token", color: "#a06bff", price: 4.99, amount: "330", extra: "30", perks: [], checkout: "" },
@@ -709,9 +709,9 @@ const CONFIG = {
         [I.star, "Special join message", [NO, NO, NO, YES]]
       ]],
       ["Everyday", [
-        [I.home, "Homes", [num("3", 20), num("5", 20), num("12", 20), num("20", 20)]],
-        [I.pick, "/jobs income", [NO, num("+10%", 40), num("+25%", 40), num("+40%", 40)]],
-        [I.cal, "Daily reward", [NO, num("+10%", 40), num("+25%", 40), num("+40%", 40)]]
+        [I.home, "Homes", [num("3", 25), num("5", 25), num("12", 25), num("25", 25)]],
+        [I.pick, "/jobs income", [NO, num("+10%", 50), num("+25%", 50), num("+50%", 50)]],
+        [I.cal, "Daily reward", [NO, num("+10%", 50), num("+25%", 50), num("+50%", 50)]]
       ]],
       ["Rewards", [
         [tok, "MVP Tokens every month", [NO, NO, '<span class="rt-tok">' + tok + '+100</span>', '<span class="rt-tok">' + tok + '+200</span>']],
