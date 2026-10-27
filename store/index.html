@@ -783,7 +783,7 @@ const CONFIG = {
     h += '</tbody><tfoot><tr><th></th>' + cols.map((c, k) => '<td data-c="' + (k + 1) + '"' + cls(k) + '>' +
       (c.id ? '<button type="button" class="rt-buy" data-id="' + c.id + '"><span class="gw">Get </span>' + c.name + '</button>' : '<span class="rt-free">Everyone</span>') + '</td>').join("") + '</tr></tfoot>';
     const w = el("div", "rt-wrap");
-    w.innerHTML = '<div class="rt-head"><div><h3>Compare ranks</h3><p>' + (matchMedia("(hover: hover)").matches ? "Hover" : "Tap") + ' a column to see everything a rank gives. Prices are per month.</p></div></div><div class="rt-scroll"><table class="rt">' + h + '</table></div>';
+    w.innerHTML = '<div class="rt-head"><div><h3>Compare ranks</h3></div></div><div class="rt-scroll"><table class="rt">' + h + '</table></div>';
     const t = w.querySelector("table"), sc = w.querySelector(".rt-scroll");
     const hl = el("div", "rt-hl"); sc.appendChild(hl);
     const HC = { 1: "#c9d6e2", 2: "#f2c94c", 3: "#4cc3ff", 4: "#ff6bd6" };
