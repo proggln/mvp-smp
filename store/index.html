@@ -161,6 +161,8 @@ button{font:inherit}
 .rt-meter{width:min(90px,80%);height:5px;border-radius:5px;background:rgba(255,255,255,.07);overflow:hidden}
 .rt-meter i{display:block;height:100%;width:0;border-radius:5px;background:var(--c);transition:width .9s cubic-bezier(.2,.8,.2,1)}
 .rt.in .rt-meter i{width:var(--w)}
+.rt-meter-low i{opacity:.75}
+.rt-lo{display:block;font-size:.72rem;color:#6f8597;font-weight:600;margin-top:2px}
 .rt-tok{display:inline-flex;align-items:center;gap:6px}
 .rt-tok img{width:16px;height:16px;image-rendering:pixelated}
 .rt tfoot td{padding:16px 10px 22px;border-top:1px solid rgba(255,255,255,.07)}
@@ -404,11 +406,11 @@ const CONFIG = {
   products: [
     // Ranks
     { cat: "ranks", id: "vip", name: "VIP",  image: "vip", color: "#f2c94c", price: 1.99, period: "/ month", chip: "Starter",
-      perks: ["[VIP] gold prefix in chat & tab", "5 homes", "+10% income from /jobs", "+10% daily reward", "Gift: 3x Small Protection Blocks (3 days of upkeep included)"], checkout: "" },
+      perks: ["[VIP] gold prefix in chat & tab", "5 homes", "+10% income from /jobs", "+10% daily reward", "Lose only 7% of coins on death (instead of 10%)", "Gift: 3x Small Protection Blocks (3 days of upkeep included)"], checkout: "" },
     { cat: "ranks", id: "mvp", name: "MVP",  image: "mvp", color: "#2ea2ea", price: 4.99, period: "/ month",
-      perks: ["[MVP] blue prefix in chat & tab", "12 homes", "+25% income from /jobs", "+25% daily reward", "+100 MVP Tokens every month", "Gift: 3x Large Protection Blocks (3 days of upkeep included)"], checkout: "" },
+      perks: ["[MVP] blue prefix in chat & tab", "12 homes", "+25% income from /jobs", "+25% daily reward", "Lose only 5% of coins on death (instead of 10%)", "+100 MVP Tokens every month", "Gift: 3x Large Protection Blocks (3 days of upkeep included)"], checkout: "" },
     { cat: "ranks", id: "mvp-plus", name: "MVP+", image: "mvpplus", color: "#8a5cff", price: 6.99, period: "/ month", best: true, chip: "★ Best Value",
-      perks: ["[MVP+] pink prefix, the brightest in chat & tab", "25 homes", "+50% income from /jobs", "+50% daily reward", "+200 MVP Tokens every month", "Gift: 5x Large Protection Blocks (3 days of upkeep included)", "Special join message"], checkout: "" },
+      perks: ["[MVP+] pink prefix, the brightest in chat & tab", "25 homes", "+50% income from /jobs", "+50% daily reward", "Lose only 1% of coins on death (instead of 10%)", "+200 MVP Tokens every month", "Gift: 5x Large Protection Blocks (3 days of upkeep included)", "Special join message"], checkout: "" },
     // MVP Tokens (the bigger the pack, the bigger the bonus). Spent in the game with /tokens
     { cat: "tokens", id: "tokens-60", pack: 1, bonusPct: 0, name: "60 Tokens", image: "token", color: "#a06bff", price: 0.99, amount: "60", perks: [], checkout: "" },
     { cat: "tokens", id: "tokens-330", pack: 2, bonusPct: 10, name: "330 Tokens", image: "token", color: "#a06bff", price: 4.99, amount: "330", extra: "30", perks: [], checkout: "" },
@@ -692,6 +694,7 @@ const CONFIG = {
       pick: ic('<path d="M4 8c4-4 12-4 16 0"/><path d="M12 6l-6 14"/>'),
       cal: ic('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'),
       gift: ic('<rect x="3" y="9" width="18" height="12" rx="1"/><path d="M3 13h18M12 9v12"/><path d="M12 9c-3 0-5-1.5-5-3.5S9.5 3 12 9c2.5-6 5-5.5 5-3.5S15 9 12 9z"/>'),
+      skull: ic('<path d="M5 11a7 7 0 1 1 14 0v3l-2 1v3h-2v-2h-2v2h-2v-2H9v2H7v-3l-2-1z"/><circle cx="9" cy="11" r="1.5"/><circle cx="15" cy="11" r="1.5"/>'),
       star: ic('<path d="M12 3l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.8 6.6 19.7l1.1-6.1L3.2 9.4l6.1-.8z"/>')
     };
     const tok = '<img src="../img/tokens/token.png" alt="">';
@@ -711,7 +714,8 @@ const CONFIG = {
       ["Everyday", [
         [I.home, "Homes", [num("3", 25), num("5", 25), num("12", 25), num("25", 25)]],
         [I.pick, "/jobs income", [NO, num("+10%", 50), num("+25%", 50), num("+50%", 50)]],
-        [I.cal, "Daily reward", [NO, num("+10%", 50), num("+25%", 50), num("+50%", 50)]]
+        [I.cal, "Daily reward", [NO, num("+10%", 50), num("+25%", 50), num("+50%", 50)]],
+        [I.skull, "Coins lost on death <small class=\"rt-lo\">less is better</small>", ["10%", "7%", "5%", "1%"].map((v, k) => '<span class="rt-num"><span>' + v + '</span><span class="rt-meter rt-meter-low"><i style="--w:' + [100, 70, 50, 10][k] + '%"></i></span></span>')],
       ]],
       ["Rewards", [
         [tok, "MVP Tokens every month", [NO, NO, '<span class="rt-tok">' + tok + '+100</span>', '<span class="rt-tok">' + tok + '+200</span>']],
