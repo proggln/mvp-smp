@@ -543,7 +543,7 @@ const CONFIG = {
     if (!tebexPkgs) return null;
     const norm = (t) => String(t || "").toLowerCase().replace(/[^a-z0-9+]/g, "");
     if (p.tebexId) return tebexPkgs.find((x) => String(x.id) === String(p.tebexId)) || null;
-    if (p.oneTime) { const want = norm(p.name); return tebexPkgs.find((x) => { const n = norm(x.name); return n.indexOf("30") >= 0 && n.replace(/\(?30days?\)?|30/g, "").replace(/days?/g, "") === want; }) || null; }
+    if (p.oneTime) { const base = (t) => norm(t).replace(/30days?|30/g, ""); const want = base(p.name); return tebexPkgs.find((x) => norm(x.name).indexOf("30") >= 0 && base(x.name) === want) || null; }
     if (p.cat === "tokens") { const n = String(p.amount).replace(/[^0-9]/g, ""); return tebexPkgs.find((x) => String(x.name).replace(/[^0-9]/g, "") === n) || null; }
     return tebexPkgs.find((x) => norm(x.name) === norm(p.name)) || null;
   }
