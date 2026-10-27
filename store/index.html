@@ -118,21 +118,58 @@ button{font:inherit}
 .store-head{text-align:center;margin-bottom:30px;animation:rise .9s cubic-bezier(.2,.8,.2,1) .1s both}
 .store-head h1{font:800 clamp(1.8rem,4vw,2.5rem)/1.1 var(--font-head);text-shadow:0 2px 16px rgba(0,0,0,.6)}
 .store-head p{margin-top:8px;color:#cfe3f1;text-shadow:0 1px 8px rgba(0,0,0,.85)}
-.rt-wrap{width:100%;margin-top:26px;overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:18px;border:1px solid rgba(255,255,255,.09);background:rgba(8,16,28,.75)}
-.rt{width:100%;min-width:620px;border-collapse:collapse;font-size:.95rem}
-.rt caption{text-align:left;padding:18px 20px 6px;font:800 1.15rem/1 var(--font-head);color:#fff}
-.rt th,.rt td{padding:13px 14px;text-align:center;border-bottom:1px solid rgba(255,255,255,.06)}
-.rt tbody tr:last-child th,.rt tbody tr:last-child td{border-bottom:0}
-.rt thead th{font:800 1rem/1 var(--font-head);color:#fff;padding-top:14px}
-.rt thead .c-vip{color:#f2c94c}.rt thead .c-mvp{color:#4cc3ff}.rt thead .c-mvpp{color:#ff6bd6}
-.rt tbody th{text-align:left;color:var(--muted);font-weight:600;white-space:nowrap}
-.rt td{color:#e9f2fa;font-weight:700}
-.rt td.hl,.rt thead .c-mvpp{background:rgba(138,92,255,.12)}
-.rt-no{color:#55687a;font-weight:700}
+.rt-wrap{position:relative;width:100%;margin-top:30px;border-radius:22px;border:1px solid rgba(255,255,255,.09);background:linear-gradient(180deg,rgba(14,24,40,.92),rgba(6,12,22,.92));box-shadow:0 30px 80px rgba(0,0,0,.45);overflow:hidden}
+.rt-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:22px 24px 8px;flex-wrap:wrap}
+.rt-head h3{font:800 1.35rem/1.1 var(--font-head);color:#fff}
+.rt-head p{color:var(--muted);font-size:.9rem;margin-top:4px}
+.rt-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.rt{--cvip:#f2c94c;--cmvp:#4cc3ff;--cmvpp:#ff6bd6;width:100%;min-width:680px;border-collapse:separate;border-spacing:0;font-size:.95rem;table-layout:fixed}
+.rt col.lab{width:30%}
+.rt th,.rt td{position:relative;padding:14px 12px;text-align:center;transition:background .18s,color .18s,opacity .18s}
+.rt td{color:#e9f2fa;font-weight:700;border-top:1px solid rgba(255,255,255,.05)}
+.rt tbody th{text-align:left;color:#b9cbd9;font-weight:600;border-top:1px solid rgba(255,255,255,.05);padding-left:24px}
+.rt .lab-i{display:inline-flex;align-items:center;gap:10px}
+.rt .lab-i svg,.rt .lab-i img{flex:none;width:18px;height:18px;opacity:.85}
+.rt .lab-i img{image-rendering:pixelated}
+.rt tr.grp th{padding:20px 24px 8px;text-align:left;font:800 .72rem/1 var(--font-head);letter-spacing:.14em;text-transform:uppercase;color:#6f8597;border-top:0}
+.rt tr.grp td{border-top:0}
+/* rank header */
+.rt thead th{vertical-align:bottom;padding:18px 10px 16px;cursor:pointer}
+.rt .rh{display:flex;flex-direction:column;align-items:center;gap:6px}
+.rt .rh-name{font:800 1.25rem/1 var(--font-head);color:var(--c)}
+.rt .rh-price{font:800 1.05rem/1 var(--font-head);color:#fff}
+.rt .rh-price small{font:600 .75rem/1 Inter,sans-serif;color:var(--muted)}
+.rt .rh-bar{width:46px;height:4px;border-radius:4px;background:var(--c);box-shadow:0 0 16px var(--c)}
+.rt .rh-tag{position:absolute;top:8px;left:50%;transform:translateX(-50%);padding:4px 9px;border-radius:999px;background:linear-gradient(90deg,#8a5cff,#ff6bd6);color:#fff;font:800 .6rem/1 var(--font-head);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+.rt thead th.has-tag{padding-top:34px}
+.rt [data-c="1"]{--c:#c9d6e2}.rt [data-c="2"]{--c:var(--cvip)}.rt [data-c="3"]{--c:var(--cmvp)}.rt [data-c="4"]{--c:var(--cmvpp)}
+/* MVP+ always softly lit */
+.rt [data-c="4"]{background:rgba(255,107,214,.045)}
+/* column hover / selected */
+.rt[data-hover] tbody td,.rt[data-hover] tfoot td,.rt[data-hover] thead th[data-c]{opacity:.55}
+.rt[data-hover="1"] [data-c="1"],.rt[data-hover="2"] [data-c="2"],.rt[data-hover="3"] [data-c="3"],.rt[data-hover="4"] [data-c="4"]{opacity:1;background:color-mix(in srgb,var(--c) 11%,transparent)}
+.rt[data-hover="1"] thead [data-c="1"],.rt[data-hover="2"] thead [data-c="2"],.rt[data-hover="3"] thead [data-c="3"],.rt[data-hover="4"] thead [data-c="4"]{box-shadow:inset 0 3px 0 var(--c)}
+.rt[data-hover="1"] tfoot [data-c="1"],.rt[data-hover="2"] tfoot [data-c="2"],.rt[data-hover="3"] tfoot [data-c="3"],.rt[data-hover="4"] tfoot [data-c="4"]{box-shadow:inset 0 -3px 0 var(--c)}
+/* row hover */
+.rt tbody tr:not(.grp):hover th{color:#fff}
+.rt tbody tr:not(.grp):hover th,.rt tbody tr:not(.grp):hover td{background-image:linear-gradient(rgba(255,255,255,.035),rgba(255,255,255,.035))}
+/* values */
+.rt-no{display:inline-block;width:14px;height:2px;border-radius:2px;background:#3d4f60;vertical-align:middle}
+.rt-yes{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:color-mix(in srgb,var(--c) 18%,transparent)}
+.rt-yes svg{width:14px;height:14px}
 .rt-pre{height:18px;image-rendering:pixelated;vertical-align:middle}
-.rt svg{vertical-align:middle}
-.rt td small{font-weight:600;color:var(--muted);margin-left:1px}
-@media (max-width:640px){.rt{min-width:0;font-size:.84rem}.rt .c0{display:none}.rt th,.rt td{padding:11px 6px}.rt tbody th{white-space:normal;padding-left:14px;max-width:120px}.rt caption{padding:16px 14px 4px}.rt-pre{height:13px}}
+.rt-num{display:flex;flex-direction:column;align-items:center;gap:7px}
+.rt-meter{width:min(90px,80%);height:5px;border-radius:5px;background:rgba(255,255,255,.07);overflow:hidden}
+.rt-meter i{display:block;height:100%;width:0;border-radius:5px;background:var(--c);transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.rt.in .rt-meter i{width:var(--w)}
+.rt-tok{display:inline-flex;align-items:center;gap:6px}
+.rt-tok img{width:16px;height:16px;image-rendering:pixelated}
+.rt tfoot td{padding:16px 10px 22px;border-top:1px solid rgba(255,255,255,.07)}
+.rt tfoot th{border-top:1px solid rgba(255,255,255,.07)}
+.rt .rt-buy{width:100%;max-width:150px;padding:11px 10px;border:0;border-radius:12px;font:800 .9rem/1 var(--font-head);color:#06121f;background:var(--c);cursor:pointer;transition:transform .15s,box-shadow .15s}
+.rt .rt-buy:hover{transform:translateY(-2px);box-shadow:0 10px 26px color-mix(in srgb,var(--c) 45%,transparent)}
+.rt .rt-free{color:var(--muted);font-weight:600;font-size:.85rem}
+@media (max-width:640px){.rt-head{padding:18px 14px 6px}.rt{min-width:0;font-size:.82rem}.rt col.lab{width:31%}.rt .c0{display:none}.rt th,.rt td{padding:11px 4px}.rt tbody th{white-space:normal;padding-left:12px}.rt .lab-i svg,.rt .lab-i img{display:none}.rt tr.grp th{padding:16px 12px 6px}.rt .rh-name{font-size:1rem}.rt .rh-price{font-size:.85rem}.rt .rh-tag{font-size:.5rem;padding:3px 6px}.rt-pre{height:12px}.rt .rt-buy{font-size:.78rem;padding:10px 4px;border-radius:10px;white-space:nowrap}.rt .rt-buy .gw{display:none}.rt .rh-price small{display:none}.rt .rh-price{font-size:.8rem}.rt-meter{width:80%}}
 .grid{width:100%;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;animation:rise .9s cubic-bezier(.2,.8,.2,1) .25s both}
 .card{position:relative;display:flex;flex-direction:column;gap:18px;padding:34px 32px 30px;border-radius:28px;background:linear-gradient(180deg,rgba(14,34,56,.78),rgba(5,14,26,.82));border:1px solid rgba(255,255,255,.09);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 18px 50px rgba(0,0,0,.4);overflow:hidden;transition:transform .3s cubic-bezier(.2,.8,.2,1),border-color .3s,box-shadow .3s}
 .card::before{content:"";position:absolute;left:-30%;right:-30%;top:-60%;height:100%;background:radial-gradient(closest-side,var(--tc,#2ea2ea),transparent);opacity:.28;transition:opacity .3s;pointer-events:none}
@@ -647,23 +684,74 @@ const CONFIG = {
     return c;
   }
   function rankTable() {
-    const YES = '<svg viewBox="0 0 16 16" width="16" height="16" aria-label="Yes"><path d="M3 8.5l3 3 7-7" fill="none" stroke="#5dff8a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    const NO = '<span class="rt-no" aria-label="No">-</span>';
+    const P = (id) => CONFIG.products.find((x) => x.id === id);
+    const ic = (d) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>';
+    const I = {
+      tag: ic('<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.5"/>'),
+      chat: ic('<path d="M4 5h16v11H9l-5 4z"/>'),
+      home: ic('<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>'),
+      pick: ic('<path d="M4 8c4-4 12-4 16 0"/><path d="M12 6l-6 14"/>'),
+      cal: ic('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'),
+      gift: ic('<rect x="3" y="9" width="18" height="12" rx="1"/><path d="M3 13h18M12 9v12"/><path d="M12 9c-3 0-5-1.5-5-3.5S9.5 3 12 9c2.5-6 5-5.5 5-3.5S15 9 12 9z"/>'),
+      star: ic('<path d="M12 3l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.8 6.6 19.7l1.1-6.1L3.2 9.4l6.1-.8z"/>')
+    };
+    const tok = '<img src="../img/tokens/token.png" alt="">';
+    const NO = '<span class="rt-no" aria-label="Not included"></span>';
+    const YES = '<span class="rt-yes" aria-label="Included"><svg viewBox="0 0 16 16"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--c)"/></svg></span>';
     const pre = (n, f) => '<img class="rt-pre" src="../img/prefix/' + f + '.png" alt="[' + n + ']">';
-    const rows = [
-      ["Price", "Free", "€1.99<small>/mo</small>", "€4.99<small>/mo</small>", "€6.99<small>/mo</small>"],
-      ["Chat & tab prefix", NO, pre("VIP", "vip"), pre("MVP", "mvp"), pre("MVP+", "mvpplus")],
-      ["Homes", "3", "5", "12", "20"],
-      ["/jobs income", NO, "+10%", "+25%", "+40%"],
-      ["Daily reward", NO, "+10%", "+25%", "+40%"],
-      ["MVP Tokens every month", NO, NO, "+100", "+200"],
-      ["Gift: protection blocks", NO, "3x Small", "3x Large", "5x Large"],
-      ["Special join message", NO, NO, NO, YES]
+    const num = (v, max, pre2) => v ? '<span class="rt-num"><span>' + (pre2 || "") + v + '</span><span class="rt-meter"><i style="--w:' + Math.round(100 * parseFloat(String(v).replace(/[^0-9.]/g, "")) / max) + '%"></i></span></span>' : NO;
+    const cols = [
+      { name: "Player", price: '<span class="rt-free">Free</span>' },
+      { name: "VIP", id: "vip" }, { name: "MVP", id: "mvp" }, { name: "MVP+", id: "mvp-plus", tag: "Most perks" }
     ];
+    const groups = [
+      ["Status", [
+        [I.chat, "Chat & tab prefix", [NO, pre("VIP", "vip"), pre("MVP", "mvp"), pre("MVP+", "mvpplus")]],
+        [I.star, "Special join message", [NO, NO, NO, YES]]
+      ]],
+      ["Everyday", [
+        [I.home, "Homes", [num("3", 20), num("5", 20), num("12", 20), num("20", 20)]],
+        [I.pick, "/jobs income", [NO, num("+10%", 40), num("+25%", 40), num("+40%", 40)]],
+        [I.cal, "Daily reward", [NO, num("+10%", 40), num("+25%", 40), num("+40%", 40)]]
+      ]],
+      ["Rewards", [
+        [tok, "MVP Tokens every month", [NO, NO, '<span class="rt-tok">' + tok + '+100</span>', '<span class="rt-tok">' + tok + '+200</span>']],
+        [I.gift, "Gift: protection blocks", [NO, "3x Small", "3x Large", "5x Large"]]
+      ]]
+    ];
+    const cls = (k) => (k === 0 ? ' class="c0"' : '');
+    let h = '<colgroup><col class="lab"><col class="c0"><col><col><col></colgroup><thead><tr><th></th>';
+    cols.forEach((c, k) => {
+      const p = c.id && P(c.id);
+      const price = p ? '<span class="rh-price">' + esc(priceText(p)) + '<small>/mo</small></span>' : c.price;
+      h += '<th scope="col" data-c="' + (k + 1) + '"' + (k === 0 ? ' class="c0"' : c.tag ? ' class="has-tag"' : '') + '>' + (c.tag ? '<span class="rh-tag">' + c.tag + '</span>' : '') +
+        '<span class="rh"><span class="rh-name">' + c.name + '</span>' + price + '<span class="rh-bar"></span></span></th>';
+    });
+    h += '</tr></thead><tbody>';
+    groups.forEach((g) => {
+      h += '<tr class="grp"><th colspan="5">' + g[0] + '</th></tr>';
+      g[1].forEach((r) => {
+        h += '<tr><th scope="row"><span class="lab-i">' + r[0] + '<span>' + r[1] + '</span></span></th>' +
+          r[2].map((v, k) => '<td data-c="' + (k + 1) + '"' + cls(k) + '>' + v + '</td>').join("") + '</tr>';
+      });
+    });
+    h += '</tbody><tfoot><tr><th></th>' + cols.map((c, k) => '<td data-c="' + (k + 1) + '"' + cls(k) + '>' +
+      (c.id ? '<button type="button" class="rt-buy" data-id="' + c.id + '"><span class="gw">Get </span>' + c.name + '</button>' : '<span class="rt-free">Everyone</span>') + '</td>').join("") + '</tr></tfoot>';
     const w = el("div", "rt-wrap");
-    let h = '<table class="rt"><caption>Compare ranks</caption><thead><tr><th></th><th class="c0">Player</th><th class="c-vip">VIP</th><th class="c-mvp">MVP</th><th class="c-mvpp">MVP+</th></tr></thead><tbody>';
-    rows.forEach((r) => { h += '<tr><th scope="row">' + r[0] + '</th>' + r.slice(1).map((v, i) => '<td class="' + (i === 0 ? 'c0' : '') + (i === 3 ? ' hl' : '') + '">' + v + '</td>').join("") + '</tr>'; });
-    w.innerHTML = h + '</tbody></table>';
+    w.innerHTML = '<div class="rt-head"><div><h3>Compare ranks</h3><p>' + (matchMedia("(hover: hover)").matches ? "Hover" : "Tap") + ' a column to see everything a rank gives. Prices are per month.</p></div></div><div class="rt-scroll"><table class="rt">' + h + '</table></div>';
+    const t = w.querySelector("table");
+    const set = (c) => { if (c) t.dataset.hover = c; else delete t.dataset.hover; };
+    t.addEventListener("mouseover", (e) => { const x = e.target.closest("[data-c]"); set(x ? x.dataset.c : null); });
+    t.addEventListener("mouseleave", () => set(null));
+    t.addEventListener("click", (e) => {
+      const b = e.target.closest(".rt-buy");
+      if (b) { const p = P(b.dataset.id); if (p) { const real = buyButton(p); if (!real.disabled) real.click(); } return; }
+      const x = e.target.closest("[data-c]"); if (x) set(t.dataset.hover === x.dataset.c && e.pointerType !== "mouse" ? null : x.dataset.c);
+    });
+    if ("IntersectionObserver" in window) {
+      const io = new IntersectionObserver((en) => { if (en.some((x) => x.isIntersecting)) { t.classList.add("in"); io.disconnect(); } }, { threshold: .25 });
+      io.observe(t);
+    } else t.classList.add("in");
     return w;
   }
   function render(cat) {
