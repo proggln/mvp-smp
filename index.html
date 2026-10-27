@@ -113,6 +113,16 @@ button{font:inherit}
 .px{position:fixed;left:0;top:0;z-index:60;pointer-events:none;will-change:transform,opacity}
 
 /* ---------- Stats ---------- */
+.cd{display:flex;flex-direction:column;align-items:center;gap:10px;margin:0 auto;padding:6px 20px 4px;font-family:"Monocraft",monospace;color:#fff}
+.cd-t{font-size:.95rem;letter-spacing:.06em;color:#9db6c9}
+.cd-row{display:flex;align-items:flex-start;gap:14px}
+.cd-u{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:3.2ch}
+.cd-u b{font-weight:400;font-size:clamp(2.2rem,5.2vw,3.4rem);line-height:1;font-variant-numeric:tabular-nums;text-shadow:3px 3px 0 #1d3a52,0 0 26px rgba(76,195,255,.35)}
+.cd-u i{font-style:normal;font-size:.8rem;color:#9db6c9;letter-spacing:.04em}
+.cd-s{font-size:clamp(2rem,4.6vw,3rem);line-height:1;color:#2ea2ea;animation:cdblink 1s steps(1) infinite}
+@keyframes cdblink{50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.cd-s{animation:none}}
+@media (max-width:640px){.cd-row{gap:8px}.cd{padding:4px 0}}
 .stats{display:flex;justify-content:center;gap:14px;margin-top:10px;animation:rise 1s cubic-bezier(.2,.8,.2,1) .5s both}
 .stat{display:flex;align-items:center;gap:14px;padding:14px 24px 14px 16px;border-radius:20px;background:rgba(6,16,28,.55);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transition:transform .25s,border-color .25s,box-shadow .25s}
 .stat:hover{transform:translateY(-3px);border-color:rgba(111,208,255,.5);box-shadow:0 14px 40px rgba(0,129,204,.25)}
@@ -190,7 +200,7 @@ button{font:inherit}
       <span class="glow" aria-hidden="true"></span>
       <span class="ring" aria-hidden="true"></span>
       <div class="ip-inner">
-        <span class="ip-value" style="cursor:default">Coming January 1st</span><span id="ip" hidden><span data-ip>mc.playmvp.org</span></span>
+        <div class="cd" id="cd" role="timer" aria-label="Server opens on January 1 at 18:00 Vilnius time"><span class="cd-t">Server opens in</span><span class="cd-row"><span class="cd-u"><b id="cdD">--</b><i>days</i></span><span class="cd-s">:</span><span class="cd-u"><b id="cdH">--</b><i>hours</i></span><span class="cd-s">:</span><span class="cd-u"><b id="cdM">--</b><i>minutes</i></span></span></div><span id="ip" hidden><span data-ip>mc.playmvp.org</span></span>
         <button class="copy" id="copy-ip" type="button" aria-label="Copy server IP" style="display:none">
           <svg class="ic-copy" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" d="M8 8h11v13H8zM5 16H4V3h11v2"/></svg>
           <img class="ic-check" hidden src="img/ic/check.png" alt="" width="32" height="32" style="width:32px;height:32px;image-rendering:pixelated">
@@ -524,5 +534,27 @@ const CONFIG = {
 })();
 </script>
 <script src="banners.js" defer></script>
+<script>
+/* Countdown to server opening: 1 January 2027, 18:00 Vilnius time (UTC+2) */
+(function () {
+  var OPEN = Date.parse("2027-01-01T18:00:00+02:00");
+  var cd = document.getElementById("cd"); if (!cd) return;
+  var D = document.getElementById("cdD"), H = document.getElementById("cdH"), M = document.getElementById("cdM");
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  function open() {
+    cd.hidden = true; cd.style.display = "none";
+    var ip = document.getElementById("ip"); ip.hidden = false; ip.className = "ip-value"; ip.title = "Click to copy";
+    var b = document.getElementById("copy-ip"); if (b) b.style.display = "";
+  }
+  function tick() {
+    var left = OPEN - Date.now();
+    if (left <= 0) { open(); return; }
+    var m = Math.floor(left / 60000);
+    D.textContent = pad(Math.floor(m / 1440)); H.textContent = pad(Math.floor(m / 60) % 24); M.textContent = pad(m % 60);
+    setTimeout(tick, 1000);
+  }
+  tick();
+})();
+</script>
 </body>
 </html>
