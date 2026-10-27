@@ -125,7 +125,7 @@ button{font:inherit}
 .rt-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .rt{--cvip:#f2c94c;--cmvp:#4cc3ff;--cmvpp:#ff6bd6;width:100%;min-width:680px;border-collapse:separate;border-spacing:0;font-size:.95rem;table-layout:fixed}
 .rt col.lab{width:30%}
-.rt th,.rt td{position:relative;padding:14px 12px;text-align:center;transition:background .18s,color .18s,opacity .18s}
+.rt th,.rt td{position:relative;z-index:1;padding:14px 12px;text-align:center}
 .rt td{color:#e9f2fa;font-weight:700;border-top:1px solid rgba(255,255,255,.05)}
 .rt tbody th{text-align:left;color:#b9cbd9;font-weight:600;border-top:1px solid rgba(255,255,255,.05);padding-left:24px}
 .rt .lab-i{display:inline-flex;align-items:center;gap:10px}
@@ -145,14 +145,13 @@ button{font:inherit}
 .rt [data-c="1"]{--c:#c9d6e2}.rt [data-c="2"]{--c:var(--cvip)}.rt [data-c="3"]{--c:var(--cmvp)}.rt [data-c="4"]{--c:var(--cmvpp)}
 /* MVP+ always softly lit */
 .rt [data-c="4"]{background:rgba(255,107,214,.045)}
-/* column hover / selected */
-.rt[data-hover] tbody td,.rt[data-hover] tfoot td,.rt[data-hover] thead th[data-c]{opacity:.55}
-.rt[data-hover="1"] [data-c="1"],.rt[data-hover="2"] [data-c="2"],.rt[data-hover="3"] [data-c="3"],.rt[data-hover="4"] [data-c="4"]{opacity:1;background:color-mix(in srgb,var(--c) 11%,transparent)}
-.rt[data-hover="1"] thead [data-c="1"],.rt[data-hover="2"] thead [data-c="2"],.rt[data-hover="3"] thead [data-c="3"],.rt[data-hover="4"] thead [data-c="4"]{box-shadow:inset 0 3px 0 var(--c)}
-.rt[data-hover="1"] tfoot [data-c="1"],.rt[data-hover="2"] tfoot [data-c="2"],.rt[data-hover="3"] tfoot [data-c="3"],.rt[data-hover="4"] tfoot [data-c="4"]{box-shadow:inset 0 -3px 0 var(--c)}
+/* column hover: one moving overlay (cheap to animate) */
+.rt-scroll{position:relative}
+.rt-hl{position:absolute;top:0;left:0;height:100%;width:0;border-radius:14px;pointer-events:none;opacity:0;background:linear-gradient(180deg,color-mix(in srgb,var(--hc,#fff) 16%,transparent),color-mix(in srgb,var(--hc,#fff) 7%,transparent));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--hc,#fff) 40%,transparent);transition:transform .22s cubic-bezier(.2,.8,.2,1),width .22s,opacity .18s;will-change:transform}
+.rt-hl.on{opacity:1}
 /* row hover */
 .rt tbody tr:not(.grp):hover th{color:#fff}
-.rt tbody tr:not(.grp):hover th,.rt tbody tr:not(.grp):hover td{background-image:linear-gradient(rgba(255,255,255,.035),rgba(255,255,255,.035))}
+.rt tbody tr:not(.grp):hover th{background:rgba(255,255,255,.03)}
 /* values */
 .rt-no{display:inline-block;width:14px;height:2px;border-radius:2px;background:#3d4f60;vertical-align:middle}
 .rt-yes{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:color-mix(in srgb,var(--c) 18%,transparent)}
@@ -739,15 +738,28 @@ const CONFIG = {
       (c.id ? '<button type="button" class="rt-buy" data-id="' + c.id + '"><span class="gw">Get </span>' + c.name + '</button>' : '<span class="rt-free">Everyone</span>') + '</td>').join("") + '</tr></tfoot>';
     const w = el("div", "rt-wrap");
     w.innerHTML = '<div class="rt-head"><div><h3>Compare ranks</h3><p>' + (matchMedia("(hover: hover)").matches ? "Hover" : "Tap") + ' a column to see everything a rank gives. Prices are per month.</p></div></div><div class="rt-scroll"><table class="rt">' + h + '</table></div>';
-    const t = w.querySelector("table");
-    const set = (c) => { if (c) t.dataset.hover = c; else delete t.dataset.hover; };
-    t.addEventListener("mouseover", (e) => { const x = e.target.closest("[data-c]"); set(x ? x.dataset.c : null); });
-    t.addEventListener("mouseleave", () => set(null));
+    const t = w.querySelector("table"), sc = w.querySelector(".rt-scroll");
+    const hl = el("div", "rt-hl"); sc.appendChild(hl);
+    const HC = { 1: "#c9d6e2", 2: "#f2c94c", 3: "#4cc3ff", 4: "#ff6bd6" };
+    let cur = null;
+    const set = (c) => {
+      if (c === cur) return; cur = c;
+      if (!c) { hl.classList.remove("on"); return; }
+      const th = t.querySelector('thead th[data-c="' + c + '"]');
+      if (!th || !th.offsetWidth) { hl.classList.remove("on"); return; }
+      hl.style.setProperty("--hc", HC[c]);
+      hl.style.width = th.offsetWidth + "px";
+      hl.style.transform = "translateX(" + th.offsetLeft + "px)";
+      hl.classList.add("on");
+    };
+    t.addEventListener("pointermove", (e) => { if (e.pointerType !== "mouse") return; const x = e.target.closest("[data-c]"); set(x ? x.dataset.c : null); }, { passive: true });
+    t.addEventListener("pointerleave", () => set(null));
     t.addEventListener("click", (e) => {
       const b = e.target.closest(".rt-buy");
       if (b) { const p = P(b.dataset.id); if (p) { const real = buyButton(p); if (!real.disabled) real.click(); } return; }
-      const x = e.target.closest("[data-c]"); if (x) set(t.dataset.hover === x.dataset.c && e.pointerType !== "mouse" ? null : x.dataset.c);
+      const x = e.target.closest("[data-c]"); if (x) set(cur === x.dataset.c ? null : x.dataset.c);
     });
+    addEventListener("resize", () => { const c = cur; cur = null; set(c); }, { passive: true });
     if ("IntersectionObserver" in window) {
       const io = new IntersectionObserver((en) => { if (en.some((x) => x.isIntersecting)) { t.classList.add("in"); io.disconnect(); } }, { threshold: .25 });
       io.observe(t);
