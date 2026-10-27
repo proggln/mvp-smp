@@ -701,7 +701,7 @@ const CONFIG = {
     const num = (v, max, pre2) => v ? '<span class="rt-num"><span>' + (pre2 || "") + v + '</span><span class="rt-meter"><i style="--w:' + Math.round(100 * parseFloat(String(v).replace(/[^0-9.]/g, "")) / max) + '%"></i></span></span>' : NO;
     const cols = [
       { name: "Player", price: '<span class="rt-free">Free</span>' },
-      { name: "VIP", id: "vip" }, { name: "MVP", id: "mvp" }, { name: "MVP+", id: "mvp-plus", tag: "Most perks" }
+      { name: "VIP", id: "vip" }, { name: "MVP", id: "mvp" }, { name: "MVP+", id: "mvp-plus", tag: "Best Value" }
     ];
     const groups = [
       ["Status", [
