@@ -173,24 +173,16 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", run); else run();
 })();
 
-/* Background test (only for whoever opens a link with ?bg=2 or ?bg=4; ?bg=0 turns it off). Home page is not affected. */
+/* Site background: blurred, darkened screenshot of the MVP city (all pages except Home). */
 (function () {
-  var K = "mvp_bg_test", v = null;
-  try {
-    var q = new URLSearchParams(location.search).get("bg");
-    if (q === "2" || q === "4") localStorage.setItem(K, q); else if (q === "0") localStorage.removeItem(K);
-    v = localStorage.getItem(K);
-  } catch (e) {}
-  if (v !== "2" && v !== "4") return;
   var p = location.pathname.replace(/index\.html$/, "");
   if (p === "/" || p === "") return;
   var base = (document.currentScript && document.currentScript.src || "").replace(/theme\.js.*$/, "") || "/";
-  var bg = v === "2"
-    ? "url(" + base + "img/bg/hills.png) bottom center/1280px auto repeat-x,url(" + base + "img/bg/stars.png) 0 0/600px 600px repeat,linear-gradient(180deg,#050a18 0%,#0b1a33 60%,#12305a 100%)"
-    : "linear-gradient(180deg,rgba(3,8,15,.15),rgba(3,8,15,.6)),url(" + base + "img/bg/city-blur.jpg) center/cover no-repeat";
+  var bg = "linear-gradient(180deg,rgba(3,8,15,.38),rgba(3,8,15,.72)),url(" + base + "img/bg/city-blur.jpg) center/cover no-repeat";
   var css = ".bg>*{display:none!important}.bg{background:" + bg + "!important}" +
             "html.bgt-nobg body{background:" + bg + "!important;background-attachment:fixed!important}";
-  var s = document.createElement("style"); s.id = "bg-test"; s.textContent = css; document.head.appendChild(s);
+  var s = document.createElement("style"); s.id = "site-bg"; s.textContent = css; document.head.appendChild(s);
   function mark() { if (!document.querySelector(".bg")) document.documentElement.classList.add("bgt-nobg"); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mark); else mark();
+  try { localStorage.removeItem("mvp_bg_test"); } catch (e) {}
 })();
