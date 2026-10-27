@@ -129,7 +129,7 @@ button{font:inherit}
 .rt td{color:#e9f2fa;font-weight:700;border-top:1px solid rgba(255,255,255,.05)}
 .rt tbody th{text-align:left;color:#b9cbd9;font-weight:600;border-top:1px solid rgba(255,255,255,.05);padding-left:24px}
 .rt .lab-i{display:inline-flex;align-items:center;gap:10px}
-.rt .lab-i svg,.rt .lab-i img{flex:none;width:18px;height:18px;opacity:.85}
+.rt .lab-i svg,.rt .lab-i img{flex:none;width:20px;height:20px;opacity:1}
 .rt .lab-i img{image-rendering:pixelated}
 .rt tr.grp th{padding:20px 24px 8px;text-align:left;font:800 .72rem/1 var(--font-head);letter-spacing:.14em;text-transform:uppercase;color:#6f8597;border-top:0}
 .rt tr.grp td{border-top:0}
@@ -158,7 +158,7 @@ button{font:inherit}
 .rt-yes svg{width:14px;height:14px}
 .rt-pre{height:18px;image-rendering:pixelated;vertical-align:middle}
 .rt-num{display:flex;flex-direction:column;align-items:center;gap:7px}
-.rt-meter{width:min(90px,80%);height:5px;border-radius:5px;background:rgba(255,255,255,.07);overflow:hidden}
+.rt-meter{width:min(120px,85%);height:7px;border-radius:7px;background:rgba(255,255,255,.07);overflow:hidden}
 .rt-meter i{display:block;height:100%;width:0;border-radius:5px;background:var(--c);transition:width .9s cubic-bezier(.2,.8,.2,1)}
 .rt.in .rt-meter i{width:var(--w)}
 .rt-meter-low i{opacity:.75}
@@ -730,25 +730,27 @@ const CONFIG = {
     const NO = '<span class="rt-no" aria-label="Not included"></span>';
     const YES = '<span class="rt-yes" aria-label="Included"><svg viewBox="0 0 16 16"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--c)"/></svg></span>';
     const pre = (n, f) => '<img class="rt-pre" src="../img/prefix/' + f + '.png" alt="[' + n + ']">';
-    const num = (v, max, pre2) => v ? '<span class="rt-num"><span>' + (pre2 || "") + v + '</span><span class="rt-meter"><i style="--w:' + Math.round(100 * parseFloat(String(v).replace(/[^0-9.]/g, "")) / max) + '%"></i></span></span>' : NO;
+    const px = (f) => '<img src="../img/ic/' + f + '.png" alt="">';
+    const pct = (v, max) => { const n = parseFloat(String(v).replace(/[^0-9.]/g, "")); const f = /^x/.test(v) ? (n - 1) / (max - 1) : n / max; return Math.max(18, Math.round(100 * Math.sqrt(Math.max(0, f)))); };
+    const num = (v, max, pre2) => v ? '<span class="rt-num"><span>' + (pre2 || "") + v + '</span><span class="rt-meter"><i style="--w:' + pct(v, max) + '%"></i></span></span>' : NO;
     const cols = [
       { name: "Player", price: '<span class="rt-free">Free</span>' },
       { name: "VIP", id: "vip" }, { name: "MVP", id: "mvp" }, { name: "MVP+", id: "mvp-plus", tag: "Best Value" }
     ];
     const groups = [
       ["Status", [
-        [I.chat, "Chat & tab prefix", [NO, pre("VIP", "vip"), pre("MVP", "mvp"), pre("MVP+", "mvpplus")]],
-        [I.star, "Special join message", [NO, NO, NO, YES]]
+        [px("comments"), "Chat & tab prefix", [NO, pre("VIP", "vip"), pre("MVP", "mvp"), pre("MVP+", "mvpplus")]],
+        [px("bell"), "Special join message", [NO, NO, NO, YES]]
       ]],
       ["Everyday", [
-        [I.home, "Homes", [num("3", 25), num("5", 25), num("12", 25), num("25", 25)]],
-        [I.pick, "Jobs bonus", [NO, num("x1.1", 50), num("x1.25", 50), num("x1.5", 50)]],
-        [I.cal, "Daily bonus", [NO, num("x1.1", 50), num("x1.25", 50), num("x1.5", 50)]],
-        [I.skull, "Coins lost on death <small class=\"rt-lo\">less is better</small>", ["10%", "7%", "5%", "1%"].map((v, k) => '<span class="rt-num"><span>' + v + '</span><span class="rt-meter rt-meter-low"><i style="--w:' + [100, 70, 50, 10][k] + '%"></i></span></span>')],
+        [px("home"), "Homes", [num("3", 25), num("5", 25), num("12", 25), num("25", 25)]],
+        [px("cube"), "Jobs bonus", [NO, num("x1.1", 1.5), num("x1.25", 1.5), num("x1.5", 1.5)]],
+        [px("calendar"), "Daily bonus", [NO, num("x1.1", 1.5), num("x1.25", 1.5), num("x1.5", 1.5)]],
+        [px("skull"), "Coins lost on death <small class=\"rt-lo\">less is better</small>", ["10%", "7%", "5%", "1%"].map((v, k) => '<span class="rt-num"><span>' + v + '</span><span class="rt-meter rt-meter-low"><i style="--w:' + [100, 84, 71, 32][k] + '%"></i></span></span>')],
       ]],
       ["Rewards", [
         [tok, "MVP Tokens every month", [NO, NO, '<span class="rt-tok">' + tok + '+100</span>', '<span class="rt-tok">' + tok + '+200</span>']],
-        [I.gift, "Gift: protection blocks", [NO, "3x Small", "3x Large", "5x Large"]]
+        [px("daily"), "Gift: protection blocks", [NO, "3x Small", "3x Large", "5x Large"]]
       ]]
     ];
     const cls = (k) => (k === 0 ? ' class="c0"' : '');
