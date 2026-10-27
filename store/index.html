@@ -76,7 +76,7 @@ button{font:inherit}
 
 /* ---------- Extras: pixel trail, time-of-day tint ---------- */
 .tod{position:fixed;inset:0;z-index:4;pointer-events:none;opacity:0;transition:opacity 2s}
-.trail{position:fixed;left:0;top:0;z-index:60;pointer-events:none;width:8px;height:8px;margin:-4px 0 0 -4px;background:#6fd0ff;box-shadow:0 0 10px #2ea2ea;opacity:0;will-change:transform,opacity}
+.trail{display:none!important;position:fixed;left:0;top:0;z-index:60;pointer-events:none;width:8px;height:8px;margin:-4px 0 0 -4px;background:#6fd0ff;box-shadow:0 0 10px #2ea2ea;opacity:0;will-change:transform,opacity}
 
 /* ---------- Hero ---------- */
 .hero{position:relative;z-index:10;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;align-items:center;padding:92px 18px 26px}
@@ -808,6 +808,7 @@ const CONFIG = {
 
     if (reduceMotion || !window.matchMedia("(pointer: fine)").matches) return;
 
+    return; // cursor trail removed
     const N = 7, dots = [], pos = [];
     for (let i = 0; i < N; i++) {
       const d = document.createElement("i");
