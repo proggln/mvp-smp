@@ -188,7 +188,7 @@ button{font:inherit}
 .art.banner{width:calc(100% + 64px);margin:-34px -32px 0;border-radius:28px 28px 0 0;height:130px;object-fit:contain;background:#0081cc}
 .art.stamp{width:140px;height:92px;margin:-4px 0 -4px;object-fit:contain;object-position:left center}
 .card h2{position:relative;font:800 1.7rem/1.1 var(--font-head)}
-.ptok .ptokimg{width:18px;height:18px;image-rendering:pixelated;vertical-align:-3px;margin-right:6px}
+.ptokimg{width:18px;height:18px;image-rendering:pixelated;vertical-align:-3px;margin-right:6px}
 .ptok b{font-weight:800;color:#d9c2ff}
 .price{position:relative;font:800 2.5rem/1 var(--font-head);color:#fff}
 .once{display:block;margin-top:6px;font:600 .82rem/1.3 var(--font-body,inherit);color:#9db6c9}
@@ -514,7 +514,11 @@ const CONFIG = {
         const span = el("span", "ptxt"), im = document.createElement("img");
         im.className = "ptag"; im.alt = "[" + pm[1] + "]"; im.src = "../img/prefix/" + (pm[1] === "MVP+" ? "mvpplus" : pm[1].toLowerCase()) + ".png";
         span.appendChild(im); span.appendChild(document.createTextNode(x.slice(pm[0].length))); li.appendChild(span);
-      } else li.appendChild(document.createTextNode(x));
+      } else {
+        const ic = /homes$/i.test(x) ? "home" : /^(Jobs|Daily) bonus/i.test(x) ? "baltop" : /^Gift/i.test(x) ? "daily" : /coins on death/i.test(x) ? "skull" : "";
+        if (ic) { const sp = el("span", "ptxt"), im = document.createElement("img"); im.className = "ptokimg"; im.alt = ""; im.src = "../img/ic/" + ic + ".png"; sp.append(im, document.createTextNode(x)); li.appendChild(sp); }
+        else li.appendChild(document.createTextNode(x));
+      }
       if (!has) li.className = "soon";
       ul.appendChild(li);
       if (p.monthlyTokens && pm) {
