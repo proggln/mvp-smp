@@ -188,14 +188,8 @@ button{font:inherit}
 .art.banner{width:calc(100% + 64px);margin:-34px -32px 0;border-radius:28px 28px 0 0;height:130px;object-fit:contain;background:#0081cc}
 .art.stamp{width:140px;height:92px;margin:-4px 0 -4px;object-fit:contain;object-position:left center}
 .card h2{position:relative;font:800 1.7rem/1.1 var(--font-head)}
-.nrow{display:flex;align-items:center;justify-content:space-between;gap:12px;min-width:0}
-.card:not(.tcard) h2{min-height:48px;display:flex;align-items:center}
-.tokbox{display:flex;align-items:center;gap:10px;padding:6px 14px 6px 10px;border-radius:12px;background:rgba(40,22,70,.55);border:1px solid rgba(160,107,255,.28);height:48px}
-.tb-t{display:flex;flex-direction:column;gap:2px}
-.tb-t b{font:400 1.15rem/1 "Monocraft",monospace;color:#e6d6ff}
-.tb-t span{font-size:.68rem;color:#b9a3e0;white-space:nowrap}
-.tokbox img{width:40px;height:34px;object-fit:contain;image-rendering:pixelated}
-@media (max-width:420px){.tokbox{padding:6px 10px 6px 8px;gap:8px}.tokbox img{width:32px;height:28px}}
+.ptok .ptokimg{width:18px;height:18px;image-rendering:pixelated;vertical-align:-3px;margin-right:6px}
+.ptok b{font-weight:800;color:#d9c2ff}
 .price{position:relative;font:800 2.5rem/1 var(--font-head);color:#fff}
 .once{display:block;margin-top:6px;font:600 .82rem/1.3 var(--font-body,inherit);color:#9db6c9}
 .tfx{margin-top:8px;text-align:center}
@@ -523,6 +517,11 @@ const CONFIG = {
       } else li.appendChild(document.createTextNode(x));
       if (!has) li.className = "soon";
       ul.appendChild(li);
+      if (p.monthlyTokens && pm) {
+        const tl = el("li", "ptok"); tl.appendChild(svg(CHECK, false));
+        const sp = el("span", "ptxt"), ti = document.createElement("img"); ti.className = "ptokimg"; ti.alt = ""; ti.src = "../img/tokens/token.png";
+        sp.append(ti, el("b", "", "+" + p.monthlyTokens), document.createTextNode(" MVP Tokens every month")); tl.appendChild(sp); ul.appendChild(tl);
+      }
     });
     return ul;
   }
@@ -704,13 +703,6 @@ const CONFIG = {
       const a = el("div", "amount");
       if (p.base) a.appendChild(el("s", "base", p.base));
       a.appendChild(document.createTextNode(p.amount)); a.appendChild(el("small", "", p.cat === "tokens" ? p.name : "MVP Coins")); c.appendChild(a);
-    }
-    else if (p.monthlyTokens) {
-      const row = el("div", "nrow"); row.appendChild(el("h2", "", p.name));
-      const tb = el("div", "tokbox"); const tx = el("div", "tb-t");
-      tx.append(el("b", "", "+" + p.monthlyTokens), el("span", "", "Tokens every month"));
-      const ti = el("img"); ti.src = "../img/tokens/stack-" + (p.tokPack || 2) + ".png"; ti.alt = ""; ti.decoding = "async";
-      tb.append(ti, tx); row.appendChild(tb); c.appendChild(row);
     }
     else c.appendChild(el("h2", "", p.name));
     c.append(priceEl(p), perksList(p), buyButton(p));
