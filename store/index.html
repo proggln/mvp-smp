@@ -274,6 +274,10 @@ button{font:inherit}
 .tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:26px;animation:rise .9s cubic-bezier(.2,.8,.2,1) .18s both}
 .tab{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(6,16,28,.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#cfe3f1;font-family:inherit;font-size:.92rem;font-weight:600;cursor:pointer;transition:background .2s,border-color .2s,color .2s,transform .15s}
 .tab svg{width:17px;height:17px}
+.tab .tabimg{width:22px;height:22px;flex:none;border-radius:6px;object-fit:cover}
+.tab .tabpx{image-rendering:pixelated;border-radius:0}
+.tab .tablogo{display:inline-block;width:26px;height:16px;border-radius:0;background:var(--logo) center/contain no-repeat}
+.tab .tabrank{box-shadow:0 0 0 1px rgba(255,255,255,.15)}
 .tab:hover{transform:translateY(-1px);border-color:rgba(111,208,255,.55);color:#fff}
 .tab[aria-selected="true"]{color:#fff;border-color:transparent;background:linear-gradient(180deg,#22a6f2,#0081cc);box-shadow:0 6px 22px rgba(0,129,204,.45),inset 0 1px 0 rgba(255,255,255,.3)}
 .hero-wrap{width:100%}
@@ -427,9 +431,9 @@ const CONFIG = {
     { cat: "tokens", id: "tokens-1560", pack: 4, bonusPct: 30, name: "1,560 Tokens", image: "token", color: "#a06bff", price: 19.99, amount: "1,560", extra: "360", chip: "Best Value", perks: [], checkout: "" }
   ],
   categories: [
-    { id: "all", label: "All", icon: "grid" },
-    { id: "ranks", label: "Ranks", icon: "crown" },
-    { id: "tokens", label: "Tokens", icon: "coin" }
+    { id: "all", label: "All", icon: "grid", img: "logo" },
+    { id: "ranks", label: "Ranks", icon: "crown", img: "rank" },
+    { id: "tokens", label: "Tokens", icon: "coin", img: "../img/tokens/token.png" }
   ]
 };
 
@@ -804,7 +808,11 @@ const CONFIG = {
   CONFIG.categories.forEach((c, i) => {
     const b = el("button", "tab"); b.type = "button"; b.setAttribute("role", "tab");
     b.setAttribute("aria-selected", i === 0 ? "true" : "false"); b.dataset.cat = c.id;
-    b.appendChild(icon(c.icon)); b.appendChild(document.createTextNode(c.label));
+    if (c.img === "logo") { const lg = el("span", "tabimg tablogo"); b.appendChild(lg); }
+    else if (c.img === "rank") { const ri = el("img", "tabimg tabrank"); ri.src = IMAGES.mvpplus; ri.alt = ""; b.appendChild(ri); }
+    else if (c.img) { const ti = el("img", "tabimg tabpx"); ti.src = c.img; ti.alt = ""; b.appendChild(ti); }
+    else b.appendChild(icon(c.icon));
+    b.appendChild(document.createTextNode(c.label));
     b.addEventListener("click", () => {
       $$(".tab", tabsEl).forEach((x) => x.setAttribute("aria-selected", String(x === b)));
       render(c.id);
