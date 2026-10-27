@@ -515,7 +515,7 @@ const CONFIG = {
         im.className = "ptag"; im.alt = "[" + pm[1] + "]"; im.src = "../img/prefix/" + (pm[1] === "MVP+" ? "mvpplus" : pm[1].toLowerCase()) + ".png";
         span.appendChild(im); span.appendChild(document.createTextNode(x.slice(pm[0].length))); li.appendChild(span);
       } else {
-        const ic = /homes$/i.test(x) ? "home" : /^(Jobs|Daily) bonus/i.test(x) ? "baltop" : /^Gift/i.test(x) ? "daily" : /coins on death/i.test(x) ? "skull" : "";
+        const ic = /homes$/i.test(x) ? "home" : /^(Jobs|Daily) bonus/i.test(x) ? "baltop" : /^Gift/i.test(x) ? "daily" : /coins on death/i.test(x) ? "skull" : /join message/i.test(x) ? "comments" : "";
         if (ic) { const sp = el("span", "ptxt"), im = document.createElement("img"); im.className = "ptokimg"; im.alt = ""; im.src = "../img/ic/" + ic + ".png"; sp.append(im, document.createTextNode(x)); li.appendChild(sp); }
         else li.appendChild(document.createTextNode(x));
       }
