@@ -6,7 +6,7 @@ window.LEGAL = {
   country:  "Lithuania",     // for the governing law, e.g. Lithuania
   retention:"10 years",              // Lithuanian accounting rules: keep order/accounting records 10 years (confirm with your accountant)
   portal:   "https://checkout.tebex.io/payment-history/",   // Tebex customer page for subscriptions
-  updated:  "22 October 2026"
+  updated:  "27 October 2026"
 };
 (function () {
   function fill() {
