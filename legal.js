@@ -2,7 +2,6 @@
 window.LEGAL = {
   operator: "[Vardenis Pavardenis], individuali veikla (pažyma Nr. [XXXXXX])",   // seller shown ONLY on Terms, Privacy and Refunds. Replace the [brackets] with real data once
   address:  "[street, city, postal code]",   // EU law: a seller must show a postal address (can be a business address, not necessarily your home)
-  controller: "Natalja Želionienė",           // GDPR data controller shown on the Privacy Policy (name + e-mail, no home address)
   email:    "info@playmvp.org",               // public support email
   country:  "Lithuania",     // for the governing law, e.g. Lithuania
   retention:"10 years",              // Lithuanian accounting rules: keep order/accounting records 10 years (confirm with your accountant)
