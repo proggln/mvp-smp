@@ -190,6 +190,7 @@ button{font:inherit}
 .card h2{position:relative;font:800 1.7rem/1.1 var(--font-head)}
 .price{position:relative;font:800 2.5rem/1 var(--font-head);color:#fff}
 .once{display:block;margin-top:6px;font:600 .82rem/1.3 var(--font-body,inherit);color:#9db6c9}
+.tfx{margin-top:8px;text-align:center}
 .fx{display:block;margin-top:6px;font:500 .8rem/1 var(--font-body,inherit);color:var(--muted)}
 .fxbar{position:relative;z-index:40;display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 18px;font-size:.82rem;color:var(--muted);animation:rise .9s cubic-bezier(.2,.8,.2,1) .22s both}
 .fxbtn{display:inline-flex;align-items:center;gap:8px;padding:8px 14px 8px 16px;border-radius:999px;background:rgba(6,16,28,.6);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:#fff;font:700 .85rem/1 var(--font-head,inherit);letter-spacing:.04em;cursor:pointer;transition:border-color .2s,box-shadow .2s,background .2s}
@@ -491,7 +492,15 @@ const CONFIG = {
   const grid = $("#grid"), tabsEl = $("#tabs");
   let anyOff = false;
   const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
-  const priceText = (p) => (p.price != null && p.price !== "" ? (typeof p.price === "number" ? CONFIG.currency + p.price.toFixed(2) : String(p.price)) : "");
+  // prices: shown in the visitor's currency (converted), payment is always in EUR
+  const eurText = (v) => CONFIG.currency + Number(v).toFixed(2);
+  const fxOn = () => !!(window.__fx && window.__fx.cur && window.__fx.cur !== "EUR" && window.__fx.rate);
+  function money(v) {
+    if (!fxOn()) return eurText(v);
+    const x = Number(v) * window.__fx.rate;
+    try { return new Intl.NumberFormat(undefined, { style: "currency", currency: window.__fx.cur, currencyDisplay: "narrowSymbol", maximumFractionDigits: x >= 100 ? 0 : 2 }).format(x); } catch (e) { return window.__fx.cur + " " + x.toFixed(2); }
+  }
+  const priceText = (p) => (p.price != null && p.price !== "" ? (typeof p.price === "number" ? money(p.price) : String(p.price)) : "");
 
   function perksList(p) {
     const ul = el("ul", "perks"), has = p.perks && p.perks.length;
@@ -578,12 +587,12 @@ const CONFIG = {
     const p = (p0.once && plan === "once") ? Object.assign({}, p0, { price: p0.once, period: "", oneTime: true, name: p0.name + " (30 days)" }) : p0;
     let saved = ""; try { saved = localStorage.getItem(SKEY) || ""; } catch (e) {}
     if (linkedNick) saved = linkedNick;
-    const plans = p0.once ? '<div class="bm-plans"><button type="button" class="bm-plan' + (plan === "monthly" ? " on" : "") + '" data-plan="monthly"><b>Monthly</b><span>' + esc(CONFIG.currency + p0.price.toFixed(2)) + ' / month</span><small>Auto-renews, cancel any time. Cheapest.</small></button>' +
-      '<button type="button" class="bm-plan' + (plan === "once" ? " on" : "") + '" data-plan="once"><b>30 days</b><span>' + esc(CONFIG.currency + p0.once.toFixed(2)) + ' once</span><small>No renewal. Best as a gift.</small></button></div>' : "";
+    const plans = p0.once ? '<div class="bm-plans"><button type="button" class="bm-plan' + (plan === "monthly" ? " on" : "") + '" data-plan="monthly"><b>Monthly</b><span>' + esc(money(p0.price)) + ' / month</span><small>Auto-renews, cancel any time. Cheapest.</small></button>' +
+      '<button type="button" class="bm-plan' + (plan === "once" ? " on" : "") + '" data-plan="once"><b>30 days</b><span>' + esc(money(p0.once)) + ' once</span><small>No renewal. Best as a gift.</small></button></div>' : "";
     const box = shell('<h3>Who is it for?</h3><div class="bm-sub">Type the Minecraft nickname that gets the purchase. It can be yours or a friend\'s.</div>' + plans + summary(p) +
       '<label for="bmn">Minecraft nickname</label><div class="bm-nick"><img class="bm-head" alt="" src="https://mc-heads.net/avatar/MHF_Steve/64"><input id="bmn" maxlength="16" autocomplete="off" spellcheck="false" value="' + esc(saved) + '" placeholder="Steve"></div>' +
-      '<label class="bm-agree"><input type="checkbox" id="bmc"><span>I agree to the <a href="../terms/" target="_blank" rel="noopener">Terms</a> and <a href="../refunds/" target="_blank" rel="noopener">Refund Policy</a> (<a href="../seller/" target="_blank" rel="noopener">Seller information</a>), ' + (p.period ? 'and I ask the rank to start right away. I understand this is a <b>monthly subscription</b> that renews automatically at ' + esc(priceText(p)) + ' per month until I cancel it, and that if I withdraw within 14 days I pay for the days already used.' : (p.oneTime ? 'and I ask the rank to start right away. The rank lasts 30 days and does not renew. I understand that if I withdraw within 14 days I pay for the days already used.' : 'and to immediate delivery of these digital items. I understand that once they are delivered I lose the right of withdrawal.')) + '</span></label>' +
-      '<button class="buy bm-btn" type="button">Pay ' + esc(priceText(p)) + (p.period ? ' / month' : '') + '</button><div class="bm-msg"></div><div class="bm-sub" style="margin-top:10px;font-size:.8rem">Secure payment by Tebex. Card, PayPal and more. No account needed.</div>');
+      '<label class="bm-agree"><input type="checkbox" id="bmc"><span>I agree to the <a href="../terms/" target="_blank" rel="noopener">Terms</a> and <a href="../refunds/" target="_blank" rel="noopener">Refund Policy</a> (<a href="../seller/" target="_blank" rel="noopener">Seller information</a>), ' + (p.period ? 'and I ask the rank to start right away. I understand this is a <b>monthly subscription</b> that renews automatically at ' + esc(eurText(p.price)) + ' (EUR) per month until I cancel it, and that if I withdraw within 14 days I pay for the days already used.' : (p.oneTime ? 'and I ask the rank to start right away. The rank lasts 30 days and does not renew. I understand that if I withdraw within 14 days I pay for the days already used.' : 'and to immediate delivery of these digital items. I understand that once they are delivered I lose the right of withdrawal.')) + '</span></label>' +
+      '<button class="buy bm-btn" type="button">Pay ' + esc(priceText(p)) + (p.period ? ' / month' : '') + '</button>' + (fxOn() ? '<div class="bm-sub" style="margin-top:8px;font-size:.8rem;text-align:center">You are charged ' + esc(eurText(p.price)) + ' (EUR). Your bank converts it.</div>' : '') + '<div class="bm-msg"></div><div class="bm-sub" style="margin-top:10px;font-size:.8rem">Secure payment by Tebex. Card, PayPal and more. No account needed.</div>');
     box.querySelectorAll(".bm-plan").forEach((b) => b.addEventListener("click", () => { const v = box.querySelector("#bmn").value; try { localStorage.setItem(SKEY, v.trim()); } catch (e) {} stepNick(p0, b.dataset.plan); }));
     const inp = box.querySelector("#bmn"), msg = box.querySelector(".bm-msg"), btn = box.querySelector(".bm-btn"), agree = box.querySelector("#bmc"), head = box.querySelector(".bm-head");
     let ht = null;
@@ -646,8 +655,8 @@ const CONFIG = {
       if (p.was != null) price.appendChild(el("s", "was", CONFIG.currency + p.was.toFixed(2)));
       price.appendChild(document.createTextNode(txt));
       if (p.period) price.appendChild(el("small", "per", " " + p.period));
-      if (p.once) price.appendChild(el("span", "once", "or " + CONFIG.currency + p.once.toFixed(2) + " for 30 days, no renewal"));
-      if (typeof p.price === "number") { const fx = el("span", "fx"); fx.dataset.eur = p.price; price.appendChild(fx); }
+      if (p.once) price.appendChild(el("span", "once", "or " + money(p.once) + " for 30 days, no renewal"));
+      if (typeof p.price === "number" && fxOn()) price.appendChild(el("span", "fx", "Charged in EUR: " + eurText(p.price)));
     } else price.appendChild(el("small", "", "Price coming soon"));
     return price;
   }
@@ -671,6 +680,7 @@ const CONFIG = {
     c.appendChild(el("div", "tsp"));
     const b = buyButton(p);
     if (!b.disabled) { b.textContent = priceText(p) || "Buy"; b.classList.add("tbuy"); }
+    if (fxOn() && typeof p.price === "number") c.appendChild(el("span", "fx tfx", "Charged in EUR: " + eurText(p.price)));
     c.appendChild(b);
     return c;
   }
@@ -815,10 +825,12 @@ const CONFIG = {
     b.appendChild(document.createTextNode(c.label));
     b.addEventListener("click", () => {
       $$(".tab", tabsEl).forEach((x) => x.setAttribute("aria-selected", String(x === b)));
-      render(c.id);
+      curCat = c.id; render(c.id);
     });
     tabsEl.appendChild(b);
   });
+  let curCat = "all";
+  window.__rerender = () => render(curCat);
   render("all");
 
   /* ---------- Extras: time-of-day tint, pixel cursor trail, logo easter egg ---------- */
@@ -992,13 +1004,12 @@ const CONFIG = {
   document.addEventListener("click", function (e) { if (!menu.contains(e.target)) setOpen(false); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") setOpen(false); });
   build();
+  var lastKey = "";
   function paint() {
-    document.querySelectorAll(".fx").forEach(function (n) {
-      if (cur === "EUR" || !rates || !rates[cur]) { if (n.textContent) n.textContent = ""; return; }
-      var v = parseFloat(n.dataset.eur) * rates[cur], t;
-      try { t = new Intl.NumberFormat(undefined, { style: "currency", currency: cur, currencyDisplay: "narrowSymbol", maximumFractionDigits: v >= 100 ? 0 : 2 }).format(v); } catch (e) { t = cur + " " + v.toFixed(2); }
-      var out = "≈ " + t; if (n.textContent !== out) n.textContent = out;
-    });
+    var r = cur === "EUR" ? 1 : (rates && rates[cur]) || 0;
+    window.__fx = { cur: r ? cur : "EUR", rate: r || 1 };
+    var key = window.__fx.cur + ":" + window.__fx.rate;
+    if (key !== lastKey) { lastKey = key; if (window.__rerender) window.__rerender(); }
   }
   var cached = null; try { cached = JSON.parse(get("fxRates3") || "null"); } catch (e) {}
   if (cached && cached.t && Date.now() - cached.t < 6 * 3600e3) { rates = cached.r; }
@@ -1012,7 +1023,6 @@ const CONFIG = {
       });
   }
   if (!rates) load();
-  new MutationObserver(paint).observe(document.getElementById("grid"), { childList: true, subtree: true });
   paint();
 })();
 </script>
