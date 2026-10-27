@@ -809,7 +809,7 @@ const CONFIG = {
     const b = el("button", "tab"); b.type = "button"; b.setAttribute("role", "tab");
     b.setAttribute("aria-selected", i === 0 ? "true" : "false"); b.dataset.cat = c.id;
     if (c.img === "logo") { const lg = el("span", "tabimg tablogo"); b.appendChild(lg); }
-    else if (c.img === "rank") { const ri = el("img", "tabimg tabrank"); ri.src = IMAGES.mvpplus; ri.alt = ""; b.appendChild(ri); }
+    else if (c.img === "rank") { const ri = el("img", "tabimg tabrank"); ri.src = "../img/ic/tab-ranks.png"; ri.alt = ""; b.appendChild(ri); }
     else if (c.img) { const ti = el("img", "tabimg tabpx"); ti.src = c.img; ti.alt = ""; b.appendChild(ti); }
     else b.appendChild(icon(c.icon));
     b.appendChild(document.createTextNode(c.label));
