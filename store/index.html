@@ -195,8 +195,15 @@ button{font:inherit}
 .fxbtn:hover,.fxbtn[aria-expanded=true]{border-color:rgba(76,195,255,.6);box-shadow:0 0 0 3px rgba(76,195,255,.14),0 8px 24px rgba(0,129,204,.25)}
 .fxbtn svg{width:14px;height:14px;transition:transform .2s}
 .fxbtn[aria-expanded=true] svg{transform:rotate(180deg)}
-.fxmenu{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);z-index:30;display:none;grid-template-columns:repeat(5,1fr);gap:6px;width:min(340px,calc(100vw - 36px));padding:10px;border-radius:20px;background:rgba(6,16,28,.98);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 18px 50px rgba(0,0,0,.55)}
-.fxmenu.open{display:grid}
+.fxmenu{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);z-index:30;display:none;width:min(300px,calc(100vw - 36px));padding:10px;border-radius:20px;background:rgba(6,16,28,.98);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 18px 50px rgba(0,0,0,.55)}
+.fxmenu.open{display:block}
+.fxmenu .fxgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:6px}
+.fxmenu .fxsearch{width:100%;margin-top:10px;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#fff;font:600 .85rem/1.2 inherit;outline:none}
+.fxmenu .fxsearch:focus{border-color:rgba(76,195,255,.6)}
+.fxmenu .fxfound{display:flex;flex-direction:column;gap:4px;margin-top:6px}
+.fxmenu .fxfound button{flex-direction:row;justify-content:flex-start;gap:10px;padding:8px 10px;text-align:left}
+.fxmenu .fxfound button span{font:500 .78rem/1.2 inherit;opacity:.8}
+.fxmenu .fxnone{padding:6px 4px;font-size:.78rem;color:var(--muted)}
 .mgl{text-align:center;margin:-6px 0 20px;font-size:.82rem;color:var(--muted);animation:rise .9s cubic-bezier(.2,.8,.2,1) .26s both}.mgl a{color:var(--ice,#6fd0ff);font-weight:600;text-decoration:none;border-bottom:1px solid rgba(111,208,255,.35)}.mgl a:hover{border-color:var(--ice,#6fd0ff)}
 
 .fxmenu button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0;border-radius:12px;border:1px solid transparent;background:rgba(255,255,255,.05);color:#cfe3f1;font:600 .78rem/1 var(--font-head,inherit);letter-spacing:.03em;cursor:pointer;transition:background .15s,color .15s,border-color .15s}
@@ -367,7 +374,7 @@ button{font:inherit}
     <h1>Store</h1>
   </header>
   <div class="tabs" id="tabs" role="tablist" aria-label="Store categories"></div>
-  <div class="fxbar"><span>Show approx. price in</span><button type="button" class="fxbtn" id="fxbtn" aria-haspopup="listbox" aria-expanded="false"><span id="fxcur">€ EUR</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8l5 5 5-5"/></svg></button><div class="fxmenu" id="fxmenu" role="listbox" aria-label="Currency"></div></div>
+  <div class="fxbar"><span>Your currency</span><button type="button" class="fxbtn" id="fxbtn" aria-haspopup="listbox" aria-expanded="false"><span id="fxcur">€ EUR</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8l5 5 5-5"/></svg></button><div class="fxmenu" id="fxmenu" role="listbox" aria-label="Currency"></div></div>
   <div class="mgl">Already have a rank? <a href="../manage/">Manage subscription</a></div>
   <div class="sections" id="grid" aria-live="polite"></div>
   <ol class="steps" aria-label="How it works">
@@ -913,41 +920,78 @@ const CONFIG = {
   requestAnimationFrame(frame);
 })();
 
-/* ---------- Approximate prices in other currencies (display only) ---------- */
+/* ---------- Approximate prices in other currencies (display only) ----------
+   The menu shows the most popular currencies + the visitor's own one (found from the browser language).
+   Any other currency can be typed in the search box (all currencies of the rate service work). */
 (function () {
-  var LIST = ["EUR","USD","GBP","PLN","CAD","AUD","CHF","SEK","NOK","DKK","CZK","HUF","RON","TRY","BRL","UAH","RUB","KZT","JPY","INR"];
-  var SYM = {EUR:"€",USD:"$",GBP:"£",PLN:"zł",CAD:"C$",AUD:"A$",CHF:"Fr",SEK:"kr",NOK:"kr",DKK:"kr",CZK:"Kč",HUF:"Ft",RON:"lei",TRY:"₺",BRL:"R$",UAH:"₴",RUB:"₽",KZT:"₸",JPY:"¥",INR:"₹"};
-  var REG = {US:"USD",GB:"GBP",PL:"PLN",CA:"CAD",AU:"AUD",CH:"CHF",SE:"SEK",NO:"NOK",DK:"DKK",CZ:"CZK",TR:"TRY",BR:"BRL",UA:"UAH",RU:"RUB",HU:"HUF",RO:"RON",KZ:"KZT",JP:"JPY",IN:"INR"};
+  var POP = ["EUR","USD","GBP","PLN"];
+  var REG = {US:"USD",GB:"GBP",PL:"PLN",CA:"CAD",AU:"AUD",NZ:"NZD",CH:"CHF",SE:"SEK",NO:"NOK",DK:"DKK",IS:"ISK",CZ:"CZK",HU:"HUF",RO:"RON",BG:"BGN",RS:"RSD",TR:"TRY",UA:"UAH",RU:"RUB",BY:"BYN",KZ:"KZT",GE:"GEL",AM:"AMD",AZ:"AZN",MD:"MDL",
+    BR:"BRL",AR:"ARS",MX:"MXN",CL:"CLP",CO:"COP",PE:"PEN",JP:"JPY",CN:"CNY",KR:"KRW",IN:"INR",ID:"IDR",MY:"MYR",PH:"PHP",TH:"THB",VN:"VND",SG:"SGD",HK:"HKD",TW:"TWD",IL:"ILS",AE:"AED",SA:"SAR",EG:"EGP",ZA:"ZAR",NG:"NGN",PK:"PKR",BD:"BDT",
+    LT:"EUR",LV:"EUR",EE:"EUR",DE:"EUR",FR:"EUR",ES:"EUR",IT:"EUR",NL:"EUR",BE:"EUR",AT:"EUR",IE:"EUR",FI:"EUR",PT:"EUR",GR:"EUR",SK:"EUR",SI:"EUR",HR:"EUR",LU:"EUR",MT:"EUR",CY:"EUR"};
   var rates = null, cur = "EUR", btn = document.getElementById("fxbtn"), menu = document.getElementById("fxmenu"), lab = document.getElementById("fxcur");
   function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function put(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function sym(c) { try { var p = new Intl.NumberFormat("en", { style: "currency", currency: c, currencyDisplay: "narrowSymbol" }).formatToParts(0); for (var i = 0; i < p.length; i++) if (p[i].type === "currency") return p[i].value; } catch (e) {} return c; }
+  function cname(c) { try { return new Intl.DisplayNames(["en"], { type: "currency" }).of(c); } catch (e) { return c; } }
+  var local = "";
+  (navigator.languages || [navigator.language || ""]).some(function (l) { var m = String(l).match(/-([A-Za-z]{2})\b/); if (m && REG[m[1].toUpperCase()]) { local = REG[m[1].toUpperCase()]; return true; } return false; });
   var saved = get("fxCur");
-  if (saved && LIST.indexOf(saved) >= 0) cur = saved;
-  else { var m = (navigator.language || "").match(/-([A-Za-z]{2})$/); if (m && REG[m[1].toUpperCase()]) cur = REG[m[1].toUpperCase()]; }
-  function mark() { lab.textContent = SYM[cur] + " " + cur; menu.querySelectorAll("button").forEach(function (b) { var on = b.dataset.c === cur; b.classList.toggle("on", on); b.setAttribute("aria-selected", on); }); }
-  function setOpen(o) { menu.classList.toggle("open", o); btn.setAttribute("aria-expanded", o); }
-  LIST.forEach(function (c) { var b = document.createElement("button"); b.type = "button"; b.dataset.c = c; b.setAttribute("role", "option"); b.innerHTML = "<b>" + SYM[c] + "</b><i>" + c + "</i>"; b.title = c; b.addEventListener("click", function () { cur = c; put("fxCur", cur); mark(); paint(); setOpen(false); }); menu.appendChild(b); });
+  if (saved && /^[A-Z]{3}$/.test(saved)) cur = saved; else if (local) cur = local;
+  function list() { var l = POP.slice(); if (local && l.indexOf(local) < 0) l.push(local); if (cur && l.indexOf(cur) < 0) l.push(cur); return l; }
+  function setOpen(o) { menu.classList.toggle("open", o); btn.setAttribute("aria-expanded", o); if (o) { var q = menu.querySelector("input"); if (q) { q.value = ""; filter(""); } } }
+  function choose(c) { cur = c; put("fxCur", cur); build(); paint(); setOpen(false); }
+  var grid, search, found;
+  function build() {
+    lab.textContent = sym(cur) + " " + cur;
+    menu.textContent = "";
+    grid = document.createElement("div"); grid.className = "fxgrid";
+    list().forEach(function (c) {
+      var b = document.createElement("button"); b.type = "button"; b.dataset.c = c; b.setAttribute("role", "option"); b.title = cname(c);
+      var bb = document.createElement("b"); bb.textContent = sym(c); var ii = document.createElement("i"); ii.textContent = c; b.append(bb, ii);
+      var on = c === cur; b.classList.toggle("on", on); b.setAttribute("aria-selected", on);
+      b.addEventListener("click", function () { choose(c); });
+      grid.appendChild(b);
+    });
+    search = document.createElement("input"); search.className = "fxsearch"; search.type = "text"; search.placeholder = "Other currency (e.g. SEK, Yen)"; search.setAttribute("aria-label", "Find another currency");
+    search.addEventListener("click", function (e) { e.stopPropagation(); });
+    search.addEventListener("input", function () { filter(search.value); });
+    search.addEventListener("keydown", function (e) { if (e.key === "Enter") { var f = found && found.querySelector("button"); if (f) f.click(); } });
+    found = document.createElement("div"); found.className = "fxfound";
+    menu.append(grid, search, found);
+  }
+  function filter(q) {
+    if (!found) return;
+    found.textContent = ""; q = String(q || "").trim().toLowerCase();
+    if (!q || !rates) return;
+    var hits = Object.keys(rates).filter(function (c) { return /^[A-Z]{3}$/.test(c) && (c.toLowerCase().indexOf(q) === 0 || cname(c).toLowerCase().indexOf(q) >= 0); }).slice(0, 6);
+    hits.forEach(function (c) {
+      var b = document.createElement("button"); b.type = "button";
+      var bb = document.createElement("b"); bb.textContent = c; var sp = document.createElement("span"); sp.textContent = cname(c);
+      b.append(bb, sp); b.addEventListener("click", function (e) { e.stopPropagation(); choose(c); }); found.appendChild(b);
+    });
+    if (!hits.length) { var n = document.createElement("div"); n.className = "fxnone"; n.textContent = "No currency found."; found.appendChild(n); }
+  }
   btn.addEventListener("click", function (e) { e.stopPropagation(); setOpen(!menu.classList.contains("open")); });
   document.addEventListener("click", function (e) { if (!menu.contains(e.target)) setOpen(false); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") setOpen(false); });
-  mark();
+  build();
   function paint() {
     document.querySelectorAll(".fx").forEach(function (n) {
       if (cur === "EUR" || !rates || !rates[cur]) { if (n.textContent) n.textContent = ""; return; }
       var v = parseFloat(n.dataset.eur) * rates[cur], t;
-      try { t = new Intl.NumberFormat(undefined, { style: "currency", currency: cur, currencyDisplay: "narrowSymbol" }).format(v); } catch (e) { t = SYM[cur] + v.toFixed(2); }
-      var out = "\u2248 " + t + " (approx.)"; if (n.textContent !== out) n.textContent = out;
+      try { t = new Intl.NumberFormat(undefined, { style: "currency", currency: cur, currencyDisplay: "narrowSymbol", maximumFractionDigits: v >= 100 ? 0 : 2 }).format(v); } catch (e) { t = cur + " " + v.toFixed(2); }
+      var out = "≈ " + t; if (n.textContent !== out) n.textContent = out;
     });
   }
-  var cached = null; try { cached = JSON.parse(get("fxRates2") || "null"); } catch (e) {}
+  var cached = null; try { cached = JSON.parse(get("fxRates3") || "null"); } catch (e) {}
   if (cached && cached.t && Date.now() - cached.t < 6 * 3600e3) { rates = cached.r; }
-  function ok(r) { rates = r; put("fxRates2", JSON.stringify({ t: Date.now(), r: r })); paint(); }
+  function ok(r) { rates = r; put("fxRates3", JSON.stringify({ t: Date.now(), r: r })); paint(); }
   function load() {
     fetch("https://open.er-api.com/v6/latest/EUR").then(function (r) { return r.json(); })
-      .then(function (j) { if (j && j.rates && j.rates.RUB) ok(j.rates); else throw 0; })
+      .then(function (j) { if (j && j.rates && j.rates.USD) ok(j.rates); else throw 0; })
       .catch(function () {
         fetch("https://api.frankfurter.dev/v1/latest?base=EUR").then(function (r) { return r.json(); })
-          .then(function (j) { if (j && j.rates) ok(j.rates); }).catch(function () {});
+          .then(function (j) { if (j && j.rates) { j.rates.EUR = 1; ok(j.rates); } }).catch(function () {});
       });
   }
   if (!rates) load();
