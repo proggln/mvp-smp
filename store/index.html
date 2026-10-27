@@ -189,6 +189,7 @@ button{font:inherit}
 .art.stamp{width:140px;height:92px;margin:-4px 0 -4px;object-fit:contain;object-position:left center}
 .card h2{position:relative;font:800 1.7rem/1.1 var(--font-head)}
 .price{position:relative;font:800 2.5rem/1 var(--font-head);color:#fff}
+.once{display:block;margin-top:6px;font:600 .82rem/1.3 var(--font-body,inherit);color:#9db6c9}
 .fx{display:block;margin-top:6px;font:500 .8rem/1 var(--font-body,inherit);color:var(--muted)}
 .fxbar{position:relative;z-index:40;display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 18px;font-size:.82rem;color:var(--muted);animation:rise .9s cubic-bezier(.2,.8,.2,1) .22s both}
 .fxbtn{display:inline-flex;align-items:center;gap:8px;padding:8px 14px 8px 16px;border-radius:999px;background:rgba(6,16,28,.6);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:#fff;font:700 .85rem/1 var(--font-head,inherit);letter-spacing:.04em;cursor:pointer;transition:border-color .2s,box-shadow .2s,background .2s}
@@ -249,6 +250,7 @@ button{font:inherit}
 .bm .bm-code{margin:20px 0;padding:26px 16px;border-radius:20px;text-align:center;background:rgba(76,195,255,.1);border:2px dashed rgba(76,195,255,.55);font:800 3rem/1 ui-monospace,Consolas,monospace;letter-spacing:.28em;color:#9be0ff;user-select:all}
 .bm .bm-cmd{padding:18px 20px;border-radius:16px;background:rgba(3,10,20,.75);font:700 1.3rem ui-monospace,Consolas,monospace;color:#ffd66b;word-break:break-all;user-select:all}
 .bm .bm-msg{margin-top:16px;font-size:1.02rem;color:#ffb3b3;min-height:1.3em}
+.bm .bm-plans{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 4px}.bm .bm-plan{display:flex;flex-direction:column;gap:3px;text-align:left;padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:#cfe3f1;cursor:pointer;font:inherit}.bm .bm-plan b{color:#fff;font-size:.98rem}.bm .bm-plan span{font-weight:700;color:#ffd166}.bm .bm-plan small{font-size:.74rem;color:#9db6c9;line-height:1.3}.bm .bm-plan.on{border-color:#4cc3ff;background:rgba(76,195,255,.12);box-shadow:0 0 0 3px rgba(76,195,255,.15)}
 .bm .bm-agree{display:flex;gap:12px;align-items:flex-start;margin-top:18px;font-size:.92rem;line-height:1.5;color:#b9cfe0;cursor:pointer;text-transform:none;letter-spacing:0;font-weight:400}
 .bm .bm-agree input{width:22px;height:22px;flex:none;margin-top:2px;padding:0;accent-color:#2ea2ea;font-size:1rem}
 .bm .bm-agree a{color:#6fd0ff;text-decoration:underline}
@@ -412,11 +414,11 @@ const CONFIG = {
   // image: "banner" or "stamp" (your brand artwork)   featured: true = big card on top   chip: small badge text
   products: [
     // Ranks
-    { cat: "ranks", id: "vip", name: "VIP",  image: "vip", color: "#f2c94c", price: 1.99, period: "/ month", chip: "Starter",
+    { cat: "ranks", id: "vip", name: "VIP",  image: "vip", color: "#f2c94c", price: 1.99, once: 2.49, period: "/ month", chip: "Starter",
       perks: ["[VIP] gold prefix in chat & tab", "5 homes", "+10% income from /jobs", "+10% daily reward", "Lose only 7% of coins on death (instead of 10%)", "Gift: 3x Small Protection Blocks (3 days of upkeep included)"], checkout: "" },
-    { cat: "ranks", id: "mvp", name: "MVP",  image: "mvp", color: "#2ea2ea", price: 4.99, period: "/ month",
+    { cat: "ranks", id: "mvp", name: "MVP",  image: "mvp", color: "#2ea2ea", price: 4.99, once: 5.99, period: "/ month",
       perks: ["[MVP] blue prefix in chat & tab", "12 homes", "+25% income from /jobs", "+25% daily reward", "Lose only 5% of coins on death (instead of 10%)", "+100 MVP Tokens every month", "Gift: 3x Large Protection Blocks (3 days of upkeep included)"], checkout: "" },
-    { cat: "ranks", id: "mvp-plus", name: "MVP+", image: "mvpplus", color: "#8a5cff", price: 6.99, period: "/ month", best: true, chip: "★ Best Value",
+    { cat: "ranks", id: "mvp-plus", name: "MVP+", image: "mvpplus", color: "#8a5cff", price: 6.99, once: 8.49, period: "/ month", best: true, chip: "★ Best Value",
       perks: ["[MVP+] pink prefix, the brightest in chat & tab", "25 homes", "+50% income from /jobs", "+50% daily reward", "Lose only 1% of coins on death (instead of 10%)", "+200 MVP Tokens every month", "Gift: 5x Large Protection Blocks (3 days of upkeep included)", "Special join message"], checkout: "" },
     // MVP Tokens (the bigger the pack, the bigger the bonus). Spent in the game with /tokens
     { cat: "tokens", id: "tokens-60", pack: 1, bonusPct: 0, name: "60 Tokens", image: "token", color: "#a06bff", price: 0.99, amount: "60", perks: [], checkout: "" },
@@ -516,6 +518,7 @@ const CONFIG = {
     if (!tebexPkgs) return null;
     const norm = (t) => String(t || "").toLowerCase().replace(/[^a-z0-9+]/g, "");
     if (p.tebexId) return tebexPkgs.find((x) => String(x.id) === String(p.tebexId)) || null;
+    if (p.oneTime) { const want = norm(p.name); return tebexPkgs.find((x) => { const n = norm(x.name); return n.indexOf("30") >= 0 && n.replace(/\(?30days?\)?|30/g, "").replace(/days?/g, "") === want; }) || null; }
     if (p.cat === "tokens") { const n = String(p.amount).replace(/[^0-9]/g, ""); return tebexPkgs.find((x) => String(x.name).replace(/[^0-9]/g, "") === n) || null; }
     return tebexPkgs.find((x) => norm(x.name) === norm(p.name)) || null;
   }
@@ -529,7 +532,7 @@ const CONFIG = {
       .then(j).then((b) => {
         const ident = b.data.ident;
         const body = { package_id: String(pk.id), quantity: 1 };
-        if (p.period) body.type = "subscription";
+        if (p.period && !p.oneTime) body.type = "subscription";
         return fetch(TBX + "/baskets/" + ident + "/packages", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }).then(j)
           .then((r) => (r.data && r.data.links && r.data.links.checkout) || (b.data.links && b.data.links.checkout));
       })
@@ -565,14 +568,19 @@ const CONFIG = {
   }
   const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   function summary(p) { return '<div class="bm-sum"><b>' + esc(p.name) + '</b><span>' + esc(priceText(p)) + (p.period ? ' <small style="font-weight:600;color:#9db6c9">' + esc(p.period) + '</small>' : '') + '</span></div>'; }
-  function stepNick(p) {
+  function stepNick(p0, plan) {
     if (poll) clearInterval(poll); poll = null;
+    plan = plan || "monthly";
+    const p = (p0.once && plan === "once") ? Object.assign({}, p0, { price: p0.once, period: "", oneTime: true, name: p0.name + " (30 days)" }) : p0;
     let saved = ""; try { saved = localStorage.getItem(SKEY) || ""; } catch (e) {}
     if (linkedNick) saved = linkedNick;
-    const box = shell('<h3>Who is it for?</h3><div class="bm-sub">Type the Minecraft nickname that gets the purchase. It can be yours or a friend\'s.</div>' + summary(p) +
+    const plans = p0.once ? '<div class="bm-plans"><button type="button" class="bm-plan' + (plan === "monthly" ? " on" : "") + '" data-plan="monthly"><b>Monthly</b><span>' + esc(CONFIG.currency + p0.price.toFixed(2)) + ' / month</span><small>Auto-renews, cancel any time. Cheapest.</small></button>' +
+      '<button type="button" class="bm-plan' + (plan === "once" ? " on" : "") + '" data-plan="once"><b>30 days</b><span>' + esc(CONFIG.currency + p0.once.toFixed(2)) + ' once</span><small>No renewal. Best as a gift.</small></button></div>' : "";
+    const box = shell('<h3>Who is it for?</h3><div class="bm-sub">Type the Minecraft nickname that gets the purchase. It can be yours or a friend\'s.</div>' + plans + summary(p) +
       '<label for="bmn">Minecraft nickname</label><div class="bm-nick"><img class="bm-head" alt="" src="https://mc-heads.net/avatar/MHF_Steve/64"><input id="bmn" maxlength="16" autocomplete="off" spellcheck="false" value="' + esc(saved) + '" placeholder="Steve"></div>' +
-      '<label class="bm-agree"><input type="checkbox" id="bmc"><span>I agree to the <a href="../terms/" target="_blank" rel="noopener">Terms</a> and <a href="../refunds/" target="_blank" rel="noopener">Refund Policy</a> (<a href="../seller/" target="_blank" rel="noopener">Seller information</a>), ' + (p.period ? 'and I ask the rank to start right away. I understand this is a <b>monthly subscription</b> that renews automatically at ' + esc(priceText(p)) + ' per month until I cancel it, and that if I withdraw within 14 days I pay for the days already used.' : 'and to immediate delivery of these digital items. I understand that once they are delivered I lose the right of withdrawal.') + '</span></label>' +
+      '<label class="bm-agree"><input type="checkbox" id="bmc"><span>I agree to the <a href="../terms/" target="_blank" rel="noopener">Terms</a> and <a href="../refunds/" target="_blank" rel="noopener">Refund Policy</a> (<a href="../seller/" target="_blank" rel="noopener">Seller information</a>), ' + (p.period ? 'and I ask the rank to start right away. I understand this is a <b>monthly subscription</b> that renews automatically at ' + esc(priceText(p)) + ' per month until I cancel it, and that if I withdraw within 14 days I pay for the days already used.' : (p.oneTime ? 'and I ask the rank to start right away. The rank lasts 30 days and does not renew. I understand that if I withdraw within 14 days I pay for the days already used.' : 'and to immediate delivery of these digital items. I understand that once they are delivered I lose the right of withdrawal.')) + '</span></label>' +
       '<button class="buy bm-btn" type="button">Pay ' + esc(priceText(p)) + (p.period ? ' / month' : '') + '</button><div class="bm-msg"></div><div class="bm-sub" style="margin-top:10px;font-size:.8rem">Secure payment by Tebex. Card, PayPal and more. No account needed.</div>');
+    box.querySelectorAll(".bm-plan").forEach((b) => b.addEventListener("click", () => { const v = box.querySelector("#bmn").value; try { localStorage.setItem(SKEY, v.trim()); } catch (e) {} stepNick(p0, b.dataset.plan); }));
     const inp = box.querySelector("#bmn"), msg = box.querySelector(".bm-msg"), btn = box.querySelector(".bm-btn"), agree = box.querySelector("#bmc"), head = box.querySelector(".bm-head");
     let ht = null;
     const showHead = () => { const n = inp.value.trim(); head.src = "https://mc-heads.net/avatar/" + (/^[A-Za-z0-9_]{3,16}$/.test(n) ? encodeURIComponent(n) : "MHF_Steve") + "/64"; };
@@ -634,6 +642,7 @@ const CONFIG = {
       if (p.was != null) price.appendChild(el("s", "was", CONFIG.currency + p.was.toFixed(2)));
       price.appendChild(document.createTextNode(txt));
       if (p.period) price.appendChild(el("small", "per", " " + p.period));
+      if (p.once) price.appendChild(el("span", "once", "or " + CONFIG.currency + p.once.toFixed(2) + " for 30 days, no renewal"));
       if (typeof p.price === "number") { const fx = el("span", "fx"); fx.dataset.eur = p.price; price.appendChild(fx); }
     } else price.appendChild(el("small", "", "Price coming soon"));
     return price;
