@@ -666,7 +666,7 @@ const CONFIG = {
       if (p.was != null) price.appendChild(el("s", "was", CONFIG.currency + p.was.toFixed(2)));
       price.appendChild(document.createTextNode(txt));
       if (p.period) price.appendChild(el("small", "per", " " + p.period));
-      if (p.once) price.appendChild(el("span", "once", "or " + money(p.once) + " for 30 days, no renewal"));
+      if (p.once) price.appendChild(el("span", "once", "or " + money(p.once) + " one-time for 30 days, no subscription"));
       if (typeof p.price === "number" && fxOn()) price.appendChild(el("span", "fx", "Charged in EUR: " + eurText(p.price)));
     } else price.appendChild(el("small", "", "Price coming soon"));
     return price;
