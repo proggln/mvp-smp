@@ -245,6 +245,7 @@ button{font:inherit}
 .bm .bm-agree{display:flex;gap:12px;align-items:flex-start;margin-top:18px;font-size:.92rem;line-height:1.5;color:#b9cfe0;cursor:pointer;text-transform:none;letter-spacing:0;font-weight:400}
 .bm .bm-agree input{width:22px;height:22px;flex:none;margin-top:2px;padding:0;accent-color:#2ea2ea;font-size:1rem}
 .bm .bm-agree a{color:#6fd0ff;text-decoration:underline}
+.bm .bm-nick{display:flex;gap:10px;align-items:center}.bm .bm-nick input{flex:1;min-width:0}.bm .bm-head{width:44px;height:44px;border-radius:10px;image-rendering:pixelated;background:rgba(255,255,255,.06);flex:none}
 .bm .bm-wait{color:#9be0ff}
 .bm .bm-ok{color:#8ff0a4}
 .bm .bm-sum{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 22px;margin-bottom:24px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);font-size:1.2rem}
@@ -392,6 +393,7 @@ const IMAGES = {"token": "../img/tokens/token-card.png",
 };
 
 const CONFIG = {
+  tebexToken: "151gw-6b8cf0743c3d7f190670089c5670e7e25813707e", // Tebex public token (safe to publish)
   serverIP: "mc.playmvp.org",                    // example IP: replace with the real server address
   discordUrl: "https://playmvp.org/discord",     // Discord invite
   currency: "€",
@@ -497,6 +499,36 @@ const CONFIG = {
 
   // ------------- purchase flow: nick -> /verify in game -> order (no payment yet) -------------
   const SKEY = "mvpsmp.nick";
+  // ---------- Tebex (Headless API): packages are matched to the cards by name / token amount ----------
+  const TBX = "https://headless.tebex.io/api";
+  let tebexPkgs = null;
+  const tebexReady = CONFIG.tebexToken ? fetch(TBX + "/accounts/" + CONFIG.tebexToken + "/categories?includePackages=1")
+    .then((r) => r.json()).then((j) => { tebexPkgs = []; (j.data || []).forEach((c) => (c.packages || []).forEach((p) => tebexPkgs.push(p))); })
+    .catch(() => { tebexPkgs = []; }) : Promise.resolve();
+  function tebexFor(p) {
+    if (!tebexPkgs) return null;
+    const norm = (t) => String(t || "").toLowerCase().replace(/[^a-z0-9+]/g, "");
+    if (p.tebexId) return tebexPkgs.find((x) => String(x.id) === String(p.tebexId)) || null;
+    if (p.cat === "tokens") { const n = String(p.amount).replace(/[^0-9]/g, ""); return tebexPkgs.find((x) => String(x.name).replace(/[^0-9]/g, "") === n) || null; }
+    return tebexPkgs.find((x) => norm(x.name) === norm(p.name)) || null;
+  }
+  function tebexPay(p, nick, btn, msg) {
+    const pk = tebexFor(p);
+    if (!pk) { msg.textContent = "This item is not available yet. Please come back soon!"; btn.disabled = false; return; }
+    const base = location.origin + location.pathname;
+    const j = (r) => r.json().then((d) => { if (!r.ok) throw d; return d; });
+    fetch(TBX + "/accounts/" + CONFIG.tebexToken + "/baskets", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: nick, complete_url: base + "?paid=1", cancel_url: base + "?canceled=1", complete_auto_redirect: true, custom: { product: p.id } }) })
+      .then(j).then((b) => {
+        const ident = b.data.ident;
+        const body = { package_id: String(pk.id), quantity: 1 };
+        if (p.period) body.type = "subscription";
+        return fetch(TBX + "/baskets/" + ident + "/packages", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }).then(j)
+          .then((r) => (r.data && r.data.links && r.data.links.checkout) || (b.data.links && b.data.links.checkout));
+      })
+      .then((url) => { if (!url) throw new Error("no checkout"); btn.textContent = "Opening secure payment..."; location.href = url; })
+      .catch((e) => { msg.textContent = (e && (e.detail || e.message || e.error_message)) ? "Payment error: " + (e.detail || e.message || e.error_message) : "Payment is temporarily unavailable. Try again in a minute."; btn.disabled = false; });
+  }
   let bm = null;
   function api(path, opt) {
     return fetch(CONFIG.api.replace(/\/+$/, "") + path, opt).then((r) => r.json().then((j) => ({ ok: r.ok, status: r.status, j })));
@@ -530,57 +562,26 @@ const CONFIG = {
     if (poll) clearInterval(poll); poll = null;
     let saved = ""; try { saved = localStorage.getItem(SKEY) || ""; } catch (e) {}
     if (linkedNick) saved = linkedNick;
-    const box = shell('<h3>Your Minecraft nickname</h3><div class="bm-sub">The purchase goes to this player.</div>' + summary(p) +
-      '<label for="bmn">Nickname</label><input id="bmn" maxlength="16" autocomplete="off" spellcheck="false" value="' + esc(saved) + '" placeholder="Steve">' +
-      '<button class="buy bm-btn" type="button">Continue</button><div class="bm-msg"></div>');
-    const inp = box.querySelector("input"), msg = box.querySelector(".bm-msg"), btn = box.querySelector(".bm-btn");
+    const box = shell('<h3>Who is it for?</h3><div class="bm-sub">Type the Minecraft nickname that gets the purchase. It can be yours or a friend\'s.</div>' + summary(p) +
+      '<label for="bmn">Minecraft nickname</label><div class="bm-nick"><img class="bm-head" alt="" src="https://mc-heads.net/avatar/MHF_Steve/64"><input id="bmn" maxlength="16" autocomplete="off" spellcheck="false" value="' + esc(saved) + '" placeholder="Steve"></div>' +
+      '<label class="bm-agree"><input type="checkbox" id="bmc"><span>I agree to the <a href="../terms/" target="_blank" rel="noopener">Terms</a> and <a href="../refunds/" target="_blank" rel="noopener">Refund Policy</a> (<a href="../seller/" target="_blank" rel="noopener">Seller information</a>), ' + (p.period ? 'and I ask the rank to start right away. I understand this is a <b>monthly subscription</b> that renews automatically at ' + esc(priceText(p)) + ' per month until I cancel it, and that if I withdraw within 14 days I pay for the days already used.' : 'and to immediate delivery of these digital items. I understand that once they are delivered I lose the right of withdrawal.') + '</span></label>' +
+      '<button class="buy bm-btn" type="button">Pay ' + esc(priceText(p)) + (p.period ? ' / month' : '') + '</button><div class="bm-msg"></div><div class="bm-sub" style="margin-top:10px;font-size:.8rem">Secure payment by Tebex. Card, PayPal and more. No account needed.</div>');
+    const inp = box.querySelector("#bmn"), msg = box.querySelector(".bm-msg"), btn = box.querySelector(".bm-btn"), agree = box.querySelector("#bmc"), head = box.querySelector(".bm-head");
+    let ht = null;
+    const showHead = () => { const n = inp.value.trim(); head.src = "https://mc-heads.net/avatar/" + (/^[A-Za-z0-9_]{3,16}$/.test(n) ? encodeURIComponent(n) : "MHF_Steve") + "/64"; };
+    inp.addEventListener("input", () => { clearTimeout(ht); ht = setTimeout(showHead, 350); });
+    showHead();
     const go = () => {
       const nick = inp.value.trim();
-      if (!/^[A-Za-z0-9_]{3,16}$/.test(nick)) { msg.textContent = "Enter a valid Minecraft nickname (3-16 letters, digits or _)."; return; }
-      btn.disabled = true; msg.textContent = "";
-      api("/api/verify/start", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ nick }) })
-        .then((r) => {
-          if (!r.ok) { msg.textContent = r.j.error === "too_many" ? "Too many attempts. Wait a few minutes." : "Something went wrong. Try again."; btn.disabled = false; return; }
-          try { localStorage.setItem(SKEY, nick); } catch (e) {}
-          stepVerify(p, nick, r.j.code);
-        }).catch(() => { msg.textContent = "The store is not open yet. Coming soon!"; btn.disabled = false; });
+      if (!/^[A-Za-z0-9_]{3,16}$/.test(nick)) { msg.textContent = "Enter a valid Minecraft nickname (3-16 letters, digits or _)."; inp.focus(); return; }
+      if (!agree.checked) { msg.textContent = "Please tick the box to continue."; return; }
+      try { localStorage.setItem(SKEY, nick); } catch (e) {}
+      btn.disabled = true; msg.textContent = ""; btn.textContent = "Preparing payment...";
+      tebexReady.then(() => tebexPay(p, nick, btn, msg));
     };
     btn.addEventListener("click", go);
     inp.addEventListener("keydown", (e) => { if (e.key === "Enter") go(); });
-    inp.focus();
-  }
-  function stepVerify(p, nick, code) {
-    const box = shell('<h3>Confirm it is you</h3><div class="bm-sub">Join the server as <b>' + esc(nick) + '</b> and type this command in the game chat:</div>' +
-      '<div class="bm-code">' + esc(code) + '</div><div class="bm-cmd">/verify ' + esc(code) + '</div>' +
-      '<ol><li>Join <b>' + esc(CONFIG.serverIP) + '</b></li><li>Type the command above</li><li>This window continues by itself</li></ol>' +
-      '<div class="bm-msg bm-wait">Waiting for confirmation...</div><button class="buy bm-btn" type="button" style="background:rgba(255,255,255,.08);box-shadow:none">Back</button>');
-    box.querySelector(".bm-btn").addEventListener("click", () => stepNick(p));
-    const msg = box.querySelector(".bm-msg");
-    if (poll) clearInterval(poll);
-    poll = setInterval(() => {
-      api("/api/verify/status?code=" + encodeURIComponent(code)).then((r) => {
-        if (r.status === 410 || r.status === 404) { clearInterval(poll); poll = null; msg.classList.remove("bm-wait"); msg.textContent = "The code expired. Go back and request a new one."; return; }
-        if (r.j.verified && r.j.token) { clearInterval(poll); poll = null; stepOrder(p, nick, r.j.token); }
-      }).catch(() => {});
-    }, 2500);
-  }
-  function stepOrder(p, nick, token) {
-    const box = shell('<h3>Nickname confirmed</h3><div class="bm-sub bm-ok">Verified: <b>' + esc(nick) + '</b></div>' + summary(p) +
-      '<label class="bm-agree"><input type="checkbox" id="bmc"><span>I agree to the <a href="../terms/" target="_blank" rel="noopener">Terms</a> and <a href="../refunds/" target="_blank" rel="noopener">Refund Policy</a> (<a href="../seller/" target="_blank" rel="noopener">Seller information</a>), ' + (p.period ? 'and I ask the rank to start right away. I understand this is a <b>monthly subscription</b> that renews automatically at ' + esc(priceText(p)) + ' per month until I cancel it, and that if I withdraw within 14 days I pay for the days already used.' : 'and to immediate delivery of these digital items. I understand that once they are delivered I lose the right of withdrawal.') + '</span></label>' +
-      '<button class="buy bm-btn" type="button">' + (window.__payReal ? 'Pay ' + esc(priceText(p)) + (p.period ? ' / month' : '') : 'Place order') + '</button><div class="bm-msg"></div>');
-    const btn = box.querySelector(".bm-btn"), msg = box.querySelector(".bm-msg"), agree = box.querySelector("#bmc");
-    btn.addEventListener("click", () => {
-      if (!agree.checked) { msg.textContent = "Please tick the box to continue."; return; }
-      btn.disabled = true; msg.textContent = "";
-      api("/api/order", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token, product: p.id }) })
-        .then((r) => {
-          if (r.ok && r.j.checkoutUrl) { btn.textContent = "Redirecting to secure payment..."; window.location.href = r.j.checkoutUrl; return; }
-          if (r.ok) { stepDone(p, nick, r.j); return; }
-          msg.textContent = r.j.error === "payments_disabled" ? "Payments are not open yet. Please come back soon!" : r.j.error === "payment_unavailable" ? "Payment is temporarily unavailable. Try again in a minute." :
-            r.j.error === "not_verified" ? "The confirmation expired. Start again." : "Something went wrong. Try again.";
-          btn.disabled = false;
-        }).catch(() => { msg.textContent = "The store is not open yet. Coming soon!"; btn.disabled = false; });
-    });
+    if (!saved) inp.focus();
   }
   function stepDone(p, nick, j) {
     shell('<h3>Order ' + esc(j.ref || ('#' + j.id)) + ' placed</h3><div class="bm-sub bm-ok">' + (j.test ? "Test mode: no payment was taken." : "Thank you!") + '</div>' + summary(p) +
@@ -603,7 +604,7 @@ const CONFIG = {
       }
       bm.classList.add("open");
       if (paid) shell('<h3>Payment received</h3><div class="bm-sub bm-ok">Thank you for supporting MVP!</div>' +
-        '<div class="bm-sub">Order <b>' + esc(/^\d+$/.test(paid) ? '#' + paid : paid) + '</b> (keep this code for support). Join the server: your items are delivered in the game within seconds. If you are offline, you get them when you join.</div>' +
+        '<div class="bm-sub">' + (paid === '1' ? '' : 'Order <b>' + esc(/^\d+$/.test(paid) ? '#' + paid : paid) + '</b> (keep this code for support). ') + 'Join the server: your items are delivered in the game within seconds. If you are offline, you get them when you join.</div>' +
         '<button class="buy bm-btn" type="button">Done</button>').querySelector(".bm-btn").addEventListener("click", closeBuy);
       else shell('<h3>Payment canceled</h3><div class="bm-sub">No money was taken. You can try again any time.</div>' +
         '<button class="buy bm-btn" type="button">Close</button>').querySelector(".bm-btn").addEventListener("click", closeBuy);
@@ -611,7 +612,7 @@ const CONFIG = {
   })();
   function buyButton(p) {
     const buy = el("button", "buy"); buy.type = "button";
-    if (CONFIG.api && p.id) {
+    if ((CONFIG.tebexToken || CONFIG.api) && p.id) {
       buy.appendChild(document.createTextNode("Buy"));
       buy.addEventListener("click", () => openBuy(p));
     } else if (p.checkout) {
