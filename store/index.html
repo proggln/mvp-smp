@@ -758,7 +758,7 @@ const CONFIG = {
         [px("home"), "Homes", [num("3", 25), num("5", 25), num("12", 25), num("25", 25)]],
         [px("cube"), "Jobs bonus", [NO, num("x1.1", 1.5), num("x1.25", 1.5), num("x1.5", 1.5)]],
         [px("calendar"), "Daily bonus", [NO, num("x1.1", 1.5), num("x1.25", 1.5), num("x1.5", 1.5)]],
-        [px("skull"), "Coins lost on death <small class=\"rt-lo\">less is better</small>", ["10%", "7%", "5%", "1%"].map((v, k) => '<span class="rt-num"><span>' + v + '</span><span class="rt-meter rt-meter-low"><i style="--w:' + [100, 84, 71, 32][k] + '%"></i></span></span>')],
+        [px("skull"), "Coins lost on death <small class=\"rt-lo\">full bar = best protection</small>", ["10%", "7%", "5%", "1%"].map((v, k) => '<span class="rt-num"><span>' + v + '</span><span class="rt-meter"><i style="--w:' + [6, 40, 62, 100][k] + '%"></i></span></span>')],
       ]],
       ["Rewards", [
         [tok, "MVP Tokens every month", [NO, NO, '<span class="rt-tok">' + tok + '+100</span>', '<span class="rt-tok">' + tok + '+200</span>']],
