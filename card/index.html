@@ -603,27 +603,9 @@ button{font:inherit}
   function mkBox(anc) { var b = document.createElement("div"); b.className = "wc-install wc-x"; b.style.cssText = "margin:14px 0;padding:14px;border-radius:14px;background:rgba(255,255,255,.06)"; anc.parentNode.insertBefore(b, anc); return b; }
   function fmtLeft(ms) { var t = Math.max(0, Math.ceil(ms / 1000)), h = Math.floor(t / 3600), m = Math.floor(t % 3600 / 60), s = t % 60; return (h ? h + "h " : "") + (h || m ? m + "m " : "") + s + "s"; }
   function dailyBox(p, tok, anc) {
-    var box = mkBox(anc), timer = null;
-    box.innerHTML = '<b>Daily reward</b><div class="dl-d" style="margin:6px 0;opacity:.85">Loading...</div><div class="dl-days" style="display:flex;gap:5px;margin:8px 0"></div><button class="mgb dl-b" type="button" disabled>Claim</button>';
-    var d = box.querySelector(".dl-d"), days = box.querySelector(".dl-days"), btn = box.querySelector(".dl-b");
-    function paint(st) {
-      days.textContent = "";
-      (st.rewards || []).forEach(function (r, i) { var c = document.createElement("div"); var on = i < (st.ready ? st.streak : st.streak), now = i === (st.ready ? st.next_streak : st.streak) - 1; c.style.cssText = "flex:1;text-align:center;padding:6px 0;border-radius:8px;font:700 .75rem system-ui;background:" + (i < st.streak && !st.ready || (st.ready && i < st.streak) ? "rgba(34,166,242,.35)" : "rgba(255,255,255,.08)") + (st.ready && i === st.next_streak - 1 ? ";outline:2px solid #22a6f2" : ""); c.textContent = r; days.appendChild(c); });
-      if (!st.linked) { d.textContent = "Link your Minecraft account to claim coins every day."; btn.disabled = true; btn.textContent = "Link first"; return; }
-      var end = Date.now() + st.remaining_ms;
-      function tick() { var left = end - Date.now(); if (st.ready || left <= 0) { d.textContent = "Ready! +" + st.reward_now + " coins. Streak: " + st.streak + " day(s)."; btn.disabled = false; btn.textContent = "Claim +" + st.reward_now; if (timer) { clearInterval(timer); timer = null; } } else { d.textContent = "Next reward in " + fmtLeft(left) + ". Streak: " + st.streak + " day(s)."; btn.disabled = true; btn.textContent = "Come back later"; } }
-      if (timer) clearInterval(timer); tick(); if (!st.ready) timer = setInterval(function () { if (!document.body.contains(box)) { clearInterval(timer); return; } tick(); }, 1000);
-    }
-    function load() { call("GET", "/api/app/daily", null, tok).then(function (r) { if (r.ok) paint(r.j); else d.textContent = "Could not load."; }).catch(function () { d.textContent = "Cannot reach the server."; }); }
-    btn.addEventListener("click", function () {
-      btn.disabled = true;
-      call("POST", "/api/app/daily/claim", {}, tok).then(function (r) {
-        if (r.ok) { d.textContent = "+" + (r.j.amount || r.j.reward || "") + " coins on the way! They arrive when you are in the game."; setTimeout(load, 1500); }
-        else if (r.status === 409) { d.textContent = "Link your Minecraft account first."; }
-        else { load(); }
-      }).catch(function () { d.textContent = "Cannot reach the server."; btn.disabled = false; });
-    });
-    load();
+    // the daily reward is claimed in the game now
+    var box = mkBox(anc);
+    box.innerHTML = '<b>Daily reward</b><div style="margin:6px 0;opacity:.85">Claim your coins every day in the game: type <b>/daily</b>. The longer your streak, the bigger the reward.</div>';
   }
   // invite friends: link, progress, and the code field for people who were invited
   function refBox(p, tok, anc) {

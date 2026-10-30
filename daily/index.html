@@ -436,8 +436,9 @@ h1{margin:10px 0 0;font:800 1.7rem var(--font-head);letter-spacing:-.01em;text-a
       else load();
     }).catch(function () { s.textContent = "Cannot reach the server."; go.disabled = false; });
   });
-  if (!tok()) { need("Log in to your MVP account first, then open this page again.", "Log in", "/card/"); return; }
-  load();
+  // the daily reward is claimed in the game now
+  need("Your daily reward is now in the game. Join the server and type /daily to claim it every day.", "Back to the home page", "/");
+  if (false) load();
 })();
 </script>
 <nav class="legal-links" aria-label="Legal"><a href="../privacy/">Privacy Policy</a><a href="../terms/">Terms of Service</a><a href="../refunds/">Refund Policy</a><a href="../seller/">Seller information</a><a href="../manage/">Manage subscription</a><a href="../support/">Support</a></nav>
