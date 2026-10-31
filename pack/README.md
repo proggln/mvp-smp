@@ -16,6 +16,7 @@ URL: https://raw.githubusercontent.com/proggln/mvp-smp/main/pack/MVP-Resource-Pa
 | MVPCoins   | paper           | 9101-9108, 9201, 9202 (MVP coin) |
 | MVPProtect | knowledge_book  | 9009-9035         |
 | MVPTokens  | amethyst_shard  | 9401 (MVP Token)  |
+| MVPChestShop | fonts (no item) | `mvpchestshop:buy` (B = mouse + BUY badge, u/y zero width), `mvpchestshop:sell` (S = mouse + SELL badge, e/l zero width), `mvpchestshop:coin` ($ = MVP coin). Signs write "Buy", "Sell", "$" in these fonts, so without the pack they stay readable. |
 
 MVPCrates was removed (2026-10-25); its models and numbers are gone from the pack.
 
