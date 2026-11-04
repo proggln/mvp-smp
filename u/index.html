@@ -266,6 +266,11 @@ button{font:inherit}
 .mgb{display:inline-flex;align-items:center;justify-content:center;padding:12px 22px;border-radius:999px;border:0;cursor:pointer;color:#fff;font:700 .95rem var(--font-head,inherit);background:linear-gradient(180deg,#22a6f2,#0081cc);box-shadow:0 8px 22px rgba(0,129,204,.35)}
 .mgb:disabled{opacity:.55;cursor:default}
 .mgb.ghost{background:rgba(255,255,255,.08);box-shadow:none}
+.mgb.ghost{border:1px solid rgba(255,255,255,.14);padding:11px 20px}
+.mgb .bi{width:22px;height:22px;margin-right:9px;image-rendering:pixelated;flex:none}
+.mgb.blk{background:rgba(232,66,79,.12);border:1px solid rgba(232,66,79,.45);color:#ffb7bc;box-shadow:none;padding:11px 20px}
+.mgb.blk:hover{background:rgba(232,66,79,.22)}
+.mgb.ghost:hover{background:rgba(255,255,255,.14)}
 .mgb.danger{background:linear-gradient(180deg,#f1646b,#c9363f);box-shadow:0 8px 22px rgba(201,54,63,.3)}
 .mgmsg{margin-top:12px;min-height:1.2em;color:#ffb4b4;font-size:.92rem}.mgmsg.ok{color:#8be2a6}
 .mgcode{font:800 2.2rem/1 var(--font-head,inherit);letter-spacing:.2em;text-align:center;padding:16px;border-radius:16px;background:rgba(0,129,204,.18);border:1px solid rgba(76,195,255,.35);margin:14px 0 8px}
@@ -466,29 +471,34 @@ button{font:inherit}
   }
   var nick = (new URLSearchParams(location.search).get("n") || "").trim();
   var tok = getTok();
+  var bi = function (n) { return '<img class="bi" src="../img/ic/' + n + '.png" alt="" width="22" height="22">'; };
   function actions(d) {
     var rel = d.relation, h = "";
     if (rel === "anon") h = '<a class="mgb" href="../card/">Sign in to add friends</a>';
-    else if (rel === "none") h = '<button type="button" class="mgb" data-a="request">Add friend</button>';
+    else if (rel === "none") h = '<button type="button" class="mgb" data-a="request">' + bi("people") + 'Add friend</button>';
     else if (rel === "pending_out") h = '<button type="button" class="mgb ghost" disabled>Request sent</button>';
     else if (rel === "pending_in") h = '<button type="button" class="mgb" data-a="accept">Accept request</button> <button type="button" class="mgb ghost" data-a="decline">Decline</button>';
-    else if (rel === "friend") h = '<button type="button" class="mgb ghost" data-a="remove">Remove friend</button>';
+    else if (rel === "friend") h = '<button type="button" class="mgb ghost" data-a="remove">' + bi("people") + 'Remove friend</button>';
     else if (rel === "self") h = '<a class="mgb ghost" href="../card/">My profile</a>';
+    if (rel === "none" || rel === "pending_out" || rel === "pending_in" || rel === "friend") h += ' <button type="button" class="mgb blk" data-a="block">' + bi("barrier") + 'Block</button>';
     return h;
   }
   function wire(d) {
     var box = document.getElementById("pact"), msg = document.getElementById("pmsg");
     if (!box) return;
     box.addEventListener("click", function (e) {
-      var a = e.target.getAttribute && e.target.getAttribute("data-a"); if (!a) return;
-      var path = { request: "/api/app/friends/request", accept: "/api/app/friends/respond", decline: "/api/app/friends/respond", remove: "/api/app/friends/remove" }[a];
+      var btn = e.target.closest && e.target.closest("[data-a]"); if (!btn) return;
+      var a = btn.getAttribute("data-a");
+      var path = { request: "/api/app/friends/request", accept: "/api/app/friends/respond", decline: "/api/app/friends/respond", remove: "/api/app/friends/remove", block: "/api/app/friends/block", unblock: "/api/app/friends/unblock" }[a];
       var body = { nick: d.nick }; if (a === "accept") body.accept = true; if (a === "decline") body.accept = false;
       if (a === "remove" && !window.confirm("Remove " + d.nick + " from your friends?")) return;
-      e.target.disabled = true;
+      if (a === "block" && !window.confirm("Block " + d.nick + "? They will not be able to send you requests, and will not be told.")) return;
+      btn.disabled = true;
       call("POST", path, body, tok).then(function (r) {
-        if (!r.ok) { msg.textContent = r.j && r.j.error === "limit" ? "Your friends list is full." : r.j && r.j.error === "link_first" ? "Link your Minecraft account first (see Get link command on your card)." : "Something went wrong. Try again later."; e.target.disabled = false; return; }
+        if (!r.ok) { msg.textContent = r.j && r.j.error === "limit" ? "Your friends list is full." : r.j && r.j.error === "link_first" ? "Link your Minecraft account first (see Get link command on your card)." : "Something went wrong. Try again later."; btn.disabled = false; return; }
+        if (a === "block") { box.innerHTML = '<span class="mgb blk" style="cursor:default">' + bi("barrier") + 'Blocked</span> <button type="button" class="mgb ghost" data-a="unblock">Unblock</button>'; msg.textContent = ""; return; }
         load();
-      }).catch(function () { msg.textContent = "Cannot reach the server."; e.target.disabled = false; });
+      }).catch(function () { msg.textContent = "Cannot reach the server."; btn.disabled = false; });
     });
   }
   var TH = {
@@ -526,7 +536,7 @@ button{font:inherit}
       '<div class="wc-grid"><div><div class="wc-stage"><div class="wc' + (t.anim ? " wc-flow" : "") + (t.tex ? " wc-tex" : "") + '" id="wccard" style="' + (t.anim ? "--c0:" + t.colors[0] + ";--c1:" + t.colors[1] + ";--c2:" + t.colors[2] + ";" : "") + (t.tex ? '--texurl:url(../card/' + t.tex + '.png);--sp2:' + (t.spark || '#bbffff') + ';--shade:' + (t.shade || 0) + ';' : 'background:' + cardGrad(t) + ';') + 'box-shadow:0 26px 50px ' + hexA(t.colors[1], .45) + '">' + (t.tex ? shineHtml() : "") +
       '<div class="wc-top"><div class="wc-brand"><img src="../icon-180.png" alt="" width="38" height="38">MVP</div><span class="wc-badge">' + esc(d.rank) + '</span></div>' +
       '<div class="wc-bot"><div style="display:flex;align-items:center;gap:12px">' + head(d.nick, 48) + '<div><div class="wc-lbl">PLAYER</div><div class="wc-val">' + esc(d.nick.toUpperCase()) + (d.verified ? VTICK.replace('width="16" height="16"', 'width="18" height="18"') : "") + '</div></div></div><div style="text-align:right"><div class="wc-lbl">SINCE</div><div class="wc-val">' + esc(d.since) + '</div></div></div></div></div>' +
-      '<div id="pact" style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">' + actions(d) + '' + '<button type="button" class="mgb ghost" id="pshare">Copy profile link</button></div><div class="mgmsg" id="pmsg"></div><div id="prate"></div></div>' +
+      '<div id="pact" style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">' + actions(d) + '' + '<button type="button" class="mgb ghost" id="pshare">' + bi("link") + '<span>Copy profile link</span></button></div><div class="mgmsg" id="pmsg"></div><div id="prate"></div></div>' +
       '<div><div class="wc-stats" style="grid-template-columns:repeat(2,minmax(0,1fr))">' +
       (d.coins != null ? '<div class="wc-stat"><div class="wc-ic"><img src="../card/coin.png" alt=""></div><div class="wc-sv">' + esc(d.coins) + '</div><div class="wc-sl">Coins</div></div>' : "") + '<div class="wc-stat"><div class="wc-ic"><img src="../card/sword.png" alt=""></div><div class="wc-sv">' + esc(d.kills) + '</div><div class="wc-sl">Kills</div>' + (d.kills_rank ? '<div class="wc-sl" style="color:#6fd0ff;font-weight:700"><img src="../img/ic/baltop.png" alt="" width="16" height="16" style="image-rendering:pixelated;vertical-align:-2px;margin-right:4px">TOP #' + esc(d.kills_rank) + '</div>' : "") + '</div>' +
       '<div class="wc-stat"><div class="wc-ic"><img src="../img/ic/skull.png" alt="" width="32" height="32" style="image-rendering:pixelated;width:32px;height:32px"></div><div class="wc-sv">' + esc(d.deaths || 0) + '</div><div class="wc-sl">Deaths</div></div></div>' + badges(d.medals, d.discord) + '</div></div><div id="pcm" style="margin-top:26px"></div>';
@@ -540,7 +550,7 @@ button{font:inherit}
       tc.parentNode.addEventListener("mouseleave", function () { tc.style.transform = ""; });
     }
     if (window.mvpComments) document.getElementById("pcm").appendChild(mvpComments(0, { profile: d.nick }));
-    document.getElementById("pshare").onclick = function () { var b = this, u = location.origin + "/u/?n=" + encodeURIComponent(d.nick), done = function () { b.textContent = "Copied"; setTimeout(function () { b.textContent = "Copy profile link"; }, 1600); }; try { navigator.clipboard.writeText(u).then(done, done); } catch (e) { done(); } };
+    document.getElementById("pshare").onclick = function () { var b = this, u = location.origin + "/u/?n=" + encodeURIComponent(d.nick), done = function () { var t = b.querySelector("span"); t.textContent = "Copied"; setTimeout(function () { t.textContent = "Copy profile link"; }, 1600); }; try { navigator.clipboard.writeText(u).then(done, done); } catch (e) { done(); } };
   }
   function load() {
     if (!nick) { location.replace("../card/"); return; }
