@@ -1524,6 +1524,7 @@ button{font:inherit}
           if (!r.ok) return;
           var d = r.j, st = "display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#fff;border-radius:999px;padding:8px 16px;font:700 .9rem inherit";
           rc.innerHTML = '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span style="' + st + '" aria-label="Likes"><span style="display:inline-flex"><img src="../img/ic/on.png" alt="" width="32" height="32" style="width:32px;height:32px;image-rendering:pixelated;flex:none"></span>' + esc(d.up || 0) + '</span><span style="' + st + '" aria-label="Dislikes"><span style="display:inline-flex"><img src="../img/ic/off.png" alt="" width="32" height="32" style="width:32px;height:32px;image-rendering:pixelated;flex:none"></span>' + esc(d.down || 0) + '</span><small style="color:#6f8597">Rating of your profile</small></div>';
+          if (d.discord && rc.firstChild) { var dcs = document.createElement("span"); dcs.setAttribute("style", st); dcs.title = "Your Discord. Change who sees it in the Discord box."; dcs.innerHTML = '<img src="../img/ic/discord.png" alt="" width="26" height="20" style="width:26px;height:20px;flex:none">' + esc(d.discord.username); rc.firstChild.appendChild(dcs); }
         }).catch(function () {});
         if (window.mvpComments) document.getElementById("wcpcm").appendChild(mvpComments(0, { profile: p.nick }));
       }
