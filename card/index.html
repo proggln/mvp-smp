@@ -399,6 +399,8 @@ button{font:inherit}
 .wc-mt{min-width:0}.wc-mt b{display:block;color:var(--mc);font-size:.98rem}.wc-mt span{display:block;font-size:.9rem;color:#dbe8f3}.wc-mt small{display:block;font-size:.78rem;color:var(--muted);margin-top:2px}
 .wc-skel{background:linear-gradient(90deg,rgba(255,255,255,.05),rgba(255,255,255,.12),rgba(255,255,255,.05));background-size:200% 100%;animation:wcsk 1.2s linear infinite;min-height:90px}.wc.wc-skel{box-shadow:none}
 @keyframes wcsk{from{background-position:200% 0}to{background-position:-200% 0}}
+.wc-dch{margin-left:12px;vertical-align:middle}
+.wc-dch img{width:30px;height:23px}
 .wc-dcrow{margin:12px 0 0 4px}
 .wc-dcl{display:inline-block;line-height:0;opacity:.9;transition:opacity .15s,transform .15s}
 .wc-dcl:hover{opacity:1;transform:translateY(-1px)}
@@ -1369,7 +1371,7 @@ button{font:inherit}
   function icSvg(k,size,color){var v=LIC[k]||LIC.medal,o='<svg viewBox="0 0 24 24" width="'+size+'" height="'+size+'" fill="none" stroke="'+(color||"currentColor")+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">';v.p.forEach(function(d){o+='<path d="'+d+'"/>'});(v.c||[]).forEach(function(c){o+='<circle cx="'+c[0]+'" cy="'+c[1]+'" r="'+c[2]+'"/>'});return o+'</svg>'}
   function dcLink(dc) {
     if (!dc || !/^\d{5,25}$/.test(String(dc.id))) return "";
-    return '<a class="wc-dcl" href="https://discord.com/users/' + dc.id + '" target="_blank" rel="noopener noreferrer" aria-label="Discord: ' + esc(dc.username) + '" title="Discord: ' + esc(dc.username) + '"><img src="../img/ic/discord.png" alt="" width="34" height="26"></a>';
+    return '<a class="wc-dcl wc-dch" href="https://discord.com/users/' + dc.id + '" target="_blank" rel="noopener noreferrer" aria-label="Discord: ' + esc(dc.username) + '" title="Discord: ' + esc(dc.username) + '"><img src="../img/ic/discord.png" alt="" width="34" height="26"></a>';
   }
   function medalsBtn(list) {
     list = list || [];
@@ -1553,7 +1555,7 @@ button{font:inherit}
           if (!r.ok) return;
           var d = r.j, st = "display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#fff;border-radius:999px;padding:8px 16px;font:700 .9rem inherit";
           rc.innerHTML = '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span style="' + st + '" aria-label="Likes"><span style="display:inline-flex"><img src="../img/ic/on.png" alt="" width="32" height="32" style="width:32px;height:32px;image-rendering:pixelated;flex:none"></span>' + esc(d.up || 0) + '</span><span style="' + st + '" aria-label="Dislikes"><span style="display:inline-flex"><img src="../img/ic/off.png" alt="" width="32" height="32" style="width:32px;height:32px;image-rendering:pixelated;flex:none"></span>' + esc(d.down || 0) + '</span><small style="color:#6f8597">Rating of your profile</small></div>';
-          if (d.discord) { var bdx = document.querySelector(".wc-bd"); if (bdx && !document.querySelector(".wc-dcl")) bdx.insertAdjacentHTML("afterend", '<div class="wc-dcrow">' + dcLink(d.discord) + '</div>'); }
+          if (d.discord) { var hh = document.querySelector(".wc-head h1"); if (hh && !hh.querySelector(".wc-dcl")) hh.insertAdjacentHTML("beforeend", dcLink(d.discord)); }
         }).catch(function () {});
         if (window.mvpComments) document.getElementById("wcpcm").appendChild(mvpComments(0, { profile: p.nick }));
       }
