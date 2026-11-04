@@ -341,6 +341,7 @@ button{font:inherit}
 .rf-box{margin:14px 0;padding:16px;border-radius:18px;background:linear-gradient(160deg,rgba(46,200,140,.16),rgba(255,255,255,.05) 55%);border:1px solid rgba(46,200,140,.3)}
 .rf-h{display:flex;align-items:center;gap:10px;font:800 1.05rem var(--font-head,inherit)}
 .rf-h .rf-chip{margin-left:auto}
+.rf-chip.dc-ok{background:rgba(88,101,242,.28);color:#d4d8ff;padding:5px 11px}
 .rf-tg{margin-left:auto;display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;padding:0;border:0;border-radius:50%;background:rgba(255,255,255,.1);color:inherit;cursor:pointer}
 .rf-tg:hover{background:rgba(255,255,255,.18)}
 .rf-tg svg{width:18px;height:18px;transition:transform .2s}
@@ -627,8 +628,10 @@ button{font:inherit}
     var set = function (shut) { box.classList.toggle("rf-shut", shut); b.setAttribute("aria-expanded", shut ? "false" : "true"); b.setAttribute("aria-label", shut ? "Expand" : "Collapse"); b.title = shut ? "Expand" : "Collapse"; };
     var shut = false; try { shut = localStorage.getItem(key) === "1"; } catch (e) {}
     set(shut);
-    b.addEventListener("click", function () { shut = !shut; set(shut); try { localStorage.setItem(key, shut ? "1" : "0"); } catch (e) {} });
+    var save = function () { try { localStorage.setItem(key, shut ? "1" : "0"); } catch (e) {} };
+    b.addEventListener("click", function () { shut = !shut; set(shut); save(); });
     h.appendChild(b);
+    return function (v) { shut = !!v; set(shut); save(); };
   }
   function refBox(p, tok, anc) {
     var box = mkBox(anc); box.id = "invite"; box.className = "wc-install wc-x rf-box"; box.style.cssText = "";
@@ -696,14 +699,16 @@ button{font:inherit}
     var ic = '<img src="../img/ic/discord.png" alt="" width="34" height="26" style="width:34px;height:26px;flex:none">';
     box.innerHTML = '<div class="rf-h">' + ic + '<span>Discord</span></div><div class="rf-b" style="margin-top:10px;opacity:.85">Loading...</div>';
     var body = box.querySelector(".rf-b");
-    foldable(box, "mvp_fold_discord");
+    var fold = foldable(box, "mvp_fold_discord");
     var MSG = { ok: "Discord account connected. Everyone who sees your profile can see it. You can change this below.", denied: "You cancelled the connection.", expired: "That link expired. Try again.", taken: "This Discord account is already connected to another MVP account.", error: "Something went wrong. Try again later." };
-    var note = ""; try { var q = new URLSearchParams(location.search).get("discord"); if (q && MSG[q]) { note = MSG[q]; history.replaceState(null, "", location.pathname + location.hash); } } catch (e) {}
+    var note = ""; try { var q = new URLSearchParams(location.search).get("discord"); if (q && MSG[q]) { note = MSG[q]; if (q === "ok") fold(true); history.replaceState(null, "", location.pathname + location.hash); } } catch (e) {}
     function load() {
       call("GET", "/api/app/discord", null, tok).then(function (r) {
         if (!r.ok) { body.textContent = "Could not load."; return; }
         var j = r.j;
         if (!j.configured && !j.linked) { box.style.display = "none"; return; }
+        var oldc = box.querySelector(".rf-h .rf-chip"); if (oldc) oldc.remove();
+        if (j.linked) { var chip = document.createElement("span"); chip.className = "rf-chip dc-ok"; chip.textContent = "Connected"; box.querySelector(".rf-h").insertBefore(chip, box.querySelector(".rf-tg")); }
         var h = "";
         if (!j.linked) {
           h += '<div class="rf-lead">Connect your Discord so other players can message you there. You log in to Discord once to prove it is you. By default everyone who can see your profile will see it. You can change this after connecting.</div>';
