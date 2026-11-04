@@ -442,7 +442,13 @@ button{font:inherit}
 #wcidlg .wc-il::-webkit-scrollbar{width:8px}#wcidlg .wc-il::-webkit-scrollbar-track{background:transparent;margin:6px 0}#wcidlg .wc-il::-webkit-scrollbar-thumb{background:rgba(111,208,255,.32);border-radius:99px;border:2px solid transparent;background-clip:padding-box}#wcidlg .wc-il::-webkit-scrollbar-thumb:hover{background:rgba(111,208,255,.6);background-clip:padding-box;border:2px solid transparent}
 #wcidlg .wc-im{--k:#6fd0ff;gap:14px;padding:14px 16px 14px 14px;margin:0 0 10px;border-radius:18px;border:1px solid rgba(255,255,255,.07);border-left:4px solid var(--k);background:linear-gradient(90deg,rgba(255,255,255,.045),rgba(255,255,255,.02));transition:transform .15s,background .15s}
 #wcidlg .wc-im:hover{transform:translateX(2px);background:linear-gradient(90deg,rgba(255,255,255,.07),rgba(255,255,255,.03))}
-#wcidlg .wc-im.ik-like{--k:#ff7a8c}#wcidlg .wc-im.ik-ok{--k:#47d98a}#wcidlg .wc-im.ik-fr{--k:#6fd0ff}#wcidlg .wc-im.ik-srv{--k:#ffc05a}#wcidlg .wc-im.ik-team{--k:#ffd23f}
+#wcidlg .wc-im.ik-like{--k:#ff7a8c}#wcidlg .wc-im.ik-ok{--k:#47d98a}#wcidlg .wc-im.ik-fr{--k:#6fd0ff}#wcidlg .wc-im.ik-srv{--k:#ffc05a}#wcidlg .wc-im.ik-team{--k:#ffd23f} #wcidlg .wc-im.ik-team{--k:#2b9cff;position:relative;overflow:hidden;border-color:rgba(43,156,255,.35);background:radial-gradient(120% 140% at 0% 0%,rgba(0,129,214,.32),rgba(0,129,214,0) 55%),linear-gradient(90deg,rgba(255,255,255,.06),rgba(255,255,255,.025));box-shadow:0 0 0 1px rgba(43,156,255,.18),0 10px 28px rgba(0,100,200,.22)}
+#wcidlg .wc-im.ik-team::before{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.09),transparent);transform:skewX(-18deg);animation:wcshine 5s ease-in-out infinite;pointer-events:none}
+@keyframes wcshine{0%,60%{left:-60%}100%{left:130%}}
+#wcidlg .wc-ii.k-team{background:none;border:0;width:52px;height:52px;box-shadow:0 0 0 2px rgba(255,255,255,.85),0 0 18px rgba(43,156,255,.75);border-radius:14px}
+#wcidlg .wc-ii.k-team img{width:52px!important;height:52px!important;border-radius:12px!important}
+#wcidlg .wc-im.ik-team .wc-ifrom{color:#8fd0ff;font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+@media (prefers-reduced-motion:reduce){#wcidlg .wc-im.ik-team::before{animation:none}}
 #wcidlg .wc-im.unread{border-color:rgba(255,255,255,.14);border-left-color:var(--k);background:linear-gradient(90deg,rgba(255,255,255,.09),rgba(255,255,255,.035));box-shadow:0 0 0 1px rgba(111,208,255,.12),0 8px 22px rgba(0,0,0,.25)}
 #wcidlg .wc-im.unread::after{content:"";position:absolute;top:14px;right:14px;width:9px;height:9px;border-radius:50%;background:var(--k);box-shadow:0 0 10px var(--k)}
 #wcidlg .wc-ii{width:52px;height:52px;border-radius:14px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.08)}#wcidlg .wc-ii img{margin:0;border-radius:0;display:block}
