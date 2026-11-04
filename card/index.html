@@ -697,7 +697,7 @@ button{font:inherit}
     box.innerHTML = '<div class="rf-h">' + ic + '<span>Discord</span></div><div class="rf-b" style="margin-top:10px;opacity:.85">Loading...</div>';
     var body = box.querySelector(".rf-b");
     foldable(box, "mvp_fold_discord");
-    var MSG = { ok: "Discord account connected. Choose who can see it below.", denied: "You cancelled the connection.", expired: "That link expired. Try again.", taken: "This Discord account is already connected to another MVP account.", error: "Something went wrong. Try again later." };
+    var MSG = { ok: "Discord account connected. Everyone who sees your profile can see it. You can change this below.", denied: "You cancelled the connection.", expired: "That link expired. Try again.", taken: "This Discord account is already connected to another MVP account.", error: "Something went wrong. Try again later." };
     var note = ""; try { var q = new URLSearchParams(location.search).get("discord"); if (q && MSG[q]) { note = MSG[q]; history.replaceState(null, "", location.pathname + location.hash); } } catch (e) {}
     function load() {
       call("GET", "/api/app/discord", null, tok).then(function (r) {
@@ -706,7 +706,7 @@ button{font:inherit}
         if (!j.configured && !j.linked) { box.style.display = "none"; return; }
         var h = "";
         if (!j.linked) {
-          h += '<div class="rf-lead">Connect your Discord so other players can message you there. You log in to Discord once to prove it is you. Nobody sees it until you allow it.</div>';
+          h += '<div class="rf-lead">Connect your Discord so other players can message you there. You log in to Discord once to prove it is you. By default everyone who can see your profile will see it. You can change this after connecting.</div>';
           h += '<div class="dc-row"><button type="button" class="dc-go">' + '<img src="../img/ic/discord-white.png" alt="" width="26" height="20" style="width:26px;height:20px;flex:none">' + 'Connect Discord</button></div>';
         } else {
           h += '<div class="rf-lead">Connected as <b>' + esc(j.username) + '</b>. Who can see your Discord on your profile?</div>';
