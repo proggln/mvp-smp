@@ -675,7 +675,7 @@ button{font:inherit}
   }
   function discordBox(p, tok, anc) {
     var box = mkBox(anc); box.id = "discord"; box.className = "wc-install wc-x rf-box"; box.style.cssText = "";
-    var ic = '<img src="../img/ic/discord.png" alt="" width="26" height="26" style="width:26px;height:26px;image-rendering:pixelated;flex:none">';
+    var ic = '<img src="../img/ic/discord.png" alt="" width="34" height="26" style="width:34px;height:26px;flex:none">';
     box.innerHTML = '<div class="rf-h">' + ic + '<span>Discord</span></div><div class="rf-b" style="margin-top:10px;opacity:.85">Loading...</div>';
     var body = box.querySelector(".rf-b");
     var MSG = { ok: "Discord account connected. Choose who can see it below.", denied: "You cancelled the connection.", expired: "That link expired. Try again.", taken: "This Discord account is already connected to another MVP account.", error: "Something went wrong. Try again later." };
@@ -688,7 +688,7 @@ button{font:inherit}
         var h = "";
         if (!j.linked) {
           h += '<div class="rf-lead">Connect your Discord so other players can message you there. You log in to Discord once to prove it is you. Nobody sees it until you allow it.</div>';
-          h += '<div class="dc-row"><button type="button" class="dc-go">' + ic.replace('width="26" height="26" style="width:26px;height:26px', 'width="20" height="20" style="width:20px;height:20px') + 'Connect Discord</button></div>';
+          h += '<div class="dc-row"><button type="button" class="dc-go">' + '<img src="../img/ic/discord-white.png" alt="" width="26" height="20" style="width:26px;height:20px;flex:none">' + 'Connect Discord</button></div>';
         } else {
           h += '<div class="rf-lead">Connected as <b>' + esc(j.username) + '</b>. Who can see your Discord on your profile?</div>';
           h += '<div class="dc-row">';
