@@ -342,10 +342,10 @@ button{font:inherit}
 .wc-mt{min-width:0}.wc-mt b{display:block;color:var(--mc);font-size:.98rem}.wc-mt span{display:block;font-size:.9rem;color:#dbe8f3}.wc-mt small{display:block;font-size:.78rem;color:var(--muted);margin-top:2px}
 .wc-skel{background:linear-gradient(90deg,rgba(255,255,255,.05),rgba(255,255,255,.12),rgba(255,255,255,.05));background-size:200% 100%;animation:wcsk 1.2s linear infinite;min-height:90px}.wc.wc-skel{box-shadow:none}
 @keyframes wcsk{from{background-position:200% 0}to{background-position:-200% 0}}
-.wc-dcrow{margin-top:12px}
-.wc-dcl{display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:14px;background:rgba(88,101,242,.16);border:1px solid rgba(88,101,242,.45);transition:background .15s,transform .15s}
-.wc-dcl:hover{background:rgba(88,101,242,.32);transform:translateY(-1px)}
-.wc-dcl img{width:28px;height:22px;display:block}
+.wc-dcrow{margin:12px 0 0 4px}
+.wc-dcl{display:inline-block;line-height:0;opacity:.9;transition:opacity .15s,transform .15s}
+.wc-dcl:hover{opacity:1;transform:translateY(-1px)}
+.wc-dcl img{width:34px;height:26px;display:block}
 .wc-bd{margin:14px 0 0;padding:14px 16px;border-radius:18px;border:1px solid rgba(255,255,255,.12);background:rgba(6,16,28,.6)}.wc-bdh{font:700 .72rem/1 Montserrat,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}.wc-bdl{display:flex;flex-wrap:wrap;gap:8px}.wc-bdg{width:40px;height:40px;border-radius:12px;border:1px solid color-mix(in srgb,var(--mc,#6fd0ff) 55%,transparent);background:color-mix(in srgb,var(--mc,#6fd0ff) 16%,rgba(255,255,255,.04));display:grid;place-items:center;cursor:pointer;padding:0;transition:transform .12s}.wc-bdg:hover,.wc-bdg:focus-visible{transform:translateY(-2px);outline:0;box-shadow:0 0 0 2px var(--mc,#6fd0ff)}.wc-bdn{color:var(--muted);font-size:.9rem}.wc-tip{position:fixed;z-index:9999;max-width:260px;padding:12px 14px;border-radius:14px;background:#0b1a2a;border:1px solid rgba(255,255,255,.18);box-shadow:0 14px 40px rgba(0,0,0,.55);color:#fff;pointer-events:none;opacity:0;transition:opacity .12s}.wc-tip.on{opacity:1}.wc-tip b{display:block;font-size:.95rem}.wc-tip span{display:block;color:var(--muted);font-size:.84rem;margin-top:3px}.wc-tip small{display:block;color:var(--muted);font-size:.75rem;margin-top:6px}
 .wc-srv{margin:16px 0 0;padding:16px;border-radius:18px;border:1px solid rgba(255,255,255,.12);background:rgba(6,16,28,.6)}.wc-srv h3{margin:0 0 12px;font:700 .72rem/1 Montserrat,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}.wc-sr{display:flex;align-items:center;gap:12px;margin:0 0 12px}.wc-sr:last-child{margin:0}.wc-sdot{width:10px;height:10px;border-radius:50%;background:#7a8794;flex:none}.wc-sdot.on{background:#3fd07a;box-shadow:0 0 0 4px rgba(63,208,122,.2)}.wc-sr .t{flex:1;min-width:0}.wc-sr .t b{display:block;font-size:.98rem}.wc-sr .t span{display:block;font-size:.82rem;color:var(--muted)}.wc-sb{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);color:#fff;border-radius:999px;padding:9px 16px;font:700 .85rem Montserrat,sans-serif;cursor:pointer;text-decoration:none!important;color:#fff!important;flex:none}.wc-sb:hover{background:rgba(255,255,255,.14)}
 .wc-mbtn{display:flex;align-items:center;gap:12px;width:100%;margin:14px 0 0;padding:14px 16px;border-radius:18px;border:1px solid rgba(255,255,255,.12);background:rgba(6,16,28,.6);color:#fff;font:inherit;text-align:left;cursor:pointer;transition:transform .15s,border-color .15s}
@@ -438,11 +438,11 @@ button{font:inherit}
       var col = /^#[0-9a-fA-F]{6}$/.test(m.color || "") ? m.color : "#6fd0ff";
       return '<button type="button" class="wc-bdg" data-bi="' + i + '" style="--mc:' + col + '" aria-label="' + esc(m.name) + '">' + pxSvg(m.icon, 24) + '</button>';
     }).join("");
-    return '<div class="wc-bd"><div class="wc-bdh">Badges</div><div class="wc-bdl">' + (h || '<span class="wc-bdn">No badges yet.</span>') + '</div>' + (dc ? '<div class="wc-dcrow">' + dcLink(dc) + '</div>' : '') + '</div>';
+    return '<div class="wc-bd"><div class="wc-bdh">Badges</div><div class="wc-bdl">' + (h || '<span class="wc-bdn">No badges yet.</span>') + '</div></div>' + (dc ? '<div class="wc-dcrow">' + dcLink(dc) + '</div>' : '');
   }
   function dcLink(dc) {
     if (!dc || !/^\d{5,25}$/.test(String(dc.id))) return "";
-    return '<a class="wc-dcl" href="https://discord.com/users/' + dc.id + '" target="_blank" rel="noopener noreferrer" aria-label="Discord: ' + esc(dc.username) + '" title="Discord: ' + esc(dc.username) + '"><img src="../img/ic/discord.png" alt="" width="28" height="22"></a>';
+    return '<a class="wc-dcl" href="https://discord.com/users/' + dc.id + '" target="_blank" rel="noopener noreferrer" aria-label="Discord: ' + esc(dc.username) + '" title="Discord: ' + esc(dc.username) + '"><img src="../img/ic/discord.png" alt="" width="34" height="26"></a>';
   }
   function badgeTips(list) {
     var tip = document.getElementById("wctip");
