@@ -480,7 +480,7 @@ button{font:inherit}
     else if (rel === "pending_in") h = '<button type="button" class="mgb" data-a="accept">Accept request</button> <button type="button" class="mgb ghost" data-a="decline">Decline</button>';
     else if (rel === "friend") h = '<button type="button" class="mgb ghost" data-a="remove">' + bi("people") + 'Remove friend</button>';
     else if (rel === "self") h = '<a class="mgb ghost" href="../card/">My profile</a>';
-    if (rel === "none" || rel === "pending_out" || rel === "pending_in" || rel === "friend") h += ' <button type="button" class="mgb blk" data-a="block">' + bi("barrier") + 'Block</button>';
+    if (rel === "none" || rel === "pending_out" || rel === "pending_in" || rel === "friend") h += ' <button type="button" class="mgb blk" data-a="block">' + bi("ban") + 'Block</button>';
     return h;
   }
   function wire(d) {
@@ -496,7 +496,7 @@ button{font:inherit}
       btn.disabled = true;
       call("POST", path, body, tok).then(function (r) {
         if (!r.ok) { msg.textContent = r.j && r.j.error === "limit" ? "Your friends list is full." : r.j && r.j.error === "link_first" ? "Link your Minecraft account first (see Get link command on your card)." : "Something went wrong. Try again later."; btn.disabled = false; return; }
-        if (a === "block") { box.innerHTML = '<span class="mgb blk" style="cursor:default">' + bi("barrier") + 'Blocked</span> <button type="button" class="mgb ghost" data-a="unblock">Unblock</button>'; msg.textContent = ""; return; }
+        if (a === "block") { box.innerHTML = '<span class="mgb blk" style="cursor:default">' + bi("ban") + 'Blocked</span> <button type="button" class="mgb ghost" data-a="unblock">Unblock</button>'; msg.textContent = ""; return; }
         load();
       }).catch(function () { msg.textContent = "Cannot reach the server."; btn.disabled = false; });
     });
@@ -536,7 +536,7 @@ button{font:inherit}
       '<div class="wc-grid"><div><div class="wc-stage"><div class="wc' + (t.anim ? " wc-flow" : "") + (t.tex ? " wc-tex" : "") + '" id="wccard" style="' + (t.anim ? "--c0:" + t.colors[0] + ";--c1:" + t.colors[1] + ";--c2:" + t.colors[2] + ";" : "") + (t.tex ? '--texurl:url(../card/' + t.tex + '.png);--sp2:' + (t.spark || '#bbffff') + ';--shade:' + (t.shade || 0) + ';' : 'background:' + cardGrad(t) + ';') + 'box-shadow:0 26px 50px ' + hexA(t.colors[1], .45) + '">' + (t.tex ? shineHtml() : "") +
       '<div class="wc-top"><div class="wc-brand"><img src="../icon-180.png" alt="" width="38" height="38">MVP</div><span class="wc-badge">' + esc(d.rank) + '</span></div>' +
       '<div class="wc-bot"><div style="display:flex;align-items:center;gap:12px">' + head(d.nick, 48) + '<div><div class="wc-lbl">PLAYER</div><div class="wc-val">' + esc(d.nick.toUpperCase()) + (d.verified ? VTICK.replace('width="16" height="16"', 'width="18" height="18"') : "") + '</div></div></div><div style="text-align:right"><div class="wc-lbl">SINCE</div><div class="wc-val">' + esc(d.since) + '</div></div></div></div></div>' +
-      '<div id="pact" style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">' + actions(d) + '' + '<button type="button" class="mgb ghost" id="pshare">' + bi("link") + '<span>Copy profile link</span></button></div><div class="mgmsg" id="pmsg"></div><div id="prate"></div></div>' +
+      '<div id="pact" style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">' + actions(d) + '' + '<button type="button" class="mgb ghost" id="pshare">' + bi("share") + '<span>Copy profile link</span></button></div><div class="mgmsg" id="pmsg"></div><div id="prate"></div></div>' +
       '<div><div class="wc-stats" style="grid-template-columns:repeat(2,minmax(0,1fr))">' +
       (d.coins != null ? '<div class="wc-stat"><div class="wc-ic"><img src="../card/coin.png" alt=""></div><div class="wc-sv">' + esc(d.coins) + '</div><div class="wc-sl">Coins</div></div>' : "") + '<div class="wc-stat"><div class="wc-ic"><img src="../card/sword.png" alt=""></div><div class="wc-sv">' + esc(d.kills) + '</div><div class="wc-sl">Kills</div>' + (d.kills_rank ? '<div class="wc-sl" style="color:#6fd0ff;font-weight:700"><img src="../img/ic/baltop.png" alt="" width="16" height="16" style="image-rendering:pixelated;vertical-align:-2px;margin-right:4px">TOP #' + esc(d.kills_rank) + '</div>' : "") + '</div>' +
       '<div class="wc-stat"><div class="wc-ic"><img src="../img/ic/skull.png" alt="" width="32" height="32" style="image-rendering:pixelated;width:32px;height:32px"></div><div class="wc-sv">' + esc(d.deaths || 0) + '</div><div class="wc-sl">Deaths</div></div></div>' + badges(d.medals, d.discord) + '</div></div><div id="pcm" style="margin-top:26px"></div>';
