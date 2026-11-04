@@ -698,56 +698,75 @@ button{font:inherit}
     }
     load();
   }
+  // start the Discord login (the player proves the account by logging in to Discord)
+  function dcConnect(tok, btn, showMsg) {
+    btn.disabled = true;
+    call("POST", "/api/app/discord/start", { ret: "site" }, tok).then(function (s) {
+      if (s.ok && s.j.url) { location.href = s.j.url; return; }
+      btn.disabled = false; showMsg(s.status === 403 ? "Link your Minecraft account first." : s.status === 429 ? "Too many tries. Wait a little." : "Discord login is not available right now.");
+    }).catch(function () { btn.disabled = false; showMsg("Cannot reach the server."); });
+  }
+  // the box is only for players who have not connected yet; once connected it disappears and the settings live in Settings
   function discordBox(p, tok, anc) {
     var box = mkBox(anc); box.id = "discord"; box.className = "wc-install wc-x rf-box"; box.style.cssText = "";
     var ic = '<img src="../img/ic/discord.png" alt="" width="34" height="26" style="width:34px;height:26px;flex:none">';
     box.innerHTML = '<div class="rf-h">' + ic + '<span>Discord</span></div><div class="rf-b" style="margin-top:10px;opacity:.85">Loading...</div>';
     var body = box.querySelector(".rf-b");
-    var fold = foldable(box, "mvp_fold_discord");
-    var MSG = { ok: "Discord account connected. Everyone who sees your profile can see it. You can change this below.", denied: "You cancelled the connection.", expired: "That link expired. Try again.", taken: "This Discord account is already connected to another MVP account.", error: "Something went wrong. Try again later." };
-    var note = ""; try { var q = new URLSearchParams(location.search).get("discord"); if (q && MSG[q]) { note = MSG[q]; if (q === "ok") fold(true); history.replaceState(null, "", location.pathname + location.hash); } } catch (e) {}
+    foldable(box, "mvp_fold_discord");
+    var MSG = { ok: "Discord account connected.", denied: "You cancelled the connection.", expired: "That link expired. Try again.", taken: "This Discord account is already connected to another MVP account.", error: "Something went wrong. Try again later." };
+    var note = "", result = ""; try { var q = new URLSearchParams(location.search).get("discord"); if (q && MSG[q]) { result = q; note = MSG[q]; history.replaceState(null, "", location.pathname + location.hash); } } catch (e) {}
     function load() {
+      box.style.display = "";
       call("GET", "/api/app/discord", null, tok).then(function (r) {
         if (!r.ok) { body.textContent = "Could not load."; return; }
         var j = r.j;
-        if (!j.configured && !j.linked) { box.style.display = "none"; return; }
-        var oldc = box.querySelector(".rf-h .rf-chip"); if (oldc) oldc.remove();
-        if (j.linked) { var chip = document.createElement("span"); chip.className = "rf-chip dc-ok"; chip.textContent = "Connected"; box.querySelector(".rf-h").insertBefore(chip, box.querySelector(".rf-tg")); }
-        var h = "";
-        if (!j.linked) {
-          h += '<div class="rf-lead">Connect your Discord so other players can message you there. You log in to Discord once to prove it is you. By default everyone who can see your profile will see it. You can change this after connecting.</div>';
-          h += '<div class="dc-row"><button type="button" class="dc-go">' + '<img src="../img/ic/discord-white.png" alt="" width="26" height="20" style="width:26px;height:20px;flex:none">' + 'Connect Discord</button></div>';
-        } else {
-          h += '<div class="rf-lead">Connected as <b>' + esc(j.username) + '</b>. Who can see your Discord on your profile?</div>';
-          h += '<div class="dc-row">';
-          [["off", "Nobody"], ["friends", "Friends only"], ["public", "Everyone who sees my profile"]].forEach(function (o) {
-            h += '<button type="button" class="dc-v' + (j.visibility === o[0] ? " on" : "") + '" data-v="' + o[0] + '">' + o[1] + '</button>';
-          });
-          h += '</div><div class="dc-row"><button type="button" class="dc-off">Disconnect Discord</button></div>';
+        if (j.linked) {
+          box.style.display = "none";
+          if (result === "ok" && !window.__dcOpened) { window.__dcOpened = true; openSettings(p, tok); }
+          result = ""; note = ""; return;
         }
+        if (!j.configured) { box.style.display = "none"; return; }
+        var h = '<div class="rf-lead">Connect your Discord so other players can message you there. You log in to Discord once to prove it is you. By default everyone who can see your profile will see it. You can change this in Settings.</div>';
+        h += '<div class="dc-row"><button type="button" class="dc-go"><img src="../img/ic/discord-white.png" alt="" width="26" height="20" style="width:26px;height:20px;flex:none">Connect Discord</button></div>';
         if (note) h += '<div class="rf-note rf-n"></div>';
         body.style.cssText = ""; body.innerHTML = h;
         if (note) body.querySelector(".rf-n").textContent = note;
         var go = body.querySelector(".dc-go");
-        if (go) go.addEventListener("click", function () {
-          go.disabled = true;
-          call("POST", "/api/app/discord/start", { ret: "site" }, tok).then(function (s) {
-            if (s.ok && s.j.url) { location.href = s.j.url; return; }
-            go.disabled = false; note = s.status === 403 ? "Link your Minecraft account first." : s.status === 429 ? "Too many tries. Wait a little." : "Discord login is not available right now."; load();
-          }).catch(function () { go.disabled = false; note = "Cannot reach the server."; load(); });
-        });
-        Array.prototype.forEach.call(body.querySelectorAll(".dc-v"), function (b) {
-          b.addEventListener("click", function () {
-            call("POST", "/api/app/discord/visibility", { visibility: b.getAttribute("data-v") }, tok).then(function (s) { note = s.ok ? "Saved." : "Could not save. Try again."; load(); });
-          });
-        });
-        var off = body.querySelector(".dc-off");
-        if (off) off.addEventListener("click", function () {
-          if (!confirm("Disconnect your Discord from your MVP account?")) return;
-          call("POST", "/api/app/discord/unlink", {}, tok).then(function (s) { note = s.ok ? "Discord disconnected." : "Could not disconnect. Try again."; load(); });
-        });
+        go.addEventListener("click", function () { dcConnect(tok, go, function (m) { note = m; load(); }); });
         note = "";
       }).catch(function () { body.textContent = "Cannot reach the server."; });
+    }
+    window.__dcReload = load;
+    load();
+  }
+  // Discord section inside Settings: connect, who can see it, disconnect
+  function dcSettings(g, tok) {
+    var ico = '<span class="st-ic"><img src="../img/ic/discord.png" alt="" width="26" height="20" style="width:26px;height:20px"></span>';
+    var eye = '<span class="st-ic"><img src="../img/ic/show.png" alt="" width="32" height="32" style="width:32px;height:32px;image-rendering:pixelated"></span>';
+    function load(note) {
+      call("GET", "/api/app/discord", null, tok).then(function (r) {
+        if (!r.ok) { g.innerHTML = '<div class="st-r"><div class="st-t"><span>Could not load.</span></div></div>'; return; }
+        var j = r.j;
+        if (!j.configured && !j.linked) { g.style.display = "none"; if (g.previousElementSibling) g.previousElementSibling.style.display = "none"; return; }
+        if (!j.linked) {
+          g.innerHTML = '<div class="st-r">' + ico + '<div class="st-t"><b>Discord</b><span>Not connected. Let players message you on Discord.</span></div><button type="button" class="st-b" id="stdcc">Connect</button></div><div class="st-msg" id="stdcm"></div>';
+          var m0 = g.querySelector("#stdcm"); if (note) m0.textContent = note;
+          var cb = g.querySelector("#stdcc"); cb.onclick = function () { dcConnect(tok, cb, function (m) { m0.textContent = m; }); };
+          return;
+        }
+        var v = j.visibility;
+        g.innerHTML = '<div class="st-r">' + ico + '<div class="st-t"><b>Discord</b><span>Connected as ' + esc(j.username) + '</span></div><button type="button" class="st-b" id="stdcx">Disconnect</button></div>' +
+          '<div class="st-r">' + eye + '<div class="st-t"><b>Who can see it</b><span>Shown under your badges.</span></div><select class="st-in" id="stdcv" aria-label="Who can see your Discord" style="width:auto;max-width:170px"><option value="off"' + (v === "off" ? " selected" : "") + '>Nobody</option><option value="friends"' + (v === "friends" ? " selected" : "") + '>Friends only</option><option value="public"' + (v === "public" ? " selected" : "") + '>Everyone</option></select></div><div class="st-msg" id="stdcm"></div>';
+        var m = g.querySelector("#stdcm"); if (note) m.textContent = note;
+        g.querySelector("#stdcv").onchange = function () {
+          var sel = this;
+          call("POST", "/api/app/discord/visibility", { visibility: sel.value }, tok).then(function (s) { m.textContent = s.ok ? "Saved." : "Could not save. Try again."; }).catch(function () { m.textContent = "Cannot reach the server."; });
+        };
+        g.querySelector("#stdcx").onclick = function () {
+          if (!confirm("Disconnect your Discord from your MVP account?")) return;
+          call("POST", "/api/app/discord/unlink", {}, tok).then(function (s) { if (s.ok) { if (window.__dcReload) window.__dcReload(); load("Discord disconnected."); } else m.textContent = "Could not disconnect. Try again."; });
+        };
+      }).catch(function () { g.innerHTML = '<div class="st-r"><div class="st-t"><span>Cannot reach the server.</span></div></div>'; });
     }
     load();
   }
@@ -1110,6 +1129,7 @@ button{font:inherit}
       '<div class="st-lab">Notifications</div><div class="st-grp"><div class="st-r">' + ICO2('px:bell') + '<div class="st-t"><b>MVP news by e-mail</b><span>' + (p.email ? "You can turn this off any time. Every e-mail has an unsubscribe link." : "Add an e-mail first.") + '</span></div><input type="checkbox" class="st-sw" id="stnl" aria-label="Send me MVP news by e-mail"' + (p.newsletter ? " checked" : "") + (p.email ? "" : " disabled") + '></div><div class="st-msg" id="stnm"></div></div>' +
       '<div class="st-lab">Appearance</div><div class="st-grp"><div class="st-r">' + ICO2('px:sun') + '<div class="st-t"><b>Light theme</b><span>White background instead of blue.</span></div><input type="checkbox" class="st-sw" id="stlt" aria-label="Light theme"' + (window.mvpTheme && mvpTheme.get() === "light" ? " checked" : "") + '></div></div>' +
       '<div class="st-lab">Profile</div><div class="st-grp"><div class="st-r">' + ICO2('px:card') + '<div class="st-t"><b>Public profile</b><span>' + (p.nick ? "Off: only you and your friends see your card and badges. On: anyone with the link." : "Link your Minecraft account first.") + '</span></div><input type="checkbox" class="st-sw" id="stpp" aria-label="Public profile"' + (p.profile_public ? " checked" : "") + (p.nick ? "" : " disabled") + '></div>' + (p.nick ? '<div class="st-r">' + ICO2('px:monitor') + '<div class="st-t"><b>Show when I am online</b><span>Friends see Online now and Last seen. Turn off to look offline.</span></div><input type="checkbox" class="st-sw" id="ston" aria-label="Show when I am online"' + (p.hide_online ? "" : " checked") + '></div><div class="st-r">' + ICO2('px:card') + '<div class="st-t"><b>Show MVP coins in my public profile</b><span>Others can see how many coins you have.</span></div><input type="checkbox" class="st-sw" id="stcn" aria-label="Show MVP coins in my public profile"' + (p.hide_coins ? "" : " checked") + '></div><div class="st-r">' + ICO2('px:cube') + '<div class="st-t"><b>Show me in suggestions</b><span>Others may see you in People you may know when you have friends in common.</span></div><input type="checkbox" class="st-sw" id="stsg" aria-label="Show me in suggestions"' + (p.hide_suggest ? "" : " checked") + '></div>' : '') + '<div class="st-msg" id="stpm"></div></div>' +
+      '<div class="st-lab">Discord</div><div class="st-grp" id="stdc"><div class="st-r"><div class="st-t"><span>Loading...</span></div></div></div>' +
       '<div class="st-lab">Security</div><div class="st-grp">' +
         '<div class="st-r">' + ICO2('px:phone') + '<div class="st-t"><b>Other devices</b><span>Sign out everywhere except here</span></div><button type="button" class="st-b" id="stall">Sign out</button></div>' +
         '<div class="st-r">' + ICO2('px:logout') + '<div class="st-t"><b>This device</b><span>Sign out of this browser</span></div><button type="button" class="st-b" id="stout">Sign out</button></div><div class="st-msg" id="stsm"></div>' +
@@ -1118,6 +1138,7 @@ button{font:inherit}
       '<div class="st-lab">Danger zone</div><div class="st-grp"><div class="st-r">' + ICO2('px:trash') + '<div class="st-t"><b>Delete account</b><span>You have 3 days to cancel</span></div><button type="button" class="st-b red" id="stdel">Delete</button></div></div></div>';
     var q = function (id) { return dlg.querySelector("#" + id); };
     dlg.querySelector(".wc-dx").onclick = function () { dlg.close(); };
+    dcSettings(q("stdc"), tok);
     // change / add e-mail
     q("stem").onclick = function () {
       var f = q("stemf");
