@@ -531,6 +531,14 @@ button{font:inherit}
       (d.coins != null ? '<div class="wc-stat"><div class="wc-ic"><img src="../card/coin.png" alt=""></div><div class="wc-sv">' + esc(d.coins) + '</div><div class="wc-sl">Coins</div></div>' : "") + '<div class="wc-stat"><div class="wc-ic"><img src="../card/sword.png" alt=""></div><div class="wc-sv">' + esc(d.kills) + '</div><div class="wc-sl">Kills</div>' + (d.kills_rank ? '<div class="wc-sl" style="color:#6fd0ff;font-weight:700"><img src="../img/ic/baltop.png" alt="" width="16" height="16" style="image-rendering:pixelated;vertical-align:-2px;margin-right:4px">TOP #' + esc(d.kills_rank) + '</div>' : "") + '</div>' +
       '<div class="wc-stat"><div class="wc-ic"><img src="../img/ic/skull.png" alt="" width="32" height="32" style="image-rendering:pixelated;width:32px;height:32px"></div><div class="wc-sv">' + esc(d.deaths || 0) + '</div><div class="wc-sl">Deaths</div></div></div>' + badges(d.medals, d.discord) + '</div></div><div id="pcm" style="margin-top:26px"></div>';
     badgeTips(d.medals); wire(d); rating(d);
+    var tc = document.getElementById("wccard");
+    if (tc && window.matchMedia && window.matchMedia("(hover:hover)").matches) {
+      tc.parentNode.addEventListener("mousemove", function (e) {
+        var b = tc.getBoundingClientRect(), x = (e.clientX - b.left) / b.width - .5, y = (e.clientY - b.top) / b.height - .5;
+        tc.style.transform = "rotateY(" + (x * 14) + "deg) rotateX(" + (-y * 14) + "deg)";
+      });
+      tc.parentNode.addEventListener("mouseleave", function () { tc.style.transform = ""; });
+    }
     if (window.mvpComments) document.getElementById("pcm").appendChild(mvpComments(0, { profile: d.nick }));
     document.getElementById("pshare").onclick = function () { var b = this, u = location.origin + "/u/?n=" + encodeURIComponent(d.nick), done = function () { b.textContent = "Copied"; setTimeout(function () { b.textContent = "Copy profile link"; }, 1600); }; try { navigator.clipboard.writeText(u).then(done, done); } catch (e) { done(); } };
   }
