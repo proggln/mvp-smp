@@ -266,11 +266,12 @@ button{font:inherit}
 .mgb{display:inline-flex;align-items:center;justify-content:center;padding:12px 22px;border-radius:999px;border:0;cursor:pointer;color:#fff;font:700 .95rem var(--font-head,inherit);background:linear-gradient(180deg,#22a6f2,#0081cc);box-shadow:0 8px 22px rgba(0,129,204,.35)}
 .mgb:disabled{opacity:.55;cursor:default}
 .mgb.ghost{background:rgba(255,255,255,.08);box-shadow:none}
-.mgb.ghost{border:1px solid rgba(255,255,255,.14);padding:11px 20px}
-.mgb .bi{width:22px;height:22px;margin-right:9px;image-rendering:pixelated;flex:none}
-.mgb.blk{background:rgba(232,66,79,.12);border:1px solid rgba(232,66,79,.45);color:#ffb7bc;box-shadow:none;padding:11px 20px}
-.mgb.blk:hover{background:rgba(232,66,79,.22)}
-.mgb.ghost:hover{background:rgba(255,255,255,.14)}
+#pact .mgb.ghost,#pact .mgb.blk{padding:6px 13px;font-size:.8rem;font-weight:600;background:transparent;border:1px solid rgba(255,255,255,.16);color:rgba(255,255,255,.72);box-shadow:none}
+#pact .mgb.ghost:hover,#pact .mgb.blk:hover{background:rgba(255,255,255,.08);color:#fff}
+#pact .mgb .bi{width:17px;height:17px;margin-right:7px;image-rendering:pixelated;flex:none}
+#pact .pc-q{font-size:.88rem;opacity:.9;margin-right:4px}
+#pact{align-items:center}
+#pact .mgb[data-c="yes"].blk{border-color:rgba(232,66,79,.6);color:#ffb7bc}
 .mgb.danger{background:linear-gradient(180deg,#f1646b,#c9363f);box-shadow:0 8px 22px rgba(201,54,63,.3)}
 .mgmsg{margin-top:12px;min-height:1.2em;color:#ffb4b4;font-size:.92rem}.mgmsg.ok{color:#8be2a6}
 .mgcode{font:800 2.2rem/1 var(--font-head,inherit);letter-spacing:.2em;text-align:center;padding:16px;border-radius:16px;background:rgba(0,129,204,.18);border:1px solid rgba(76,195,255,.35);margin:14px 0 8px}
@@ -486,16 +487,23 @@ button{font:inherit}
   function wire(d) {
     var box = document.getElementById("pact"), msg = document.getElementById("pmsg");
     if (!box) return;
+    var saved = "", act = "";
     box.addEventListener("click", function (e) {
-      var btn = e.target.closest && e.target.closest("[data-a]"); if (!btn) return;
-      var a = btn.getAttribute("data-a");
+      var btn = e.target.closest && e.target.closest("[data-a],[data-c]"); if (!btn) return;
+      var c = btn.getAttribute("data-c");
+      if (c === "no") { box.innerHTML = saved; msg.textContent = ""; return; }
+      var a = c === "yes" ? act : btn.getAttribute("data-a");
+      if (!a) return;
+      if (!c && (a === "remove" || a === "block")) {
+        saved = box.innerHTML; act = a;
+        box.innerHTML = '<span class="pc-q">' + (a === "remove" ? "Remove " + esc(d.nick) + " from your friends?" : "Block " + esc(d.nick) + "? They will not be able to send you requests, and will not be told.") + '</span><button type="button" class="mgb ' + (a === "block" ? "blk" : "ghost") + '" data-c="yes">' + (a === "remove" ? "Remove" : "Block") + '</button><button type="button" class="mgb ghost" data-c="no">Cancel</button>';
+        return;
+      }
       var path = { request: "/api/app/friends/request", accept: "/api/app/friends/respond", decline: "/api/app/friends/respond", remove: "/api/app/friends/remove", block: "/api/app/friends/block", unblock: "/api/app/friends/unblock" }[a];
       var body = { nick: d.nick }; if (a === "accept") body.accept = true; if (a === "decline") body.accept = false;
-      if (a === "remove" && !window.confirm("Remove " + d.nick + " from your friends?")) return;
-      if (a === "block" && !window.confirm("Block " + d.nick + "? They will not be able to send you requests, and will not be told.")) return;
       btn.disabled = true;
       call("POST", path, body, tok).then(function (r) {
-        if (!r.ok) { msg.textContent = r.j && r.j.error === "limit" ? "Your friends list is full." : r.j && r.j.error === "link_first" ? "Link your Minecraft account first (see Get link command on your card)." : "Something went wrong. Try again later."; btn.disabled = false; return; }
+        if (!r.ok) { msg.textContent = r.j && r.j.error === "limit" ? "Your friends list is full." : r.j && r.j.error === "link_first" ? "Link your Minecraft account first (see Get link command on your card)." : "Something went wrong. Try again later."; if (c === "yes") box.innerHTML = saved; else btn.disabled = false; return; }
         if (a === "block") { box.innerHTML = '<span class="mgb blk" style="cursor:default">' + bi("ban") + 'Blocked</span> <button type="button" class="mgb ghost" data-a="unblock">Unblock</button>'; msg.textContent = ""; return; }
         load();
       }).catch(function () { msg.textContent = "Cannot reach the server."; btn.disabled = false; });
