@@ -348,6 +348,11 @@ button{font:inherit}
 .rf-st i{display:flex;align-items:center;justify-content:center;width:24px;height:24px;margin:0 auto 6px;border-radius:50%;background:rgba(46,200,140,.3);color:#9bf0cf;font:800 .8rem var(--font-head,inherit);font-style:normal}
 .rf-link{display:flex;align-items:center;border-radius:999px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.16);overflow:hidden}
 .rf-link input{flex:1;min-width:0;padding:12px 14px;border:0;background:transparent;color:inherit;font:600 .88rem var(--font-body,inherit);outline:none;text-overflow:ellipsis}
+.dc-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.dc-v{padding:9px 14px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:transparent;color:inherit;cursor:pointer;font:700 .85rem var(--font-head,inherit)}
+.dc-v.on{background:#5865f2;border-color:#5865f2;color:#fff}
+.dc-go{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border:0;border-radius:999px;cursor:pointer;font:800 .9rem var(--font-head,inherit);color:#fff;background:#5865f2}
+.dc-off{padding:9px 14px;border:0;background:none;color:inherit;opacity:.7;cursor:pointer;font:700 .85rem var(--font-head,inherit);text-decoration:underline}
 .rf-copy{display:inline-flex;align-items:center;gap:7px;margin:4px;padding:9px 16px;border:0;border-radius:999px;cursor:pointer;font:800 .88rem var(--font-head,inherit);color:#04281a;background:linear-gradient(180deg,#5eeab0,#22b57a);white-space:nowrap}
 .rf-copy.on{background:rgba(255,255,255,.18);color:#fff}
 .rf-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
@@ -664,6 +669,56 @@ button{font:inherit}
           if (!/^[A-Z0-9]{4,10}$/.test(c)) return;
           ub.disabled = true; claim(c, function (m) { load(m); });
         });
+      }).catch(function () { body.textContent = "Cannot reach the server."; });
+    }
+    load();
+  }
+  function discordBox(p, tok, anc) {
+    var box = mkBox(anc); box.id = "discord"; box.className = "wc-install wc-x rf-box"; box.style.cssText = "";
+    var ic = '<img src="../img/ic/discord.png" alt="" width="26" height="26" style="width:26px;height:26px;image-rendering:pixelated;flex:none">';
+    box.innerHTML = '<div class="rf-h">' + ic + '<span>Discord</span></div><div class="rf-b" style="margin-top:10px;opacity:.85">Loading...</div>';
+    var body = box.querySelector(".rf-b");
+    var MSG = { ok: "Discord account connected. Choose who can see it below.", denied: "You cancelled the connection.", expired: "That link expired. Try again.", taken: "This Discord account is already connected to another MVP account.", error: "Something went wrong. Try again later." };
+    var note = ""; try { var q = new URLSearchParams(location.search).get("discord"); if (q && MSG[q]) { note = MSG[q]; history.replaceState(null, "", location.pathname + location.hash); } } catch (e) {}
+    function load() {
+      call("GET", "/api/app/discord", null, tok).then(function (r) {
+        if (!r.ok) { body.textContent = "Could not load."; return; }
+        var j = r.j;
+        if (!j.configured && !j.linked) { box.style.display = "none"; return; }
+        var h = "";
+        if (!j.linked) {
+          h += '<div class="rf-lead">Connect your Discord so other players can message you there. You log in to Discord once to prove it is you. Nobody sees it until you allow it.</div>';
+          h += '<div class="dc-row"><button type="button" class="dc-go">' + ic.replace('width="26" height="26" style="width:26px;height:26px', 'width="20" height="20" style="width:20px;height:20px') + 'Connect Discord</button></div>';
+        } else {
+          h += '<div class="rf-lead">Connected as <b>' + esc(j.username) + '</b>. Who can see your Discord on your profile?</div>';
+          h += '<div class="dc-row">';
+          [["off", "Nobody"], ["friends", "Friends only"], ["public", "Everyone who sees my profile"]].forEach(function (o) {
+            h += '<button type="button" class="dc-v' + (j.visibility === o[0] ? " on" : "") + '" data-v="' + o[0] + '">' + o[1] + '</button>';
+          });
+          h += '</div><div class="dc-row"><button type="button" class="dc-off">Disconnect Discord</button></div>';
+        }
+        if (note) h += '<div class="rf-note rf-n"></div>';
+        body.style.cssText = ""; body.innerHTML = h;
+        if (note) body.querySelector(".rf-n").textContent = note;
+        var go = body.querySelector(".dc-go");
+        if (go) go.addEventListener("click", function () {
+          go.disabled = true;
+          call("POST", "/api/app/discord/start", { ret: "site" }, tok).then(function (s) {
+            if (s.ok && s.j.url) { location.href = s.j.url; return; }
+            go.disabled = false; note = s.status === 403 ? "Link your Minecraft account first." : s.status === 429 ? "Too many tries. Wait a little." : "Discord login is not available right now."; load();
+          }).catch(function () { go.disabled = false; note = "Cannot reach the server."; load(); });
+        });
+        Array.prototype.forEach.call(body.querySelectorAll(".dc-v"), function (b) {
+          b.addEventListener("click", function () {
+            call("POST", "/api/app/discord/visibility", { visibility: b.getAttribute("data-v") }, tok).then(function (s) { note = s.ok ? "Saved." : "Could not save. Try again."; load(); });
+          });
+        });
+        var off = body.querySelector(".dc-off");
+        if (off) off.addEventListener("click", function () {
+          if (!confirm("Disconnect your Discord from your MVP account?")) return;
+          call("POST", "/api/app/discord/unlink", {}, tok).then(function (s) { note = s.ok ? "Discord disconnected." : "Could not disconnect. Try again."; load(); });
+        });
+        note = "";
       }).catch(function () { body.textContent = "Cannot reach the server."; });
     }
     load();
@@ -1482,7 +1537,7 @@ button{font:inherit}
           mountDock(p, tok);
         }
         if (p.email) accountBox(p, tok, document.querySelector(".wc-install"));
-        if (p.nick || p.email) { var anc = document.querySelector(".wc-install"); if (anc && anc.parentNode) { contestBox(p, tok, anc); refBox(p, tok, anc); } }
+        if (p.nick || p.email) { var anc = document.querySelector(".wc-install"); if (anc && anc.parentNode) { contestBox(p, tok, anc); refBox(p, tok, anc); if (p.nick) discordBox(p, tok, anc); } }
       }
       if (!p.nick && !(V2 && p.email)) {
         var rb = document.createElement("div"); rb.className = "wc-install"; rb.style.cssText = "margin:14px 0;padding:14px;border-radius:14px;background:rgba(255,255,255,.06)";
