@@ -323,43 +323,52 @@ button{font:inherit}
 </header>
 <canvas id="cf"></canvas>
 <main class="dlwrap"><div id="dlhost"></div></main>
-<template id="dltpl"><style>
-:root{--bl:#0081cc;--bl2:#22a6f2;--gold:#ffcf3a;--gold2:#ff9d1c;--font-head:"Montserrat","Inter",system-ui,sans-serif;--font-body:"Inter",system-ui,sans-serif}
-:host{display:block;width:100%;max-width:460px}
+<template id="dltpl"><style>:host{--bl:#0081cc;--bl2:#22a6f2;--gold:#ffcf3a;--gold2:#ff9d1c;--font-head:"Montserrat","Inter",system-ui,sans-serif;--font-body:"Inter",system-ui,sans-serif;display:block;width:100%;max-width:560px}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-.c{position:relative;width:100%;max-width:460px;padding:26px 22px 22px;border-radius:26px;background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 30px 80px rgba(0,0,0,.5)}
-.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
-.brand{font:800 .8rem var(--font-head);letter-spacing:.18em;opacity:.7}
-.streak{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.08);font:700 .8rem var(--font-head)}
-h1{margin:10px 0 0;font:800 1.7rem var(--font-head);letter-spacing:-.01em;text-align:center}
-.hero{position:relative;display:flex;flex-direction:column;align-items:center;margin:14px 0 6px}
-.ring{position:relative;width:176px;height:176px}
+.c{position:relative;width:100%;padding:28px 24px 22px;border-radius:30px;overflow:hidden;color:#fff;font-family:var(--font-body);background:linear-gradient(180deg,rgba(14,32,52,.82),rgba(6,16,28,.78));border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 30px 80px rgba(0,0,0,.55)}
+.c:before{content:"";position:absolute;left:50%;top:-120px;width:520px;height:360px;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(0,129,204,.35),transparent);pointer-events:none;transition:background .6s}
+.c.rdy:before{background:radial-gradient(closest-side,rgba(255,190,50,.38),transparent)}
+.c>*{position:relative}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+h1{margin:0;display:flex;align-items:center;gap:10px;font:800 1.6rem var(--font-head);letter-spacing:-.01em}
+.lead{margin:6px 0 0;font-size:.86rem;color:#9db6c9}
+.streak{flex:none;display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);font:800 .95rem var(--font-head)}
+.streak small{display:block;font:600 .66rem var(--font-body);color:#9db6c9;letter-spacing:.06em;text-transform:uppercase}
+.hero{display:flex;flex-direction:column;align-items:center;margin:20px 0 4px}
+.ring{position:relative;width:200px;height:200px}
 .ring svg.r{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
-.ring .tr{stroke:rgba(255,255,255,.1)}
+.ring .tr{stroke:rgba(255,255,255,.09)}
 .ring .pr{stroke:url(#g1);stroke-linecap:round;transition:stroke-dashoffset 1s linear}
-.coin{position:absolute;inset:26px;display:flex;align-items:center;justify-content:center}
+.coin{position:absolute;inset:34px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.08),transparent)}
 .coin img{width:112px;height:112px;image-rendering:pixelated;image-rendering:crisp-edges;filter:drop-shadow(0 0 18px rgba(60,170,255,.55))}
-.ready .coin img{animation:fl 2.6s ease-in-out infinite}
+.ready .coin img{animation:fl 2.6s ease-in-out infinite;filter:drop-shadow(0 0 22px rgba(255,190,50,.7))}
 @keyframes fl{50%{transform:translateY(-6px) rotate(-3deg)}}
-.wait .coin img{opacity:.85;filter:drop-shadow(0 0 10px rgba(60,170,255,.3))}
-.amt{font:800 2.3rem var(--font-head);margin-top:12px;line-height:1}
-.amt small{font:700 .9rem var(--font-head);opacity:.7;margin-left:6px}
-.sub{margin:8px 0 0;text-align:center;opacity:.85;min-height:1.4em}
-.track{position:relative;display:flex;gap:6px;margin:22px 0 18px}
-.day{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:5px;padding:9px 0 8px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid transparent;font:700 .72rem var(--font-head)}
-.day i{font-style:normal;opacity:.55;font-size:.62rem;letter-spacing:.06em}
-.day svg{width:22px;height:22px}.day img{width:32px;height:32px;image-rendering:pixelated;image-rendering:crisp-edges}
-.day.done{background:rgba(34,166,242,.22);border-color:rgba(34,166,242,.35)}
-.day.today{background:linear-gradient(180deg,rgba(255,207,58,.25),rgba(255,157,28,.12));border-color:var(--gold);box-shadow:0 0 18px rgba(255,190,50,.35)}
-.btn{position:relative;overflow:hidden;display:flex;width:100%;align-items:center;justify-content:center;gap:8px;padding:16px;border-radius:999px;border:0;cursor:pointer;color:#fff;font:800 1.05rem var(--font-head);background:linear-gradient(180deg,var(--bl2),var(--bl));box-shadow:0 10px 28px rgba(0,129,204,.45);text-decoration:none;transition:transform .15s}
+.wait .coin img{opacity:.8;filter:grayscale(.25) drop-shadow(0 0 10px rgba(60,170,255,.3))}
+.amt{margin-top:14px;font:800 2.5rem var(--font-head);line-height:1;letter-spacing:-.02em}
+.ready .amt{color:var(--gold)}
+.amt small{font:700 .9rem var(--font-head);opacity:.7;margin-left:6px;letter-spacing:0}
+.sub{margin:8px 0 0;text-align:center;color:#cfe3f1;min-height:1.4em;max-width:360px}
+.track{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px;margin:24px 0 8px}
+.day{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 0 9px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);font:800 .8rem var(--font-head);transition:transform .2s}
+.day i{font-style:normal;color:#8aa3b6;font-size:.58rem;letter-spacing:.08em}
+.day svg{width:30px;height:30px}.day img{width:30px;height:30px;image-rendering:pixelated;image-rendering:crisp-edges;opacity:.55}
+.day span{color:#cfe3f1}
+.day.done{background:rgba(34,166,242,.18);border-color:rgba(34,166,242,.4)}
+.day.done span{color:#7fd4ff}
+.day.today{background:linear-gradient(180deg,rgba(255,207,58,.28),rgba(255,157,28,.1));border-color:var(--gold);box-shadow:0 0 22px rgba(255,190,50,.4);transform:translateY(-3px)}
+.day.today img{opacity:1}.day.today span{color:var(--gold)}.day.today i{color:#ffe49a}
+.day.max:after{content:"MAX";position:absolute;top:-8px;padding:2px 6px;border-radius:999px;background:var(--bl);font:800 .5rem var(--font-head);letter-spacing:.08em}
+.hint{margin:0 0 18px;text-align:center;font-size:.8rem;color:#8aa3b6}
+.btn{position:relative;overflow:hidden;display:flex;width:100%;align-items:center;justify-content:center;gap:8px;padding:17px;border-radius:18px;border:0;cursor:pointer;color:#fff;font:800 1.05rem var(--font-head);background:linear-gradient(180deg,var(--bl2),var(--bl));box-shadow:0 10px 28px rgba(0,129,204,.45);text-decoration:none;transition:transform .15s}
 .btn:active{transform:scale(.98)}
-.btn:disabled{background:rgba(255,255,255,.1);box-shadow:none;color:rgba(255,255,255,.55);cursor:default}
+.btn:disabled{background:rgba(255,255,255,.08);box-shadow:none;color:rgba(255,255,255,.5);cursor:default}
 .btn.gold{background:linear-gradient(180deg,#ffd75a,var(--gold2));color:#2a1a00;box-shadow:0 10px 28px rgba(255,157,28,.45)}
 .btn.gold:after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);animation:sh 2.8s infinite}
 @keyframes sh{to{left:130%}}
-.btn.g{background:rgba(255,255,255,.1);box-shadow:none;margin-top:10px;font-size:.95rem}
-.foot{margin-top:14px;text-align:center;font-size:.78rem;opacity:.55}
+.btn.g{background:rgba(255,255,255,.08);box-shadow:none;margin-top:10px;font-size:.95rem}
+.foot{margin-top:14px;text-align:center;font-size:.78rem;color:#8aa3b6}
 .foot a{color:inherit}
+@media (max-width:420px){.track{gap:5px}.day{padding:8px 0 7px;border-radius:12px}.day img,.day svg{width:24px;height:24px}.top{flex-direction:column}.ring{width:176px;height:176px}.coin{inset:28px}.coin img{width:100px;height:100px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 <svg width="0" height="0" style="position:absolute"><defs>
@@ -368,8 +377,7 @@ h1{margin:10px 0 0;font:800 1.7rem var(--font-head);letter-spacing:-.01em;text-a
 <symbol id="ck" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#7fd4ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
 </defs></svg>
 <div class="c" id="card">
-  <div class="top"><div class="brand">MVP</div><div class="streak" id="st" style="visibility:hidden"><img src="../img/ic/streak.png" alt="" width="16" height="16" style="image-rendering:pixelated;width:16px;height:16px"> <span id="stn">0</span></div></div>
-  <h1><img src="../img/ic/daily.png" alt="" width="32" height="32" style="image-rendering:pixelated;width:32px;height:32px;vertical-align:-6px;margin-right:8px">Daily reward</h1>
+  <div class="top"><div><h1><img src="../img/ic/daily.png" alt="" width="32" height="32" style="image-rendering:pixelated;width:32px;height:32px">Daily reward</h1><p class="lead">Come back every day. The reward grows with your streak.</p></div><div class="streak" id="st" style="visibility:hidden"><img src="../img/ic/streak.png" alt="" width="22" height="22" style="image-rendering:pixelated;width:22px;height:22px"><div><span id="stn">0</span><small>day streak</small></div></div></div>
   <div class="hero wait" id="hero">
     <div class="ring">
       <svg class="r" viewBox="0 0 100 100"><circle class="tr" cx="50" cy="50" r="46" fill="none" stroke-width="5"/><circle class="pr" id="pr" cx="50" cy="50" r="46" fill="none" stroke-width="5" stroke-dasharray="289" stroke-dashoffset="289"/></svg>
@@ -379,6 +387,7 @@ h1{margin:10px 0 0;font:800 1.7rem var(--font-head);letter-spacing:-.01em;text-a
     <p class="sub" id="s">Loading...</p>
   </div>
   <div class="track" id="days"></div>
+  <p class="hint" id="hint"></p>
   <button class="btn" id="go" type="button" disabled>Claim</button>
   <a class="btn g" id="alt" href="/card/" style="display:none">Open my profile</a>
   <div class="foot">Coins arrive in the game when you are online.</div>
@@ -399,9 +408,10 @@ h1{margin:10px 0 0;font:800 1.7rem var(--font-head);letter-spacing:-.01em;text-a
   function paint(st) {
     days.textContent = "";
     $("st").style.visibility = "visible"; $("stn").textContent = st.streak;
+    var rw = st.rewards || [], step = rw.length > 1 ? rw[1] - rw[0] : 0; $("hint").textContent = rw.length ? "Day 1 gives " + rw[0] + " coins" + (step ? ", every next day +" + step + ", up to " + rw[rw.length - 1] + " on day " + rw.length : "") + ". Miss a day and the streak restarts." : "";
     (st.rewards || []).forEach(function (r, i) {
       var c = document.createElement("div"), done = i < st.streak && !(st.ready && i === st.next_streak - 1), today = st.ready && i === st.next_streak - 1;
-      c.className = "day" + (done ? " done" : "") + (today ? " today" : "");
+      c.className = "day" + (done ? " done" : "") + (today ? " today" : "") + (i === st.rewards.length - 1 ? " max" : "");
       c.innerHTML = '<i>DAY ' + (i + 1) + '</i>' + (done ? '<svg><use href="#ck"/></svg>' : '<img src="' + COIN + '" alt="">') + '<span>' + r + '</span>';
       days.appendChild(c);
     });
@@ -410,11 +420,11 @@ h1{margin:10px 0 0;font:800 1.7rem var(--font-head);letter-spacing:-.01em;text-a
     function tick() {
       var l = end - Date.now();
       if (st.ready || l <= 0) {
-        hero.className = "hero ready"; ring(1); amt.innerHTML = "+" + st.reward_now + "<small>coins</small>"; s.textContent = "Your reward is ready!";
+        hero.className = "hero ready"; $("card").className = "c rdy"; ring(1); amt.innerHTML = "+" + st.reward_now + "<small>coins</small>"; s.textContent = "Your reward is ready!";
         go.className = "btn gold"; go.disabled = false; go.textContent = "Claim reward";
         if (timer) { clearInterval(timer); timer = null; }
       } else {
-        hero.className = "hero wait"; ring(1 - l / total); amt.innerHTML = left(l); s.textContent = "until your next reward";
+        hero.className = "hero wait"; $("card").className = "c"; ring(1 - l / total); amt.innerHTML = left(l); s.textContent = "until your next reward";
         go.className = "btn"; go.disabled = true; go.textContent = "Come back later";
       }
     }
@@ -436,9 +446,8 @@ h1{margin:10px 0 0;font:800 1.7rem var(--font-head);letter-spacing:-.01em;text-a
       else load();
     }).catch(function () { s.textContent = "Cannot reach the server."; go.disabled = false; });
   });
-  // the daily reward is claimed in the game now
-  need("Your daily reward is now in the game. Join the server and type /daily to claim it every day.", "Back to the home page", "/");
-  if (false) load();
+  if (!tok()) need("Sign in on your profile first, then come back here to claim your reward.", "Open my profile");
+  else load();
 })();
 </script>
 <nav class="legal-links" aria-label="Legal"><a href="../privacy/">Privacy Policy</a><a href="../terms/">Terms of Service</a><a href="../refunds/">Refund Policy</a><a href="../seller/">Seller information</a><a href="../manage/">Manage subscription</a><a href="../support/">Support</a></nav>
