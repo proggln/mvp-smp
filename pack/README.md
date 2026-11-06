@@ -16,6 +16,7 @@ URL: https://raw.githubusercontent.com/proggln/mvp-smp/main/pack/MVP-Resource-Pa
 | MVPCoins   | paper           | 9101-9108, 9201, 9202 (MVP coin) |
 | MVPProtect | knowledge_book  | 9009-9035         |
 | MVPTokens  | amethyst_shard  | 9401 (MVP Token)  |
+| MVPTeams | font (no item) | `mvpteams:tag`: letters A-Z and 0-9 on a dark plate, tinted by the team colour. Shown after the nick by MVPInterface; without the pack players see a plain [TAG]. |
 | MVPChestShop | fonts (no item) | `mvpchestshop:buy` (B = mouse + BUY badge, u/y zero width), `mvpchestshop:sell` (S = mouse + SELL badge, e/l zero width), `mvpchestshop:coin` ($ = MVP coin). Signs write "Buy", "Sell", "$" in these fonts, so without the pack they stay readable. |
 
 MVPCrates was removed (2026-10-25); its models and numbers are gone from the pack.
@@ -23,6 +24,3 @@ MVPCrates was removed (2026-10-25); its models and numbers are gone from the pac
 Also inside: vanilla block models of the Anti-Xray Full 26.2 pack (assets/minecraft/blockstates and models/block).
 Pack icon: MVP logo. Description: "MVP Resource Pack".
 
-
-## MVPTeams-Pack.zip (separate small pack)
-Font `mvpteams:tag`: letters A-Z and 0-9 on a dark plate, tinted by the team colour. MVPTeams sends it itself (own pack id), next to the main pack. Without the pack players see a plain [TAG].
