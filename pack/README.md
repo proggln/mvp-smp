@@ -22,3 +22,7 @@ MVPCrates was removed (2026-10-25); its models and numbers are gone from the pac
 
 Also inside: vanilla block models of the Anti-Xray Full 26.2 pack (assets/minecraft/blockstates and models/block).
 Pack icon: MVP logo. Description: "MVP Resource Pack".
+
+
+## MVPTeams-Pack.zip (separate small pack)
+Font `mvpteams:tag`: letters A-Z and 0-9 on a dark plate, tinted by the team colour. MVPTeams sends it itself (own pack id), next to the main pack. Without the pack players see a plain [TAG].
