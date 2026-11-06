@@ -19,6 +19,8 @@ URL: https://raw.githubusercontent.com/proggln/mvp-smp/main/pack/MVP-Resource-Pa
 | MVPTeams | font (no item) | `mvpteams:tag`: letters A-Z and 0-9 on a dark plate, tinted by the team colour. Shown after the nick by MVPInterface; without the pack players see a plain [TAG]. |
 | MVPChestShop | fonts (no item) | `mvpchestshop:buy` (B = mouse + BUY badge, u/y zero width), `mvpchestshop:sell` (S = mouse + SELL badge, e/l zero width), `mvpchestshop:coin` ($ = MVP coin). Signs write "Buy", "Sell", "$" in these fonts, so without the pack they stay readable. |
 
+| MVP menu | fonts (no item) | `mvpmenu:banner` (M = blue MVP SMP banner) and `mvpmenu:icon` (M = small logo icon), used by the pause-menu datapack MVP-Pause. |
+
 MVPCrates was removed (2026-10-25); its models and numbers are gone from the pack.
 
 Also inside: vanilla block models of the Anti-Xray Full 26.2 pack (assets/minecraft/blockstates and models/block).
